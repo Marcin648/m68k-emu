@@ -26,6 +26,10 @@ include_directories(include)
 #target_compile_options(m68k-emu PRIVATE -Wall -Wextra -Wpedantic -ggdb -march=native)
 target_compile_options(m68k-emu PRIVATE -Wall -Wextra -Wpedantic -ggdb)
 
+
+enable_testing()
+add_subdirectory(test)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
