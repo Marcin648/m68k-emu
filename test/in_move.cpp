@@ -1,14 +1,24 @@
-// #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
-// #include "catch2/catch.hpp"
+#include "tests_functions.hpp"
 
-// #include "m68k.hpp"
-// #include "memory.hpp"
-// #include "helpers.hpp"
+#include "m68k.hpp"
+#include "memory.hpp"
+#include "helpers.hpp"
 
-// unsigned int Factorial( unsigned int number ) {
-//     return number <= 1 ? number : Factorial(number-1)*number;
-// }
+int main(int, char**){
+    TEST_NAME("Instruction MOVE");
 
-// TEST_CASE( "Factorials are computed", "[factorial]" ) {
+    M68K::InstructionDecoder decoder = M68K::InstructionDecoder();
+    M68K::INSTRUCTION::Instruction* instruction = nullptr;
+    uint32_t return_data = 0;
+
+    M68K::CPUState state = M68K::CPUState();
+    state.registers.set(M68K::REG_A1, M68K::DataSize::SIZE_LONG, 0xAABBCCDD);
     
-// }
+    // move.w D1, A1 
+    instruction = decoder.Decode(0x3209); // move.w D1, A1
+    TEST_LABEL("move.w A1, D1");
+    instruction->execute(state);
+    return_data = state.registers.get(M68K::REG_D1, M68K::DataSize::SIZE_LONG);
+    
+    TEST_TRUE(return_data == 0xCCDD);
+}
