@@ -7,8 +7,8 @@ namespace M68K{
     private:
         
     public:
-
         CPUState() = default;
+        CPUState(CPUState&) = default;
 
         Registers registers = Registers(); 
         Memory memory = Memory();

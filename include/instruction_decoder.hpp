@@ -13,6 +13,8 @@ namespace M68K{
         void generateOpcodeTable();
     public:
         InstructionDecoder();
+        InstructionDecoder(InstructionDecoder&) = default;
+
         INSTRUCTION::Instruction* Decode(uint16_t opcode);
     };
 }
