@@ -71,8 +71,8 @@ std::vector<MaskTableElement> opcode_mask_table = {
     // {0xF1C0, 0x0140, INSTRUCTION::Bchg::create},       //(0b1111000111000000, 0b0000000101000000, "Bchg")
     // {0xF1C0, 0x0180, INSTRUCTION::Bclr::create},       //(0b1111000111000000, 0b0000000110000000, "Bclr")
     // {0xF1C0, 0x01C0, INSTRUCTION::Bset::create},       //(0b1111000111000000, 0b0000000111000000, "Bset")
-    // {0xF1C0, 0x3040, INSTRUCTION::Moveaw::create},     //(0b1111000111000000, 0b0011000001000000, "Moveaw")
-    // {0xF1C0, 0x2040, INSTRUCTION::Moveal::create},     //(0b1111000111000000, 0b0010000001000000, "Moveal")
+    {0xF1C0, 0x3040, INSTRUCTION::Move::create},     //(0b1111000111000000, 0b0011000001000000, "Moveaw")
+    {0xF1C0, 0x2040, INSTRUCTION::Move::create},     //(0b1111000111000000, 0b0010000001000000, "Moveal")
     // {0xF1C0, 0x41C0, INSTRUCTION::Lea::create},        //(0b1111000111000000, 0b0100000111000000, "Lea")
     // {0xF1C0, 0x4180, INSTRUCTION::Chk::create},        //(0b1111000111000000, 0b0100000110000000, "Chk")
     // {0xF1C0, 0x80C0, INSTRUCTION::Divu::create},       //(0b1111000111000000, 0b1000000011000000, "Divu")
@@ -108,11 +108,15 @@ std::vector<MaskTableElement> opcode_mask_table = {
 void InstructionDecoder::generateOpcodeTable(){
     this->opcode_table.clear();
     this->opcode_table.reserve(0x10000);
+
     for(uint32_t opcode = 0; opcode < 0x10000; opcode++){
         std::shared_ptr<M68K::INSTRUCTION::Instruction> instruction = INSTRUCTION::Illegal::create(opcode);
         for(auto& opcode_mask : opcode_mask_table){
             if((opcode & opcode_mask.mask) == opcode_mask.value){
-                instruction = opcode_mask.create_function(opcode);
+                auto instruction_candidate = opcode_mask.create_function(opcode);
+                if(instruction_candidate.get()->is_valid){
+                    instruction = instruction_candidate;
+                }
                 break;
             }
         }

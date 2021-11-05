@@ -10,9 +10,10 @@ namespace M68K{
         class Instruction{
         protected:
             uint16_t opcode;
-            bool is_valid = true;
             size_t instruction_size = 2;
         public:
+            bool is_valid = true;
+
             Instruction(uint16_t opcode) : opcode(opcode) {};
             virtual void execute(CPUState&) {};
         };
