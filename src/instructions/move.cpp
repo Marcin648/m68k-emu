@@ -42,6 +42,10 @@ Move::Move(uint16_t opcode) : Instruction(opcode){
         }
     }
 
+    //movea
+    if((this->mode_dest_addr == ADDR_MODE_DIRECT_ADDR) && (this->data_size == SIZE_BYTE)){
+        this->is_valid = false;
+    }
 
 }
 
@@ -51,10 +55,12 @@ void Move::execute(CPUState& cpu_state){
     src_data = getData(this->mode_src_addr, this->src_reg, this->data_size, cpu_state);
     setData(this->mode_dest_addr, this->dest_reg, this->data_size, cpu_state, src_data);
 
-    cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(src_data, this->data_size));
-    cpu_state.registers.set(SR_FLAG_ZERO, src_data == 0);
-    cpu_state.registers.set(SR_FLAG_OVERFLOW, false);
-    cpu_state.registers.set(SR_FLAG_CARRY, false);
+    if(!(this->mode_dest_addr == ADDR_MODE_DIRECT_ADDR)){ // if not movea
+        cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(src_data, this->data_size));
+        cpu_state.registers.set(SR_FLAG_ZERO, src_data == 0);
+        cpu_state.registers.set(SR_FLAG_OVERFLOW, false);
+        cpu_state.registers.set(SR_FLAG_CARRY, false);
+    }
 }
 
 std::shared_ptr<INSTRUCTION::Instruction> Move::create(uint16_t opcode){
