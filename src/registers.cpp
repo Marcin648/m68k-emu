@@ -97,5 +97,6 @@ void Registers::set(StatusRegisterFlag flag, bool value){
     if(value){
         sr_value |= flag_mask;
     }
+    this->reg_buffer.at(REG_SR) = sr_value;
     return;
 }
