@@ -51,6 +51,25 @@ uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize si
             data = state.registers.get(reg, size);
             break;
         }
+        case ADDR_MODE_INDIRECT: {
+            uint32_t addr = state.registers.get(reg, SIZE_LONG);
+            data = state.memory.get(addr, size);
+            break;
+        }
+        case ADDR_MODE_INDIRECT_POSTINCREMENT: {
+            uint32_t addr = state.registers.get(reg, SIZE_LONG);
+            data = state.memory.get(addr, size);
+            addr += size;
+            state.registers.set(reg, SIZE_LONG, addr);
+            break;
+        }
+        case ADDR_MODE_INDIRECT_PREDECREMENT: {
+            uint32_t addr = state.registers.get(reg, SIZE_LONG);
+            addr -= size;
+            data = state.memory.get(addr, size);
+            state.registers.set(reg, SIZE_LONG, addr);
+            break;
+        }
     }
     return data;
 }
@@ -61,6 +80,25 @@ void INSTRUCTION::setData(AddressingMode mode, RegisterType reg, DataSize size, 
         case ADDR_MODE_DIRECT_ADDR:
         case ADDR_MODE_DIRECT_DATA: {
             state.registers.set(reg, size, data);
+            break;
+        }
+        case ADDR_MODE_INDIRECT: { // todo: throw on non address register type
+            uint32_t addr = state.registers.get(reg, SIZE_LONG);
+            state.memory.set(addr, size, data);
+            break;
+        }
+        case ADDR_MODE_INDIRECT_POSTINCREMENT: {
+            uint32_t addr = state.registers.get(reg, SIZE_LONG);
+            state.memory.set(addr, size, data);
+            addr += size;
+            state.registers.set(reg, SIZE_LONG, addr);
+            break;
+        }
+        case ADDR_MODE_INDIRECT_PREDECREMENT: {
+            uint32_t addr = state.registers.get(reg, SIZE_LONG);
+            addr -= size;
+            state.memory.set(addr, size, data);
+            state.registers.set(reg, SIZE_LONG, addr);
             break;
         }
     }
