@@ -29,4 +29,12 @@ namespace M68K{
     template<typename T> inline T ROR_16(T a, T b) { return MASK_16(LSR(a, b) | LSL(a, 16 - b));}
     template<typename T> inline T ROR_32(T a, T b) { return MASK_32(LSR(a, b) | LSL(a, 32 - b));}
 
+    template<typename T> inline bool IS_NEGATIVE(T v, size_t size) {
+        switch(size){
+            case 1: return MSB_8(v);
+            case 2: return MSB_16(v);
+            case 4: return MSB_32(v);
+        }
+        return false;
+    }
 }
