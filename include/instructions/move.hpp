@@ -14,6 +14,9 @@ namespace M68K{
             AddressingMode mode_dest_addr = ADDR_MODE_UNKNOWN;
             AddressingMode mode_src_addr = ADDR_MODE_UNKNOWN;
 
+            RegisterType src_reg = REG_D0;
+            RegisterType dest_reg = REG_D0;
+
             DataSize data_size;
         public:
             Move(uint16_t opcode);
