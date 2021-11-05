@@ -25,7 +25,7 @@ include_directories(include)
 #target_link_libraries(m68k-emu)
 #target_compile_options(m68k-emu PRIVATE -Wall -Wextra -Wpedantic -ggdb -march=native)
 target_compile_options(m68k-emu PRIVATE -Wall -Wextra -Wpedantic -ggdb)
-
+target_link_libraries(m68k-emu PRIVATE -static-libgcc -static-libstdc++)
 
 enable_testing()
 add_subdirectory(test)
