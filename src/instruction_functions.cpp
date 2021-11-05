@@ -33,7 +33,7 @@ AddressingMode INSTRUCTION::getAddressingMode(uint16_t part_mode, uint16_t part_
     return mode;
 }
 
-RegisterType INSTRUCTION::getRegister(uint16_t part_mode, uint16_t part_reg){
+RegisterType INSTRUCTION::getRegisterType(uint16_t part_mode, uint16_t part_reg){
     RegisterType type = REG_D0;
     if(part_mode == 0){
         return static_cast<RegisterType>(part_reg);
@@ -41,4 +41,27 @@ RegisterType INSTRUCTION::getRegister(uint16_t part_mode, uint16_t part_reg){
         return static_cast<RegisterType>(part_reg + 8);
     }
     return type;
+}
+
+uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize size, CPUState& state){
+    uint32_t data = 0;
+    switch(mode){
+        case ADDR_MODE_DIRECT_ADDR:
+        case ADDR_MODE_DIRECT_DATA: {
+            data = state.registers.get(reg, size);
+            break;
+        }
+    }
+    return data;
+}
+
+void INSTRUCTION::setData(AddressingMode mode, RegisterType reg, DataSize size, CPUState& state, uint32_t data){
+    switch (mode)
+    {
+        case ADDR_MODE_DIRECT_ADDR:
+        case ADDR_MODE_DIRECT_DATA: {
+            state.registers.set(reg, size, data);
+            break;
+        }
+    }
 }
