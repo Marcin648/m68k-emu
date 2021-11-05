@@ -158,3 +158,13 @@ AddressingMode InstructionDecoder::getAddressingMode(uint16_t part_mode, uint16_
     }
     return mode;
 }
+
+RegisterType InstructionDecoder::getRegister(uint16_t part_mode, uint16_t part_reg){
+    RegisterType type = REG_D0;
+    if(part_mode == 0){
+        return static_cast<RegisterType>(part_reg);
+    }else{
+        return static_cast<RegisterType>(part_reg + 8);
+    }
+    return type;
+}
