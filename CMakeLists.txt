@@ -8,6 +8,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/registers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_decoder.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_functions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/illegal.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/move.cpp
 )
