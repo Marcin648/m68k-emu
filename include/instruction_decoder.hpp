@@ -16,5 +16,6 @@ namespace M68K{
         INSTRUCTION::Instruction* Decode(uint16_t opcode);
 
         static AddressingMode getAddressingMode(uint16_t part_mode, uint16_t part_reg);
+        static RegisterType getRegister(uint16_t part_mode, uint16_t part_reg);
     };
 }
