@@ -63,7 +63,7 @@ void Registers::set(RegisterType reg, DataSize size, uint32_t data){
         }
 
         case DataSize::SIZE_LONG:{
-            //reg_value = MASK_ABOVE_32(reg_value) | MASK_32(data);
+            reg_value = MASK_ABOVE_32(reg_value) | MASK_32(data);
             break;
         }
         
