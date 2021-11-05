@@ -11,6 +11,7 @@ namespace M68K{
         protected:
             uint16_t opcode;
             bool is_valid = true;
+            size_t instruction_size = 2;
         public:
             Instruction(uint16_t opcode) : opcode(opcode) {};
             virtual void execute(CPUState&) {};
