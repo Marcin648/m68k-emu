@@ -90,6 +90,30 @@ uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize si
             data = state.memory.get(pc + offset, size);
             break;
         }
+        // case ADDR_MODE_PC_INDEX: { // TODO
+        //     ;
+        // }
+        case ADDR_MODE_ABS_WORD: {
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint32_t addr = state.memory.get(pc, SIZE_WORD);
+            state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
+            data = state.memory.get(addr, size);
+            break;
+        }
+        case ADDR_MODE_ABS_LONG: {
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint32_t addr = state.memory.get(pc, SIZE_LONG);
+            state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_LONG);
+            data = state.memory.get(addr, size);
+            break;
+        }
+        case ADDR_MODE_IMMEDIATE: {
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint32_t value = state.memory.get(pc, size);
+            state.registers.set(REG_PC, SIZE_LONG, pc + size);
+            data = value;
+            break;
+        }
     }
     return data;
 }
@@ -137,6 +161,23 @@ void INSTRUCTION::setData(AddressingMode mode, RegisterType reg, DataSize size, 
             uint32_t offset = state.memory.get(pc, SIZE_WORD);
             state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
             state.memory.set(pc + offset, size, data);
+            break;
+        }
+        // case ADDR_MODE_PC_INDEX: { // TODO
+        //     ;
+        // }
+        case ADDR_MODE_ABS_WORD: {
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint32_t addr = state.memory.get(pc, SIZE_WORD);
+            state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
+            state.memory.set(addr, size, data);
+            break;
+        }
+        case ADDR_MODE_ABS_LONG: {
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint32_t addr = state.memory.get(pc, SIZE_LONG);
+            state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_LONG);
+            state.memory.set(addr, size, data);
             break;
         }
     }
