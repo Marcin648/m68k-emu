@@ -43,8 +43,6 @@ RegisterType INSTRUCTION::getRegisterType(uint16_t part_mode, uint16_t part_reg)
     return type;
 }
 
-
-
 uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize size, CPUState& state){
     uint32_t data = 0;
     switch(mode){
@@ -80,9 +78,23 @@ uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize si
             data = state.memory.get(addr + offset, size);
             break;
         }
-        // case ADDR_MODE_INDIRECT_INDEX: { // TODO
-        //     ;
-        // }
+        case ADDR_MODE_INDIRECT_INDEX: {
+            uint32_t addr = state.registers.get(reg, SIZE_LONG);
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint16_t ext_word = state.memory.get(pc, SIZE_WORD);
+            RegisterType ext_reg = getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
+            int8_t ext_offset = ext_word & 0xFF;
+            int32_t ext_reg_offset = state.registers.get(ext_reg, ext_reg_size);
+
+            if(ext_reg_size == SIZE_WORD){
+                ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
+            }
+
+            state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
+            data = state.memory.get(addr + ext_reg_offset + ext_offset, size);
+            break;
+        }
         case ADDR_MODE_PC_DISPLACEMENT: {
             uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
             int16_t offset = state.memory.get(pc, SIZE_WORD);
@@ -90,9 +102,22 @@ uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize si
             data = state.memory.get(pc + offset, size);
             break;
         }
-        // case ADDR_MODE_PC_INDEX: { // TODO
-        //     ;
-        // }
+        case ADDR_MODE_PC_INDEX: { // TODO
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint16_t ext_word = state.memory.get(pc, SIZE_WORD);
+            RegisterType ext_reg = getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
+            int8_t ext_offset = ext_word & 0xFF;
+            int32_t ext_reg_offset = state.registers.get(ext_reg, ext_reg_size);
+
+            if(ext_reg_size == SIZE_WORD){
+                ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
+            }
+
+            state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
+            data = state.memory.get(pc + ext_reg_offset + ext_offset, size);
+            break;
+        }
         case ADDR_MODE_ABS_WORD: {
             uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
             uint32_t addr = state.memory.get(pc, SIZE_WORD);
@@ -112,6 +137,9 @@ uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize si
             uint32_t value = state.memory.get(pc, size);
             state.registers.set(REG_PC, SIZE_LONG, pc + size);
             data = value;
+            break;
+        }
+        case ADDR_MODE_UNKNOWN:{
             break;
         }
     }
@@ -153,9 +181,23 @@ void INSTRUCTION::setData(AddressingMode mode, RegisterType reg, DataSize size, 
             state.memory.set(addr + offset, size, data);
             break;
         }
-        // case ADDR_MODE_INDIRECT_INDEX: { // TODO
-        //     ;
-        // }
+        case ADDR_MODE_INDIRECT_INDEX: {
+            uint32_t addr = state.registers.get(reg, SIZE_LONG);
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint16_t ext_word = state.memory.get(pc, SIZE_WORD);
+            RegisterType ext_reg = getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
+            int8_t ext_offset = ext_word & 0xFF;
+            int32_t ext_reg_offset = state.registers.get(ext_reg, ext_reg_size);
+
+            if(ext_reg_size == SIZE_WORD){
+                ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
+            }
+
+            state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
+            state.memory.set(addr + ext_reg_offset + ext_offset, size, data);
+            break;
+        }
         case ADDR_MODE_PC_DISPLACEMENT: {
             uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
             int16_t offset = state.memory.get(pc, SIZE_WORD);
@@ -163,9 +205,22 @@ void INSTRUCTION::setData(AddressingMode mode, RegisterType reg, DataSize size, 
             state.memory.set(pc + offset, size, data);
             break;
         }
-        // case ADDR_MODE_PC_INDEX: { // TODO
-        //     ;
-        // }
+        case ADDR_MODE_PC_INDEX: { // TODO
+            uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
+            uint16_t ext_word = state.memory.get(pc, SIZE_WORD);
+            RegisterType ext_reg = getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
+            int8_t ext_offset = ext_word & 0xFF;
+            int32_t ext_reg_offset = state.registers.get(ext_reg, ext_reg_size);
+
+            if(ext_reg_size == SIZE_WORD){
+                ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
+            }
+
+            state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
+            state.memory.set(pc + ext_reg_offset + ext_offset, size, data);
+            break;
+        }
         case ADDR_MODE_ABS_WORD: {
             uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
             uint32_t addr = state.memory.get(pc, SIZE_WORD);
@@ -178,6 +233,10 @@ void INSTRUCTION::setData(AddressingMode mode, RegisterType reg, DataSize size, 
             uint32_t addr = state.memory.get(pc, SIZE_LONG);
             state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_LONG);
             state.memory.set(addr, size, data);
+            break;
+        }
+        case ADDR_MODE_IMMEDIATE:
+        case ADDR_MODE_UNKNOWN:{
             break;
         }
     }

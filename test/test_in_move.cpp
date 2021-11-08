@@ -109,6 +109,40 @@ int main(int, char**){
     }
 
     {
+        TEST_LABEL("addr index word - move.w D0, (8, A0, D1.W)");
+        auto instruction = M68K::INSTRUCTION::Move::create(0x3180); // move.w D0, (8, A0, D1.W)
+        M68K::CPUState state = M68K::CPUState();
+        
+        state.memory.set(0, M68K::DataSize::SIZE_WORD, 0x3180); // opcode
+        state.memory.set(2, M68K::DataSize::SIZE_WORD, 0x1008); // index (8, A0, D1.W)
+
+        state.registers.set(M68K::REG_D0, M68K::DataSize::SIZE_LONG, 0xAABBCCDD);
+        state.registers.set(M68K::REG_D1, M68K::DataSize::SIZE_LONG, 0xFFFFFFFE); // -2
+        state.registers.set(M68K::REG_A0, M68K::DataSize::SIZE_LONG, 0x1000);
+
+        instruction.get()->execute(state);
+        uint32_t return_data = state.memory.get(0x1006, M68K::DataSize::SIZE_WORD);
+        TEST_TRUE(return_data == 0xCCDD);
+    }
+
+    {
+        TEST_LABEL("addr index long - move.l D0, (8, A0, D1.L)");
+        auto instruction = M68K::INSTRUCTION::Move::create(0x2180); // move.l D0, (8, A0, D1.L)
+        M68K::CPUState state = M68K::CPUState();
+        
+        state.memory.set(0, M68K::DataSize::SIZE_WORD, 0x2180); // opcode
+        state.memory.set(2, M68K::DataSize::SIZE_WORD, 0x1808); // index (8, A0, D1.L)
+
+        state.registers.set(M68K::REG_D0, M68K::DataSize::SIZE_LONG, 0xAABBCCDD);
+        state.registers.set(M68K::REG_D1, M68K::DataSize::SIZE_LONG, 0xFFFFFFFE); // -2
+        state.registers.set(M68K::REG_A0, M68K::DataSize::SIZE_LONG, 0x1000);
+
+        instruction.get()->execute(state);
+        uint32_t return_data = state.memory.get(0x1006, M68K::DataSize::SIZE_LONG);
+        TEST_TRUE(return_data == 0xAABBCCDD);
+    }
+
+    {
         TEST_LABEL("pc displacement - move.w (PC, 6), D0");
         auto instruction = M68K::INSTRUCTION::Move::create(0x303A); // move.w (PC, 6), D0
         M68K::CPUState state = M68K::CPUState();
