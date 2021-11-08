@@ -75,7 +75,7 @@ uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize si
         case ADDR_MODE_INDIRECT_DISPLACEMENT: {
             uint32_t addr = state.registers.get(reg, SIZE_LONG);
             uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
-            uint32_t offset = state.memory.get(pc, SIZE_WORD);
+            int16_t offset = state.memory.get(pc, SIZE_WORD);
             state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
             data = state.memory.get(addr + offset, size);
             break;
@@ -85,7 +85,7 @@ uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize si
         // }
         case ADDR_MODE_PC_DISPLACEMENT: {
             uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
-            uint32_t offset = state.memory.get(pc, SIZE_WORD);
+            int16_t offset = state.memory.get(pc, SIZE_WORD);
             state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
             data = state.memory.get(pc + offset, size);
             break;
@@ -148,7 +148,7 @@ void INSTRUCTION::setData(AddressingMode mode, RegisterType reg, DataSize size, 
         case ADDR_MODE_INDIRECT_DISPLACEMENT: {
             uint32_t addr = state.registers.get(reg, SIZE_LONG);
             uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
-            uint32_t offset = state.memory.get(pc, SIZE_WORD);
+            int16_t offset = state.memory.get(pc, SIZE_WORD);
             state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
             state.memory.set(addr + offset, size, data);
             break;
@@ -158,7 +158,7 @@ void INSTRUCTION::setData(AddressingMode mode, RegisterType reg, DataSize size, 
         // }
         case ADDR_MODE_PC_DISPLACEMENT: {
             uint32_t pc = state.registers.get(REG_PC, SIZE_LONG);
-            uint32_t offset = state.memory.get(pc, SIZE_WORD);
+            int16_t offset = state.memory.get(pc, SIZE_WORD);
             state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
             state.memory.set(pc + offset, size, data);
             break;
