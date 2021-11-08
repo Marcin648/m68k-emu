@@ -19,7 +19,14 @@ Move::Move(uint16_t opcode) : Instruction(opcode){
     this->dest_reg = getRegisterType(this->dest_part_mode, this->dest_part_reg);
     this->src_reg = getRegisterType(this->src_part_mode, this->src_part_reg);
 
-    if(this->mode_dest_addr == ADDR_MODE_UNKNOWN || this->mode_src_addr == ADDR_MODE_UNKNOWN){
+    if(
+        (this->mode_src_addr == ADDR_MODE_UNKNOWN) ||
+        (this->mode_dest_addr == ADDR_MODE_UNKNOWN) ||
+        (this->mode_dest_addr == ADDR_MODE_PC_DISPLACEMENT) ||
+        (this->mode_dest_addr == ADDR_MODE_PC_INDEX) ||
+        (this->mode_dest_addr == ADDR_MODE_IMMEDIATE)
+    
+    ){
         this->is_valid = false;
     }
 
@@ -46,10 +53,13 @@ Move::Move(uint16_t opcode) : Instruction(opcode){
     if((this->mode_dest_addr == ADDR_MODE_DIRECT_ADDR) && (this->data_size == SIZE_BYTE)){
         this->is_valid = false;
     }
-
 }
 
 void Move::execute(CPUState& cpu_state){
+    uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
+    pc += 2;
+    cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
+
     uint32_t src_data = 0;
 
     src_data = getData(this->mode_src_addr, this->src_reg, this->data_size, cpu_state);

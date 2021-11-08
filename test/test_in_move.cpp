@@ -9,7 +9,7 @@ int main(int, char**){
     
     {
         TEST_LABEL("direct - move.w A1, D1");
-        auto instruction = M68K::INSTRUCTION::Move::create(0x3209); // move.w D1, A1
+        auto instruction = M68K::INSTRUCTION::Move::create(0x3209); // move.w A1, D1
         M68K::CPUState state = M68K::CPUState();
         
         state.registers.set(M68K::REG_A1, M68K::DataSize::SIZE_LONG, 0xAABBCCDD);
@@ -20,8 +20,8 @@ int main(int, char**){
     }
 
     {
-        TEST_LABEL("direct - movea.l A0, D1");
-        auto instruction = M68K::INSTRUCTION::Move::create(0x2041); // movea.l A0, D1
+        TEST_LABEL("addr direct - movea.l D1, A0");
+        auto instruction = M68K::INSTRUCTION::Move::create(0x2041); // movea.l D1, A0
         M68K::CPUState state = M68K::CPUState();
         
         state.registers.set(M68K::REG_D1, M68K::DataSize::SIZE_LONG, 0xAABBCCDD);
@@ -32,8 +32,8 @@ int main(int, char**){
     }
     
     {
-        TEST_LABEL("indirect - move.l (A0), D1");
-        auto instruction = M68K::INSTRUCTION::Move::create(0x2081); // move.l (A0), D1
+        TEST_LABEL("addr indirect - move.l D1, (A0)");
+        auto instruction = M68K::INSTRUCTION::Move::create(0x2081); // move.l D1, (A0)
         M68K::CPUState state = M68K::CPUState();
         
         state.registers.set(M68K::REG_D1, M68K::DataSize::SIZE_LONG, 0xAABBCCDD);
@@ -45,8 +45,8 @@ int main(int, char**){
     }
 
     {
-        TEST_LABEL("indirect++ - move.l (A0)+, D1");
-        auto instruction = M68K::INSTRUCTION::Move::create(0x20c1); // move.l (A0)+, D1
+        TEST_LABEL("addr indirect++ - move.l D1, (A0)+");
+        auto instruction = M68K::INSTRUCTION::Move::create(0x20c1); // move.l D1, (A0)+
         M68K::CPUState state = M68K::CPUState();
         
         state.registers.set(M68K::REG_D1, M68K::DataSize::SIZE_LONG, 0xAABBCCDD);
@@ -58,8 +58,8 @@ int main(int, char**){
     }
 
     {
-        TEST_LABEL("--indirect - move.l -(A0), D1");
-        auto instruction = M68K::INSTRUCTION::Move::create(0x2101); // move.l -(A0), D1
+        TEST_LABEL("addr --indirect - move.l D1, -(A0)");
+        auto instruction = M68K::INSTRUCTION::Move::create(0x2101); // move.l D1, -(A0)
         M68K::CPUState state = M68K::CPUState();
         
         state.registers.set(M68K::REG_D1, M68K::DataSize::SIZE_LONG, 0xAABBCCDD);
@@ -68,6 +68,40 @@ int main(int, char**){
         instruction.get()->execute(state);
         uint32_t return_data = state.registers.get(M68K::REG_A0, M68K::DataSize::SIZE_LONG);
         TEST_TRUE(return_data == 0x0ffc);
+    }
+
+    {
+        TEST_LABEL("addr displacement - move.w (A0, 4), (A1, 8)");
+        auto instruction = M68K::INSTRUCTION::Move::create(0x3368); // move.w (A0, 4), (A1, 8)
+        M68K::CPUState state = M68K::CPUState();
+        
+        state.memory.set(0, M68K::DataSize::SIZE_WORD, 0x3368); // opcode
+        state.memory.set(2, M68K::DataSize::SIZE_WORD, 0x0004); // src offset
+        state.memory.set(4, M68K::DataSize::SIZE_WORD, 0x0008); // dest offset
+
+        state.registers.set(M68K::REG_A0, M68K::DataSize::SIZE_LONG, 0x1000);
+        state.registers.set(M68K::REG_A1, M68K::DataSize::SIZE_LONG, 0x2000);
+
+        state.memory.set(0x1004, M68K::DataSize::SIZE_WORD, 0xCCDD); // dest offset
+
+        instruction.get()->execute(state);
+        uint32_t return_data = state.memory.get(0x2008, M68K::DataSize::SIZE_WORD);
+        TEST_TRUE(return_data == 0xCCDD);
+    }
+
+    {
+        TEST_LABEL("pc displacement - move.w (PC, 6), D0");
+        auto instruction = M68K::INSTRUCTION::Move::create(0x303a); // move.w (PC, 6), D0
+        M68K::CPUState state = M68K::CPUState();
+        
+        state.memory.set(0, M68K::DataSize::SIZE_WORD, 0x303a); // opcode
+        state.memory.set(2, M68K::DataSize::SIZE_WORD, 0x0004); // src offset - 2
+        state.memory.set(4, M68K::DataSize::SIZE_WORD, 0x0000); // padding
+        state.memory.set(6, M68K::DataSize::SIZE_WORD, 0xCCDD); // data
+
+        instruction.get()->execute(state);
+        uint32_t return_data = state.registers.get(M68K::REG_D0, M68K::DataSize::SIZE_LONG);
+        TEST_TRUE(return_data == 0xCCDD);
     }
 
     {
