@@ -13,7 +13,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/move.cpp
 )
 
-add_executable(
+add_library(
     m68k-emu
     ${SRC}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
