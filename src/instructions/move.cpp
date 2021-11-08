@@ -8,16 +8,16 @@ using namespace M68K;
 using namespace INSTRUCTION;
 
 Move::Move(uint16_t opcode) : Instruction(opcode){
-    this->dest_part_mode = (opcode >> 6) & 0x7;
-    this->dest_part_reg = (opcode >> 9) & 0x7;
-    this->src_part_mode = (opcode >> 3) & 0x7;
-    this->src_part_reg = (opcode >> 0) & 0x7;
+    uint16_t dest_part_mode = (opcode >> 6) & 0x7;
+    uint16_t dest_part_reg = (opcode >> 9) & 0x7;
+    uint16_t src_part_mode = (opcode >> 3) & 0x7;
+    uint16_t src_part_reg = (opcode >> 0) & 0x7;
     
-    this->mode_dest_addr = getAddressingMode(this->dest_part_mode, this->dest_part_reg);
-    this->mode_src_addr = getAddressingMode(this->src_part_mode, this->src_part_reg);
+    this->mode_dest_addr = getAddressingMode(dest_part_mode, dest_part_reg);
+    this->mode_src_addr = getAddressingMode(src_part_mode, src_part_reg);
 
-    this->dest_reg = getRegisterType(this->dest_part_mode, this->dest_part_reg);
-    this->src_reg = getRegisterType(this->src_part_mode, this->src_part_reg);
+    this->dest_reg = getRegisterType(dest_part_mode, dest_part_reg);
+    this->src_reg = getRegisterType(src_part_mode, src_part_reg);
 
     if(
         (this->mode_src_addr == ADDR_MODE_UNKNOWN) ||
