@@ -6,8 +6,8 @@ namespace M68K{
     namespace INSTRUCTION{
         class Move : public Instruction{
         private:
-            AddressingMode mode_dest_addr = ADDR_MODE_UNKNOWN;
-            AddressingMode mode_src_addr = ADDR_MODE_UNKNOWN;
+            AddressingMode dest_mode = ADDR_MODE_UNKNOWN;
+            AddressingMode src_mode = ADDR_MODE_UNKNOWN;
 
             RegisterType src_reg = REG_D0;
             RegisterType dest_reg = REG_D0;

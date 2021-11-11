@@ -8,23 +8,27 @@ using namespace M68K;
 using namespace INSTRUCTION;
 
 Move::Move(uint16_t opcode) : Instruction(opcode){
-    uint16_t dest_part_mode = (opcode >> 6) & 0x7;
-    uint16_t dest_part_reg = (opcode >> 9) & 0x7;
-    uint16_t src_part_mode = (opcode >> 3) & 0x7;
-    uint16_t src_part_reg = (opcode >> 0) & 0x7;
+    uint16_t dest_mode_part = (opcode >> 6) & 0x7;
+    uint16_t dest_reg_part = (opcode >> 9) & 0x7;
+    uint16_t src_mode_part = (opcode >> 3) & 0x7;
+    uint16_t src_reg_part = (opcode >> 0) & 0x7;
     
-    this->mode_dest_addr = getAddressingMode(dest_part_mode, dest_part_reg);
-    this->mode_src_addr = getAddressingMode(src_part_mode, src_part_reg);
+    this->dest_mode = getAddressingMode(dest_mode_part, dest_reg_part);
+    this->src_mode = getAddressingMode(src_mode_part, src_reg_part);
 
-    this->dest_reg = getRegisterType(dest_part_mode, dest_part_reg);
-    this->src_reg = getRegisterType(src_part_mode, src_part_reg);
+    this->dest_reg = getRegisterType(dest_mode_part, dest_reg_part);
+    this->src_reg = getRegisterType(src_mode_part, src_reg_part);
+
+    if((this->src_mode == ADDR_MODE_UNKNOWN) || (!IS_MEMORY_ALTERABLE(this->dest_mode))){
+        this->is_valid = false;
+    }
 
     if(
-        (this->mode_src_addr == ADDR_MODE_UNKNOWN) ||
-        (this->mode_dest_addr == ADDR_MODE_UNKNOWN) ||
-        (this->mode_dest_addr == ADDR_MODE_PC_DISPLACEMENT) ||
-        (this->mode_dest_addr == ADDR_MODE_PC_INDEX) ||
-        (this->mode_dest_addr == ADDR_MODE_IMMEDIATE)
+        (this->src_mode == ADDR_MODE_UNKNOWN) ||
+        (this->dest_mode == ADDR_MODE_UNKNOWN) ||
+        (this->dest_mode == ADDR_MODE_PC_DISPLACEMENT) ||
+        (this->dest_mode == ADDR_MODE_PC_INDEX) ||
+        (this->dest_mode == ADDR_MODE_IMMEDIATE)
     
     ){
         this->is_valid = false;
@@ -50,7 +54,7 @@ Move::Move(uint16_t opcode) : Instruction(opcode){
     }
 
     //movea
-    if((this->mode_dest_addr == ADDR_MODE_DIRECT_ADDR) && (this->data_size == SIZE_BYTE)){
+    if((this->dest_mode == ADDR_MODE_DIRECT_ADDR) && (this->data_size == SIZE_BYTE)){
         this->is_valid = false;
     }
 }
@@ -62,10 +66,10 @@ void Move::execute(CPUState& cpu_state){
 
     uint32_t src_data = 0;
 
-    src_data = getData(this->mode_src_addr, this->src_reg, this->data_size, cpu_state);
-    setData(this->mode_dest_addr, this->dest_reg, this->data_size, cpu_state, src_data);
+    src_data = getData(this->src_mode, this->src_reg, this->data_size, cpu_state);
+    setData(this->dest_mode, this->dest_reg, this->data_size, cpu_state, src_data);
 
-    if(!(this->mode_dest_addr == ADDR_MODE_DIRECT_ADDR)){ // if not movea
+    if(!(this->dest_mode == ADDR_MODE_DIRECT_ADDR)){ // if not movea
         cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(src_data, this->data_size));
         cpu_state.registers.set(SR_FLAG_ZERO, src_data == 0);
         cpu_state.registers.set(SR_FLAG_OVERFLOW, false);
