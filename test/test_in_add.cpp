@@ -87,5 +87,3 @@ int main(int, char**){
         TEST_TRUE(flag_carry == false);
     }
 }
-
-//is overflow; check adda addi itp 

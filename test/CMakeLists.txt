@@ -17,8 +17,13 @@ add_executable(test_in_add test_in_add.cpp)
 target_compile_options(test_in_add PRIVATE -Wall -Wextra -Wpedantic -ggdb)
 target_link_libraries(test_in_add PRIVATE m68k-emu -static-libgcc -static-libstdc++)
 
+add_executable(test_in_adda test_in_adda.cpp)
+target_compile_options(test_in_adda PRIVATE -Wall -Wextra -Wpedantic -ggdb)
+target_link_libraries(test_in_adda PRIVATE m68k-emu -static-libgcc -static-libstdc++)
+
 include(CTest)
 add_test(memory test_memory)
 add_test(addressing test_addressing)
 add_test(in_move test_in_move)
 add_test(in_add test_in_add)
+add_test(in_adda test_in_adda)
