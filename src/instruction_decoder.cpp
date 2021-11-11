@@ -83,7 +83,7 @@ std::vector<MaskTableElement> opcode_mask_table = {
     // {0xF130, 0xC100, INSTRUCTION::Exg::create},        //(0b1111000100110000, 0b1100000100000000, "Exg")
     // {0xF000, 0xC000, INSTRUCTION::And::create},        //(0b1111000000000000, 0b1100000000000000, "And")
     {0xF0C0, 0xD0C0, INSTRUCTION::Adda::create},       //(0b1111000011000000, 0b1101000011000000, "Adda")
-    // {0xF130, 0xD100, INSTRUCTION::Addx::create},       //(0b1111000100110000, 0b1101000100000000, "Addx")
+    {0xF130, 0xD100, INSTRUCTION::Addx::create},       //(0b1111000100110000, 0b1101000100000000, "Addx")
     // {0xF0C0, 0x50C0, INSTRUCTION::Scc::create},        //(0b1111000011000000, 0b0101000011000000, "Scc")
     // {0xF130, 0x9100, INSTRUCTION::Subx::create},       //(0b1111000100110000, 0b1001000100000000, "Subx")
     // {0xF138, 0xB108, INSTRUCTION::Cmpm::create},       //(0b1111000100111000, 0b1011000100001000, "Cmpm")

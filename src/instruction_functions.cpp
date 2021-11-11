@@ -43,6 +43,19 @@ RegisterType INSTRUCTION::getRegisterType(uint16_t part_mode, uint16_t part_reg)
     return type;
 }
 
+AddressingMode INSTRUCTION::addrModeDowngrade(AddressingMode mode){ // TODO change it to addr commit or trololo with lambda :D or flag in getData and setData??
+    switch(mode){
+        case ADDR_MODE_INDIRECT_PREDECREMENT:
+        case ADDR_MODE_INDIRECT_POSTINCREMENT: {
+            return ADDR_MODE_INDIRECT;
+        }
+        default: {
+            break;
+        }
+    }
+    return mode;
+}
+
 uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize size, CPUState& state){
     uint32_t data = 0;
     switch(mode){
