@@ -102,7 +102,7 @@ std::vector<MaskTableElement> opcode_mask_table = {
     // {0xF000, 0x6000, INSTRUCTION::Bcc::create},        //(0b1111000000000000, 0b0110000000000000, "Bcc")
     // {0xF000, 0x8000, INSTRUCTION::Or::create},         //(0b1111000000000000, 0b1000000000000000, "Or")
     // {0xF000, 0x9000, INSTRUCTION::Sub::create},        //(0b1111000000000000, 0b1001000000000000, "Sub")
-    // {0xF000, 0xD000, INSTRUCTION::Add::create},        //(0b1111000000000000, 0b1101000000000000, "Add")
+    {0xF000, 0xD000, INSTRUCTION::Add::create},        //(0b1111000000000000, 0b1101000000000000, "Add")
 };
 
 void InstructionDecoder::generateOpcodeTable(){

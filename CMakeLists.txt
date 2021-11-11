@@ -11,6 +11,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_functions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/illegal.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/move.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/add.cpp
 )
 
 add_library(

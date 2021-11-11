@@ -1,4 +1,5 @@
 #pragma once
+#include "defines.hpp"
 
 namespace M68K{
     template<typename T> inline T MSB_8(T value) { return value & 0x80;}
@@ -29,11 +30,47 @@ namespace M68K{
     template<typename T> inline T ROR_16(T a, T b) { return MASK_16(LSR(a, b) | LSL(a, 16 - b));}
     template<typename T> inline T ROR_32(T a, T b) { return MASK_32(LSR(a, b) | LSL(a, 32 - b));}
 
-    template<typename T> inline bool IS_NEGATIVE(T v, size_t size) {
+    inline bool IS_MEMORY_ALTERABLE(AddressingMode mode) {
+        return !(
+            (mode == ADDR_MODE_UNKNOWN) ||
+            (mode == ADDR_MODE_PC_DISPLACEMENT) ||
+            (mode == ADDR_MODE_PC_INDEX) ||
+            (mode == ADDR_MODE_IMMEDIATE)
+        );
+    }
+
+    template<typename T> inline bool IS_NEGATIVE(T v, DataSize size) {
         switch(size){
-            case 1: return MSB_8(v);
-            case 2: return MSB_16(v);
-            case 4: return MSB_32(v);
+            case SIZE_BYTE: return MSB_8(v);
+            case SIZE_WORD: return MSB_16(v);
+            case SIZE_LONG: return MSB_32(v);
+        }
+        return false;
+    }
+
+    template<typename T> inline bool IS_ZERO(T v, DataSize size) {
+        switch(size){
+            case SIZE_BYTE: return MASK_8(v) == 0;
+            case SIZE_WORD: return MASK_16(v) == 0;
+            case SIZE_LONG: return MASK_32(v) == 0;
+        }
+        return false;
+    }
+
+    template<typename T, typename U> inline bool IS_OVERFLOW(T a, T b, U result, DataSize size) {
+        switch(size){
+            case SIZE_BYTE: return (MSB_8(a) == MSB_8(b)) && (MSB_8(a) != MSB_8(result));
+            case SIZE_WORD: return (MSB_16(a) == MSB_16(b)) && (MSB_8(a) != MSB_16(result));
+            case SIZE_LONG: return (MSB_32(a) == MSB_32(b)) && (MSB_8(a) != MSB_32(result));
+        }
+        return false;
+    }
+
+    template<typename T> inline bool IS_CARRY(T v, DataSize size) {
+        switch(size){
+            case SIZE_BYTE: return v > MASK_8(v);
+            case SIZE_WORD: return v > MASK_16(v);
+            case SIZE_LONG: return v > MASK_32(v);
         }
         return false;
     }
