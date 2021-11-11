@@ -9,15 +9,15 @@ using namespace INSTRUCTION;
 
 Add::Add(uint16_t opcode) : Instruction(opcode){
     uint16_t data_reg_part = (opcode >> 9) & 0x7;
-    uint16_t ea_mode_mode = (opcode >> 3) & 0x7;
+    uint16_t ea_mode_part = (opcode >> 3) & 0x7;
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
     uint16_t data_size_part = (opcode >> 6) & 0x3;
 
     this->op_mode = (opcode >> 8) & 0x1;
 
     if(this->op_mode){
-        this->dest_mode = getAddressingMode(ea_mode_mode, ea_reg_part);
-        this->dest_reg = getRegisterType(ea_mode_mode, ea_reg_part);
+        this->dest_mode = getAddressingMode(ea_mode_part, ea_reg_part);
+        this->dest_reg = getRegisterType(ea_mode_part, ea_reg_part);
 
         this->src_mode = ADDR_MODE_DIRECT_DATA;
         this->src_reg = getRegisterType(0, data_reg_part);
@@ -29,8 +29,8 @@ Add::Add(uint16_t opcode) : Instruction(opcode){
         this->dest_mode = ADDR_MODE_DIRECT_DATA;
         this->dest_reg = getRegisterType(0, data_reg_part);
 
-        this->src_mode = getAddressingMode(ea_mode_mode, ea_reg_part);
-        this->src_reg = getRegisterType(ea_mode_mode, ea_reg_part);
+        this->src_mode = getAddressingMode(ea_mode_part, ea_reg_part);
+        this->src_reg = getRegisterType(ea_mode_part, ea_reg_part);
     }
 
     switch(data_size_part){
