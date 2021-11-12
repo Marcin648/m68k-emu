@@ -8,4 +8,5 @@
 #include "instructions/addi.hpp"
 #include "instructions/sub.hpp"
 #include "instructions/suba.hpp"
+#include "instructions/subx.hpp"
 #include "instructions/subi.hpp"

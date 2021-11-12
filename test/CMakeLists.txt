@@ -33,14 +33,17 @@ add_executable(test_in_sub test_in_sub.cpp)
 target_compile_options(test_in_sub PRIVATE -Wall -Wextra -Wpedantic -ggdb)
 target_link_libraries(test_in_sub PRIVATE m68k-emu -static-libgcc -static-libstdc++)
 
-add_executable(test_in_subi test_in_subi.cpp)
-target_compile_options(test_in_subi PRIVATE -Wall -Wextra -Wpedantic -ggdb)
-target_link_libraries(test_in_subi PRIVATE m68k-emu -static-libgcc -static-libstdc++)
-
-
 add_executable(test_in_suba test_in_suba.cpp)
 target_compile_options(test_in_suba PRIVATE -Wall -Wextra -Wpedantic -ggdb)
 target_link_libraries(test_in_suba PRIVATE m68k-emu -static-libgcc -static-libstdc++)
+
+add_executable(test_in_subx test_in_subx.cpp)
+target_compile_options(test_in_subx PRIVATE -Wall -Wextra -Wpedantic -ggdb)
+target_link_libraries(test_in_subx PRIVATE m68k-emu -static-libgcc -static-libstdc++)
+
+add_executable(test_in_subi test_in_subi.cpp)
+target_compile_options(test_in_subi PRIVATE -Wall -Wextra -Wpedantic -ggdb)
+target_link_libraries(test_in_subi PRIVATE m68k-emu -static-libgcc -static-libstdc++)
 
 include(CTest)
 add_test(memory test_memory)
@@ -52,4 +55,5 @@ add_test(in_addx test_in_addx)
 add_test(in_addi test_in_addi)
 add_test(in_sub test_in_sub)
 add_test(in_suba test_in_suba)
+add_test(in_subx test_in_subx)
 add_test(in_subi test_in_subi)
