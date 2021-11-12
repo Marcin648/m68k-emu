@@ -1,5 +1,4 @@
 #include "instructions/sub.hpp"
-#include "instruction_decoder.hpp"
 #include "instruction_functions.hpp"
 #include "helpers.hpp"
 #include <stdexcept>

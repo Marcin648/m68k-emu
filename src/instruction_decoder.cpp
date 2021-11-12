@@ -21,7 +21,7 @@ std::vector<MaskTableElement> opcode_mask_table = {
     {0xFFFF, 0x4AFC, INSTRUCTION::Illegal::create},    //(0b1111111111111111, 0b0100101011111100, "Illegal")
     // {0xFFFF, 0x4E50, INSTRUCTION::Link::create},       //(0b1111111111111111, 0b0100111001010000, "Link")
     // {0xFFFF, 0x4E70, INSTRUCTION::Reset::create},      //(0b1111111111111111, 0b0100111001110000, "Reset")
-    // {0xFFFF, 0x4E71, INSTRUCTION::Nop::create},        //(0b1111111111111111, 0b0100111001110001, "Nop")
+    {0xFFFF, 0x4E71, INSTRUCTION::Nop::create},        //(0b1111111111111111, 0b0100111001110001, "Nop")
     // {0xFFFF, 0x4E72, INSTRUCTION::Stop::create},       //(0b1111111111111111, 0b0100111001110010, "Stop")
     // {0xFFFF, 0x4E73, INSTRUCTION::Rte::create},        //(0b1111111111111111, 0b0100111001110011, "Rte")
     // {0xFFFF, 0x4E75, INSTRUCTION::Rts::create},        //(0b1111111111111111, 0b0100111001110101, "Rts")

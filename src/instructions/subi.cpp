@@ -1,5 +1,4 @@
-#include "instructions/addi.hpp"
-#include "instruction_decoder.hpp"
+#include "instructions/subi.hpp"
 #include "instruction_functions.hpp"
 #include "helpers.hpp"
 #include <stdexcept>
