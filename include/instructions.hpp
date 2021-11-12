@@ -7,4 +7,5 @@
 #include "instructions/addx.hpp"
 #include "instructions/addi.hpp"
 #include "instructions/sub.hpp"
+#include "instructions/suba.hpp"
 #include "instructions/subi.hpp"

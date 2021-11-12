@@ -16,6 +16,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/addx.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/addi.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/sub.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/suba.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subi.cpp
 )
 
