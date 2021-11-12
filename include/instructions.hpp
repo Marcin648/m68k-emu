@@ -6,3 +6,4 @@
 #include "instructions/adda.hpp"
 #include "instructions/addx.hpp"
 #include "instructions/addi.hpp"
+#include "instructions/subi.hpp"
