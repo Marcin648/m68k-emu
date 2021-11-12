@@ -59,7 +59,7 @@ void Add::execute(CPUState& cpu_state){
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t src_data = getData(this->src_mode, this->src_reg, this->data_size, cpu_state);
-    uint32_t dest_data = getData(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    uint32_t dest_data = getDataSilent(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
     uint64_t result = src_data + dest_data;
 
     setData(this->dest_mode, this->dest_reg, this->data_size, cpu_state, result);
