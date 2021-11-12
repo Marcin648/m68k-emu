@@ -10,3 +10,4 @@
 #include "instructions/suba.hpp"
 #include "instructions/subx.hpp"
 #include "instructions/subi.hpp"
+#include "instructions/nop.hpp"
