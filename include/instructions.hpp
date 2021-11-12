@@ -5,3 +5,4 @@
 #include "instructions/add.hpp"
 #include "instructions/adda.hpp"
 #include "instructions/addx.hpp"
+#include "instructions/addi.hpp"

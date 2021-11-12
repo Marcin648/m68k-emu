@@ -14,6 +14,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/add.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/adda.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/addx.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/addi.cpp
 )
 
 add_library(
