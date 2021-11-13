@@ -43,7 +43,7 @@ std::vector<MaskTableElement> opcode_mask_table = {
     // {0xFFC0, 0x4840, INSTRUCTION::Pea::create},        //(0b1111111111000000, 0b0100100001000000, "Pea")
     // {0xFFC0, 0x4AC0, INSTRUCTION::Tas::create},        //(0b1111111111000000, 0b0100101011000000, "Tas")
     // {0xFFC0, 0x4E80, INSTRUCTION::Jsr::create},        //(0b1111111111000000, 0b0100111010000000, "Jsr")
-    // {0xFFC0, 0x4EC0, INSTRUCTION::Jmp::create},        //(0b1111111111000000, 0b0100111011000000, "Jmp")
+    {0xFFC0, 0x4EC0, INSTRUCTION::Jmp::create},        //(0b1111111111000000, 0b0100111011000000, "Jmp")
     // {0xF0F8, 0x50C8, INSTRUCTION::Dbcc::create},       //(0b1111000011111000, 0b0101000011001000, "Dbcc")
     // {0xF1F0, 0x8100, INSTRUCTION::Sbcd::create},       //(0b1111000111110000, 0b1000000100000000, "Sbcd")
     // {0xF1F0, 0xC100, INSTRUCTION::Abcd::create},       //(0b1111000111110000, 0b1100000100000000, "Abcd")

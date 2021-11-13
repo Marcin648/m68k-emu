@@ -39,6 +39,17 @@ namespace M68K{
         );
     }
 
+    inline bool IS_CONTROL_ADDR(AddressingMode mode) {
+        return !(
+            (mode == ADDR_MODE_UNKNOWN) ||
+            (mode == ADDR_MODE_DIRECT_DATA) ||
+            (mode == ADDR_MODE_DIRECT_ADDR) ||
+            (mode == ADDR_MODE_INDIRECT_POSTINCREMENT) ||
+            (mode == ADDR_MODE_INDIRECT_PREDECREMENT) ||
+            (mode == ADDR_MODE_IMMEDIATE)
+        );
+    }
+
     template<typename T> inline bool IS_NEGATIVE(T v, DataSize size) {
         switch(size){
             case SIZE_BYTE: return MSB_8(v);

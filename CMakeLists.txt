@@ -23,6 +23,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subi.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subq.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/nop.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/jmp.cpp
 )
 
 add_library(
