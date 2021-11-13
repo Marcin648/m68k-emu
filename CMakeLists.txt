@@ -9,21 +9,28 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_decoder.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_functions.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/illegal.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/move.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/moveq.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/add.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/adda.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/addx.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/addi.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/addq.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/sub.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/suba.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subx.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subi.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subq.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/illegal.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/nop.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/jmp.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/jsr.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/rts.cpp
 )
 
 add_library(

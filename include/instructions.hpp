@@ -15,3 +15,5 @@
 #include "instructions/subq.hpp"
 #include "instructions/nop.hpp"
 #include "instructions/jmp.hpp"
+#include "instructions/jsr.hpp"
+#include "instructions/rts.hpp"
