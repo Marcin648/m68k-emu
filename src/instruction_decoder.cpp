@@ -91,7 +91,7 @@ std::vector<MaskTableElement> opcode_mask_table = {
     // {0xF018, 0xE008, INSTRUCTION::Lsd::create},        //(0b1111000000011000, 0b1110000000001000, "Lsd")
     // {0xF018, 0xE010, INSTRUCTION::Roxd::create},       //(0b1111000000011000, 0b1110000000010000, "Roxd")
     // {0xF018, 0xE018, INSTRUCTION::Rod::create},        //(0b1111000000011000, 0b1110000000011000, "Rod")
-    // {0xF100, 0x5000, INSTRUCTION::Addq::create},       //(0b1111000100000000, 0b0101000000000000, "Addq")
+    {0xF100, 0x5000, INSTRUCTION::Addq::create},       //(0b1111000100000000, 0b0101000000000000, "Addq")
     // {0xF100, 0x5100, INSTRUCTION::Subq::create},       //(0b1111000100000000, 0b0101000100000000, "Subq")
     {0xF100, 0x7000, INSTRUCTION::Moveq::create},      //(0b1111000100000000, 0b0111000000000000, "Moveq")
     // {0xF100, 0xB100, INSTRUCTION::Eor::create},        //(0b1111000100000000, 0b1011000100000000, "Eor")
