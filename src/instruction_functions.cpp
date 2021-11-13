@@ -43,6 +43,21 @@ RegisterType INSTRUCTION::getRegisterType(uint16_t part_mode, uint16_t part_reg)
     return type;
 }
 
+uint32_t INSTRUCTION::stackPop(DataSize size, CPUState& state){
+    uint32_t stack_ptr = state.registers.get(REG_USP, SIZE_LONG);
+    uint32_t data = state.memory.get(stack_ptr, size);
+    stack_ptr += static_cast<uint32_t>(size);
+    state.registers.set(REG_USP, SIZE_LONG, stack_ptr);
+    return data;
+}
+
+void INSTRUCTION::stackPush(DataSize size, CPUState& state, uint32_t data){
+    uint32_t stack_ptr = state.registers.get(REG_USP, SIZE_LONG);
+    stack_ptr -= static_cast<uint32_t>(size);
+    state.registers.set(REG_USP, SIZE_LONG, stack_ptr);
+    state.memory.set(stack_ptr, size, data);
+}
+
 uint32_t INSTRUCTION::getData(AddressingMode mode, RegisterType reg, DataSize size, CPUState& state){
     uint32_t data = 0;
     switch(mode){
