@@ -20,7 +20,7 @@ void Moveq::execute(CPUState& cpu_state){
     pc += 2;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    setData(this->dest_mode, this->dest_reg, this->data_size, cpu_state, this->imm_data);
+    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, this->imm_data);
 
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(this->imm_data, this->data_size));
     cpu_state.registers.set(SR_FLAG_ZERO, this->imm_data == 0);

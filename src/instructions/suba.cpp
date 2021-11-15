@@ -39,11 +39,11 @@ void Suba::execute(CPUState& cpu_state){
     pc += 2;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t src_data = getData(this->src_mode, this->src_reg, this->data_size, cpu_state);
-    uint32_t dest_data = getDataSilent(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    uint32_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
+    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
     uint64_t result = dest_data - src_data;
 
-    setData(this->dest_mode, this->dest_reg, this->data_size, cpu_state, result);
+    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
 }
 
 std::shared_ptr<INSTRUCTION::Instruction> Suba::create(uint16_t opcode){

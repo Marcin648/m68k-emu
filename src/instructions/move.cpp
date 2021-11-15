@@ -65,8 +65,8 @@ void Move::execute(CPUState& cpu_state){
 
     uint32_t src_data = 0;
 
-    src_data = getData(this->src_mode, this->src_reg, this->data_size, cpu_state);
-    setData(this->dest_mode, this->dest_reg, this->data_size, cpu_state, src_data);
+    src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
+    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, src_data);
 
     if(!(this->dest_mode == ADDR_MODE_DIRECT_ADDR)){ // if not movea
         cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(src_data, this->data_size));

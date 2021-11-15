@@ -15,7 +15,7 @@ void Rts::execute(CPUState& cpu_state){
     pc += 2;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t return_addr = stackPop(SIZE_LONG, cpu_state);
+    uint32_t return_addr = cpu_state.stackPop(SIZE_LONG);
     cpu_state.registers.set(REG_PC, SIZE_LONG, return_addr);
 }
 

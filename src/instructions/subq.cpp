@@ -46,10 +46,10 @@ void Subq::execute(CPUState& cpu_state){
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t src_data = this->imm_data;
-    uint32_t dest_data = getDataSilent(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
     uint64_t result = dest_data - src_data;
 
-    setData(this->dest_mode, this->dest_reg, this->data_size, cpu_state, result);
+    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
 
     if(this->dest_mode != ADDR_MODE_DIRECT_ADDR){
         cpu_state.registers.set(SR_FLAG_EXTEND, IS_CARRY(result, this->data_size));

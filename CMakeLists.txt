@@ -7,6 +7,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/registers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/memory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu_state.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_decoder.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_functions.cpp
 

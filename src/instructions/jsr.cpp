@@ -24,9 +24,9 @@ void Jsr::execute(CPUState& cpu_state){
     pc += 2;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t dest_addr = getData(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    uint32_t dest_addr = cpu_state.getData(this->dest_mode, this->dest_reg, this->data_size);
 
-    stackPush(SIZE_LONG, cpu_state, pc);
+    cpu_state.stackPush(SIZE_LONG, pc);
     cpu_state.registers.set(REG_PC, SIZE_LONG, dest_addr);
 }
 

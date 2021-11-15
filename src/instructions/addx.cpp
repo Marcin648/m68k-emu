@@ -45,11 +45,11 @@ void Addx::execute(CPUState& cpu_state){
 
 
     uint32_t extend_data = cpu_state.registers.get(SR_FLAG_EXTEND) ? 1 : 0;
-    uint32_t src_data = getData(this->src_mode, this->src_reg, this->data_size, cpu_state);
-    uint32_t dest_data = getDataSilent(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    uint32_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
+    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
     uint64_t result = src_data + dest_data + extend_data;
 
-    setData(this->dest_mode, this->dest_reg, this->data_size, cpu_state, result);
+    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
 
     if(!IS_ZERO(result, this->data_size)){ // change only if non zero
         cpu_state.registers.set(SR_FLAG_ZERO, false); 
