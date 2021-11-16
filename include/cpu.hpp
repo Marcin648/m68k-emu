@@ -12,5 +12,7 @@ namespace M68K{
 
         CPUState state = CPUState();
         InstructionDecoder instruction_decoder = InstructionDecoder();
+
+        void step();
     };
 }

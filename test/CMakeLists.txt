@@ -9,6 +9,10 @@ add_executable(test_addressing test_addressing.cpp)
 target_compile_options(test_addressing PRIVATE -Wall -Wextra -Wpedantic -ggdb)
 target_link_libraries(test_addressing PRIVATE m68k-emu -static-libgcc -static-libstdc++)
 
+add_executable(test_cpu_step test_cpu_step.cpp)
+target_compile_options(test_cpu_step PRIVATE -Wall -Wextra -Wpedantic -ggdb)
+target_link_libraries(test_cpu_step PRIVATE m68k-emu -static-libgcc -static-libstdc++)
+
 add_executable(test_in_move test_in_move.cpp)
 target_compile_options(test_in_move PRIVATE -Wall -Wextra -Wpedantic -ggdb)
 target_link_libraries(test_in_move PRIVATE m68k-emu -static-libgcc -static-libstdc++)
@@ -72,6 +76,7 @@ target_link_libraries(test_in_jsr_rts PRIVATE m68k-emu -static-libgcc -static-li
 include(CTest)
 add_test(memory test_memory)
 add_test(addressing test_addressing)
+add_test(cpu_step test_cpu_step)
 add_test(in_move test_in_move)
 add_test(in_moveq test_in_moveq)
 add_test(in_add test_in_add)
