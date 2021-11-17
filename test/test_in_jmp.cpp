@@ -14,8 +14,7 @@ int main(int, char**){
         auto instruction = INSTRUCTION::Jmp::create(0x4ED0); // jmp (A0)
         CPUState state = CPUState();
         
-        state.memory.set(0x1000, SIZE_LONG, 0x2000);
-        state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
+        state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x2000);
 
         instruction.get()->execute(state);
         uint32_t return_data = state.registers.get(REG_PC, DataSize::SIZE_LONG);
