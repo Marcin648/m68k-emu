@@ -17,7 +17,7 @@ Moveq::Moveq(uint16_t opcode) : Instruction(opcode){
 
 void Moveq::execute(CPUState& cpu_state){
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
-    pc += 2;
+    pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, this->imm_data);
