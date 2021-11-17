@@ -14,5 +14,6 @@ namespace M68K{
         InstructionDecoder instruction_decoder = InstructionDecoder();
 
         void step();
+        bool loadELF(const std::string& filename);
     };
 }
