@@ -1,8 +1,8 @@
 #pragma once
 #include "instructions/instruction.hpp"
-#include "instructions/illegal.hpp"
 #include "instructions/move.hpp"
 #include "instructions/moveq.hpp"
+#include "instructions/lea.hpp"
 #include "instructions/add.hpp"
 #include "instructions/adda.hpp"
 #include "instructions/addx.hpp"
@@ -13,6 +13,7 @@
 #include "instructions/subx.hpp"
 #include "instructions/subi.hpp"
 #include "instructions/subq.hpp"
+#include "instructions/illegal.hpp"
 #include "instructions/nop.hpp"
 #include "instructions/jmp.hpp"
 #include "instructions/jsr.hpp"
