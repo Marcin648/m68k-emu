@@ -9,7 +9,7 @@ uint32_t Memory::get(std::size_t address, DataSize size){
         throw std::length_error("Memory address must be even."); //TODO: Throw special exception
     }
     
-    if(address + size >= this->memory.size()){ //memory overflow
+    if(address + size > this->memory.size()){ //memory overflow
         throw std::out_of_range(
             "Memory address out of range. " +
             std::to_string(address) + ">" + std::to_string(this->memory.size())
@@ -55,7 +55,7 @@ void Memory::set(std::size_t address, DataSize size, uint32_t data){
         throw std::length_error("Memory address must be even."); //TODO: Throw special exception
     }
     
-    if(address + size >= this->memory.size()){ // memory out of range.
+    if(address + size > this->memory.size()){ // memory out of range.
         throw std::out_of_range(
             "Memory address out of range. " +
             std::to_string(address) + ">" + std::to_string(MEMORY_SIZE)
