@@ -144,33 +144,33 @@ int main(int, char**){
         TEST_TRUE(return_data == 0xAABBCCDD);
     }
 
-    {
-        TEST_LABEL("pc displacement - move.w (PC, 6), D0");
-        auto instruction = INSTRUCTION::Move::create(0x303A); // move.w (PC, 6), D0
-        CPUState state = CPUState();
+    // {
+    //     TEST_LABEL("pc displacement - move.w (PC, 6), D0");
+    //     auto instruction = INSTRUCTION::Move::create(0x303A); // move.w (PC, 6), D0
+    //     CPUState state = CPUState();
         
-        state.memory.set(0, DataSize::SIZE_WORD, 0x303A); // opcode
-        state.memory.set(2, DataSize::SIZE_WORD, 0x0004); // src offset - 2
-        state.memory.set(4, DataSize::SIZE_WORD, 0x0000); // padding
-        state.memory.set(6, DataSize::SIZE_WORD, 0xCCDD); // data
+    //     state.memory.set(0, DataSize::SIZE_WORD, 0x303A); // opcode
+    //     state.memory.set(2, DataSize::SIZE_WORD, 0x0004); // src offset - 2
+    //     state.memory.set(4, DataSize::SIZE_WORD, 0x0000); // padding
+    //     state.memory.set(6, DataSize::SIZE_WORD, 0xCCDD); // data
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0xCCDD);
-    }
+    //     instruction.get()->execute(state);
+    //     uint32_t return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
+    //     TEST_TRUE(return_data == 0xCCDD);
+    // }
 
-    {
-        TEST_LABEL("pc displacement negative - move.w (PC, -2), D0");
-        auto instruction = INSTRUCTION::Move::create(0x303A); // move.w (PC, -2), D0
-        CPUState state = CPUState();
+    // {
+    //     TEST_LABEL("pc displacement negative - move.w (PC, -2), D0");
+    //     auto instruction = INSTRUCTION::Move::create(0x303A); // move.w (PC, -2), D0
+    //     CPUState state = CPUState();
         
-        state.memory.set(0, DataSize::SIZE_WORD, 0x303A); // opcode
-        state.memory.set(2, DataSize::SIZE_WORD, 0xFFFE); // src offset - 2
+    //     state.memory.set(0, DataSize::SIZE_WORD, 0x303A); // opcode
+    //     state.memory.set(2, DataSize::SIZE_WORD, 0xFFFE); // src offset - 2
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0x303A);
-    }
+    //     instruction.get()->execute(state);
+    //     uint32_t return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
+    //     TEST_TRUE(return_data == 0x303A);
+    // }
 
     {
         TEST_LABEL("absolute short - move.w D0, $1000");

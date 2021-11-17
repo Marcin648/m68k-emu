@@ -74,10 +74,10 @@ uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size)
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             int16_t offset = this->memory.get(pc, SIZE_WORD);
             this->registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
-            data = this->memory.get(pc + offset, size);
+            data = pc + offset; // this->memory.get(pc + offset, size); Why?
             break;
         }
-        case ADDR_MODE_PC_INDEX: { // TODO
+        case ADDR_MODE_PC_INDEX: {
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
             RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
@@ -90,7 +90,7 @@ uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size)
             }
 
             this->registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
-            data = this->memory.get(pc + ext_reg_offset + ext_offset, size);
+            data = pc + ext_reg_offset + ext_offset; // this->memory.get(pc + ext_reg_offset + ext_offset, size); Why?
             break;
         }
         case ADDR_MODE_ABS_WORD: {
@@ -171,7 +171,7 @@ uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize
         case ADDR_MODE_PC_DISPLACEMENT: {
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             int16_t offset = this->memory.get(pc, SIZE_WORD);
-            data = this->memory.get(pc + offset, size);
+            data = pc + offset; // this->memory.get(pc + offset, size); Why?
             break;
         }
         case ADDR_MODE_PC_INDEX: { // TODO
@@ -266,29 +266,29 @@ void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uin
             this->memory.set(addr + ext_reg_offset + ext_offset, size, data);
             break;
         }
-        case ADDR_MODE_PC_DISPLACEMENT: {
-            uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
-            int16_t offset = this->memory.get(pc, SIZE_WORD);
-            this->registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
-            this->memory.set(pc + offset, size, data);
-            break;
-        }
-        case ADDR_MODE_PC_INDEX: { // TODO
-            uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
-            uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
-            DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
-            int8_t ext_offset = ext_word & 0xFF;
-            int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
+        // case ADDR_MODE_PC_DISPLACEMENT: { // read-only
+        //     uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
+        //     int16_t offset = this->memory.get(pc, SIZE_WORD);
+        //     this->registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
+        //     this->memory.set(pc + offset, size, data);
+        //     break;
+        // }
+        // case ADDR_MODE_PC_INDEX: { // read-only
+        //     uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
+        //     uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
+        //     RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+        //     DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
+        //     int8_t ext_offset = ext_word & 0xFF;
+        //     int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
 
-            if(ext_reg_size == SIZE_WORD){
-                ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
-            }
+        //     if(ext_reg_size == SIZE_WORD){
+        //         ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
+        //     }
 
-            this->registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
-            this->memory.set(pc + ext_reg_offset + ext_offset, size, data);
-            break;
-        }
+        //     this->registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
+        //     this->memory.set(pc + ext_reg_offset + ext_offset, size, data);
+        //     break;
+        // }
         case ADDR_MODE_ABS_WORD: {
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint32_t addr = this->memory.get(pc, SIZE_WORD);
@@ -303,6 +303,8 @@ void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uin
             this->memory.set(addr, size, data);
             break;
         }
+        case ADDR_MODE_PC_DISPLACEMENT:
+        case ADDR_MODE_PC_INDEX:
         case ADDR_MODE_IMMEDIATE:
         case ADDR_MODE_UNKNOWN:{
             break;
