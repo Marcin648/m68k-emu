@@ -18,3 +18,5 @@
 #include "instructions/jmp.hpp"
 #include "instructions/jsr.hpp"
 #include "instructions/rts.hpp"
+#include "instructions/link.hpp"
+#include "instructions/unlk.hpp"

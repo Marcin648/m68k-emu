@@ -36,6 +36,8 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/jmp.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/jsr.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/rts.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/link.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/unlk.cpp
 )
 
 add_library(
