@@ -25,5 +25,24 @@ namespace M68K{
         ADDR_MODE_UNKNOWN = -1,
     };
 
+    enum Condition{
+        COND_TRUE = 0,
+        COND_FALSE = 1,
+        COND_HIGHER = 2,
+        COND_LOWER_SAME = 3,
+        COND_CARRY_CLEAR = 4,
+        COND_CARRY_SET = 5,
+        COND_NOT_EQUAL = 6,
+        COND_EQUAL = 7,
+        COND_OVERFLOW_CLEAR = 8,
+        COND_OVERFLOW_SET = 9,
+        COND_PLUS = 10,
+        COND_MINUS = 11,
+        COND_GREATER_EQUAL = 12,
+        COND_LESS_THAN = 13,
+        COND_GREATER_THAN = 14,
+        COND_LESS_EQUAL = 15,
+    };
+
     const std::size_t MEMORY_SIZE = 0x01000000; // 16 MB
 }

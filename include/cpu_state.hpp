@@ -17,5 +17,6 @@ namespace M68K{
         uint32_t getData(AddressingMode mode, RegisterType reg, DataSize size);
         uint32_t getDataSilent(AddressingMode mode, RegisterType reg, DataSize size);
         void setData(AddressingMode mode, RegisterType reg, DataSize size, uint32_t data);
+        bool checkCondition(Condition cond);
     };
 }

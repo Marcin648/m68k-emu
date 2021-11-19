@@ -42,3 +42,7 @@ RegisterType INSTRUCTION::getRegisterType(uint16_t part_mode, uint16_t part_reg)
     }
     return type;
 }
+
+Condition INSTRUCTION::getCondition(uint16_t cond_part){
+    return static_cast<Condition>(cond_part & 0xF);
+}

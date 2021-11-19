@@ -390,3 +390,31 @@ void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uin
         }
     }
 }
+
+bool CPUState::checkCondition(Condition cond){
+    //bool flag_extend = this->registers.get(SR_FLAG_EXTEND);
+    bool flag_negative = this->registers.get(SR_FLAG_NEGATIVE);
+    bool flag_zero = this->registers.get(SR_FLAG_ZERO);
+    bool flag_overflow = this->registers.get(SR_FLAG_OVERFLOW);
+    bool flag_carry = this->registers.get(SR_FLAG_CARRY);
+
+    switch(cond){
+        case COND_TRUE: { return true; }
+        case COND_FALSE: { return false; }
+        case COND_HIGHER: { return !flag_carry && !flag_zero; }
+        case COND_LOWER_SAME: {return flag_carry || flag_zero; }
+        case COND_CARRY_CLEAR: {return !flag_carry; }
+        case COND_CARRY_SET: {return flag_carry; }
+        case COND_NOT_EQUAL: {return !flag_zero; }
+        case COND_EQUAL: {return flag_zero; }
+        case COND_OVERFLOW_CLEAR: {return !flag_overflow; }
+        case COND_OVERFLOW_SET: {return flag_overflow; }
+        case COND_PLUS: {return !flag_negative; }
+        case COND_MINUS: {return flag_negative; }
+        case COND_GREATER_EQUAL: {return flag_negative == flag_overflow; }
+        case COND_LESS_THAN: {return flag_negative != flag_overflow; }
+        case COND_GREATER_THAN: {return !flag_zero && (flag_negative == flag_overflow); }
+        case COND_LESS_EQUAL: {return flag_zero || (flag_negative != flag_overflow); }
+    }
+    return false;
+}
