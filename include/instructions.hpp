@@ -20,3 +20,5 @@
 #include "instructions/rts.hpp"
 #include "instructions/link.hpp"
 #include "instructions/unlk.hpp"
+#include "instructions/bcc.hpp"
+#include "instructions/scc.hpp"

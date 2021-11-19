@@ -14,7 +14,6 @@ Unlk::Unlk(uint16_t opcode) : Instruction(opcode){
 void Unlk::execute(CPUState& cpu_state){
     uint32_t pc;
     uint32_t addr_data;
-    uint32_t stack_ptr;
 
     pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;

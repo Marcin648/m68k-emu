@@ -39,6 +39,16 @@ namespace M68K{
         );
     }
 
+    inline bool IS_DATA_ALTERABLE(AddressingMode mode) {
+        return !(
+            (mode == ADDR_MODE_UNKNOWN) ||
+            (mode == ADDR_MODE_DIRECT_ADDR) ||
+            (mode == ADDR_MODE_PC_DISPLACEMENT) ||
+            (mode == ADDR_MODE_PC_INDEX) ||
+            (mode == ADDR_MODE_IMMEDIATE)
+        );
+    }
+
     inline bool IS_CONTROL_ADDR(AddressingMode mode) {
         return !(
             (mode == ADDR_MODE_UNKNOWN) ||
