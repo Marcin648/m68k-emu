@@ -14,6 +14,7 @@
 #include "instructions/subi.hpp"
 #include "instructions/subq.hpp"
 #include "instructions/mul.hpp"
+#include "instructions/div.hpp"
 #include "instructions/illegal.hpp"
 #include "instructions/nop.hpp"
 #include "instructions/jmp.hpp"
