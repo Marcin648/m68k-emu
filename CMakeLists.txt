@@ -30,6 +30,8 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subi.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subq.cpp
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/mul.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/illegal.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/nop.cpp
 
