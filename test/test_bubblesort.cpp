@@ -6,14 +6,14 @@
 using namespace M68K;
 
 int main(int, char**){
-    TEST_NAME("ELF Load");
+    TEST_NAME("Program bubblesort");
     
     {
-        TEST_LABEL("10000 + 10000");
+        TEST_LABEL("bubblesort");
         CPU cpu = CPU();
-        cpu.loadELF("../../test/binary/elf_test.elf");
+        cpu.loadELF("../../test/binary/bubblesort.elf");
 
-        for(size_t i = 0; i < 6; i++){
+        for(;;){
             cpu.step();
         }
 
