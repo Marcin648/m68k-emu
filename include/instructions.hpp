@@ -3,6 +3,7 @@
 #include "instructions/move.hpp"
 #include "instructions/moveq.hpp"
 #include "instructions/lea.hpp"
+#include "instructions/pea.hpp"
 #include "instructions/add.hpp"
 #include "instructions/adda.hpp"
 #include "instructions/addx.hpp"
@@ -24,3 +25,4 @@
 #include "instructions/unlk.hpp"
 #include "instructions/bcc.hpp"
 #include "instructions/scc.hpp"
+#include "instructions/tst.hpp"

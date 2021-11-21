@@ -17,6 +17,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/moveq.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/lea.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/pea.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/add.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/adda.cpp
@@ -44,6 +45,7 @@ set(SRC
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/bcc.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/scc.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/tst.cpp
 )
 
 add_library(
