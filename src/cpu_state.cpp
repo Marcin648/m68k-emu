@@ -1,6 +1,8 @@
 #include "cpu_state.hpp"
 #include "instruction_functions.hpp"
 
+#include <cstdio>
+
 using namespace M68K;
 
 uint32_t CPUState::stackPop(DataSize size){
@@ -411,10 +413,28 @@ bool CPUState::checkCondition(Condition cond){
         case COND_OVERFLOW_SET: {return flag_overflow; }
         case COND_PLUS: {return !flag_negative; }
         case COND_MINUS: {return flag_negative; }
-        case COND_GREATER_EQUAL: {return flag_negative == flag_overflow; }
-        case COND_LESS_THAN: {return flag_negative != flag_overflow; }
-        case COND_GREATER_THAN: {return !flag_zero && (flag_negative == flag_overflow); }
-        case COND_LESS_EQUAL: {return flag_zero || (flag_negative != flag_overflow); }
+        case COND_GREATER_EQUAL: {return (flag_negative && flag_overflow) || (!flag_negative && !flag_overflow); }
+        case COND_LESS_THAN: {return (flag_negative && !flag_overflow) || (!flag_negative && flag_overflow); }
+        case COND_GREATER_THAN: {return (flag_negative && flag_overflow && !flag_zero) || (!flag_negative && !flag_overflow && !flag_zero); }
+        case COND_LESS_EQUAL: {return (flag_negative && !flag_overflow) || ((!flag_negative && flag_overflow) || flag_zero); }
     }
     return false;
+}
+
+void CPUState::debugPrint(){
+    puts("CPU state:");
+    for(size_t i = 0; i < 8; i++){
+        printf("D%zu: 0x%08X\n", i, this->registers.get(static_cast<RegisterType>(i), SIZE_LONG));
+    }
+    for(size_t i = 0; i < 8; i++){
+        printf("A%zu: 0x%08X\n", i, this->registers.get(static_cast<RegisterType>(i+8), SIZE_LONG));
+    }
+    printf("USP: 0x%08X\n", this->registers.get(REG_USP, SIZE_LONG));
+    printf("PC: 0x%08X\n", this->registers.get(REG_PC, SIZE_LONG));
+
+    printf("E: %d\n", this->registers.get(SR_FLAG_EXTEND));
+    printf("N: %d\n", this->registers.get(SR_FLAG_NEGATIVE));
+    printf("Z: %d\n", this->registers.get(SR_FLAG_ZERO));
+    printf("O: %d\n", this->registers.get(SR_FLAG_OVERFLOW));
+    printf("C: %d\n", this->registers.get(SR_FLAG_CARRY));
 }
