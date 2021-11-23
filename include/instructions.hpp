@@ -26,3 +26,6 @@
 #include "instructions/bcc.hpp"
 #include "instructions/scc.hpp"
 #include "instructions/tst.hpp"
+#include "instructions/cmp.hpp"
+#include "instructions/cmpa.hpp"
+#include "instructions/cmpi.hpp"

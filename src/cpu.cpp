@@ -10,6 +10,7 @@ void CPU::step(){
     uint16_t opcode = this->state.memory.get(pc, SIZE_WORD);
 
     auto instruction = this->instruction_decoder.Decode(opcode);
+    //std::cout << typeid(*instruction).name() << std::endl;
     instruction->execute(this->state);
 }
 

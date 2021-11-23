@@ -46,6 +46,9 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/bcc.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/scc.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/tst.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/cmp.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/cmpa.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/cmpi.cpp
 )
 
 add_library(
