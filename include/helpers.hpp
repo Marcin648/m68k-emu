@@ -78,11 +78,11 @@ namespace M68K{
         return false;
     }
 
-    template<typename T, typename U> inline bool IS_OVERFLOW(T a, T b, U result, DataSize size) {
+    template<typename T> inline bool IS_OVERFLOW(T a, T b, DataSize size) {
         switch(size){
-            case SIZE_BYTE: return (MSB_8(a) == MSB_8(b)) && (MSB_8(a) != MSB_8(result));
-            case SIZE_WORD: return (MSB_16(a) == MSB_16(b)) && (MSB_8(a) != MSB_16(result));
-            case SIZE_LONG: return (MSB_32(a) == MSB_32(b)) && (MSB_8(a) != MSB_32(result));
+            case SIZE_BYTE: return (MSB_8(a) == MSB_8(b)) && (MSB_8(a) != MSB_8((uint32_t)a+(uint32_t)b));
+            case SIZE_WORD: return (MSB_16(a) == MSB_16(b)) && (MSB_16(a) != MSB_16((uint32_t)a+(uint32_t)b));
+            case SIZE_LONG: return (MSB_32(a) == MSB_32(b)) && (MSB_32(a) != MSB_32((uint32_t)a+(uint32_t)b));
         }
         return false;
     }

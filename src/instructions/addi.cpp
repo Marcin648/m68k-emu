@@ -52,7 +52,7 @@ void Addi::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_EXTEND, IS_CARRY(result, this->data_size));
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
     cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, this->data_size));
-    cpu_state.registers.set(SR_FLAG_OVERFLOW, IS_OVERFLOW(src_data, dest_data, result, this->data_size));
+    cpu_state.registers.set(SR_FLAG_OVERFLOW, IS_OVERFLOW(src_data, dest_data, this->data_size));
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 

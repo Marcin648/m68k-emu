@@ -83,7 +83,7 @@ int main(int, char**){
         TEST_TRUE(flag_extend == false);
         TEST_TRUE(flag_negative == false);
         TEST_TRUE(flag_zero == false);
-        TEST_TRUE(flag_overflow == true);
+        TEST_TRUE(flag_overflow == false);
         TEST_TRUE(flag_carry == false);
     }
 }
