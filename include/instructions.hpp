@@ -20,6 +20,8 @@
 #include "instructions/ori.hpp"
 #include "instructions/eor.hpp"
 #include "instructions/eori.hpp"
+#include "instructions/clr.hpp"
+#include "instructions/neg.hpp"
 #include "instructions/mul.hpp"
 #include "instructions/div.hpp"
 #include "instructions/illegal.hpp"

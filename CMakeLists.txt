@@ -38,6 +38,9 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/eor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/eori.cpp
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/clr.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/neg.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/mul.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/div.cpp
 
