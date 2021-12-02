@@ -31,6 +31,13 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subi.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/subq.cpp
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/and.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/andi.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/or.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/ori.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/eor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/eori.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/mul.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/div.cpp
 
