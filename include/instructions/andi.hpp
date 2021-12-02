@@ -9,8 +9,6 @@ namespace M68K{
             AddressingMode dest_mode = ADDR_MODE_UNKNOWN;
             RegisterType dest_reg = REG_D0;
 
-            uint8_t op_mode = 0;
-
             DataSize data_size;
         public:
             Andi(uint16_t opcode);
