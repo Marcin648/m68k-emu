@@ -45,7 +45,7 @@ void Neg::execute(CPUState& cpu_state){
 
     uint32_t src_data = 0;
     uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
-    uint64_t result = dest_data - src_data;
+    uint64_t result = src_data - dest_data;
 
     cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
 

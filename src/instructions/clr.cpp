@@ -43,11 +43,7 @@ void Clr::execute(CPUState& cpu_state){
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t src_data = 0;
-    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
-    uint64_t result = src_data + dest_data;
-
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
+    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, 0);
 
     cpu_state.registers.set(SR_FLAG_NEGATIVE, false);
     cpu_state.registers.set(SR_FLAG_ZERO, true);
