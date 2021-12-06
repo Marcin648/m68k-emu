@@ -8,6 +8,7 @@ namespace M68K{
         public:
             Nop(uint16_t opcode);
             void execute(CPUState& cpu_state) override;
+            std::string disassembly(CPUState& cpu_state) override;
 
             static std::shared_ptr<INSTRUCTION::Instruction> create(uint16_t opcode);
         };

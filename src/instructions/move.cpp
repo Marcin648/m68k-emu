@@ -1,5 +1,4 @@
 #include "instructions/move.hpp"
-#include "instruction_functions.hpp"
 #include "helpers.hpp"
 #include <stdexcept>
 
@@ -52,8 +51,10 @@ Move::Move(uint16_t opcode) : Instruction(opcode){
         }
     }
 
+    this->is_movea = (this->dest_mode == ADDR_MODE_DIRECT_ADDR);
+
     //movea
-    if((this->dest_mode == ADDR_MODE_DIRECT_ADDR) && (this->data_size == SIZE_BYTE)){
+    if(this->is_movea && (this->data_size == SIZE_BYTE)){
         this->is_valid = false;
     }
 }
@@ -68,12 +69,25 @@ void Move::execute(CPUState& cpu_state){
     src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
     cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, src_data);
 
-    if(!(this->dest_mode == ADDR_MODE_DIRECT_ADDR)){ // if not movea
+    if(!this->is_movea){ // if not movea
         cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(src_data, this->data_size));
         cpu_state.registers.set(SR_FLAG_ZERO, src_data == 0);
         cpu_state.registers.set(SR_FLAG_OVERFLOW, false);
         cpu_state.registers.set(SR_FLAG_CARRY, false);
     }
+}
+
+std::string Move::disassembly(CPUState& cpu_state){
+    uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
+    pc += SIZE_WORD;
+    cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
+
+    std::ostringstream output;
+    output << (this->is_movea ? "movea" : "move") << DISASSEMBLER::sizeSuffix(this->data_size)
+           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
+           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    
+    return output.str();
 }
 
 std::shared_ptr<INSTRUCTION::Instruction> Move::create(uint16_t opcode){

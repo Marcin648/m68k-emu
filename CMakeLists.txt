@@ -11,7 +11,9 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu_state.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_decoder.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/instruction_functions.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/disassembler.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/instruction.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/move.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/moveq.cpp

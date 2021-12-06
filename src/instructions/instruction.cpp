@@ -1,8 +1,9 @@
-#include "instruction_functions.hpp"
+#include "Instructions.hpp"
 
 using namespace M68K;
+using namespace INSTRUCTION;
 
-AddressingMode INSTRUCTION::getAddressingMode(uint16_t part_mode, uint16_t part_reg){
+AddressingMode Instruction::getAddressingMode(uint16_t part_mode, uint16_t part_reg){
     AddressingMode mode = ADDR_MODE_UNKNOWN;
     if(part_mode < 0x07){
         mode = static_cast<AddressingMode>(part_mode);
@@ -33,7 +34,7 @@ AddressingMode INSTRUCTION::getAddressingMode(uint16_t part_mode, uint16_t part_
     return mode;
 }
 
-RegisterType INSTRUCTION::getRegisterType(uint16_t part_mode, uint16_t part_reg){
+RegisterType Instruction::getRegisterType(uint16_t part_mode, uint16_t part_reg){
     RegisterType type = REG_D0;
     if(part_mode == 0){
         return static_cast<RegisterType>(part_reg);
@@ -43,6 +44,6 @@ RegisterType INSTRUCTION::getRegisterType(uint16_t part_mode, uint16_t part_reg)
     return type;
 }
 
-Condition INSTRUCTION::getCondition(uint16_t cond_part){
+Condition Instruction::getCondition(uint16_t cond_part){
     return static_cast<Condition>(cond_part & 0xF);
 }

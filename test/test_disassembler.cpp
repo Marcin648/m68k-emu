@@ -7,7 +7,7 @@
 using namespace M68K;
 
 int main(int, char**){
-    TEST_NAME("Addressing modes");
+    TEST_NAME("Disassembler");
     
     {
         TEST_LABEL("direct - move.w A1, D1");
@@ -16,9 +16,8 @@ int main(int, char**){
         
         state.registers.set(REG_A1, DataSize::SIZE_LONG, 0xAABBCCDD);
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_D1, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0xCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w a1, d1");
     }
 
     {
@@ -28,9 +27,8 @@ int main(int, char**){
         
         state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xAABBCCDD);
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_A0, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0xAABBCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "movea.l d1, a0");
     }
     
     {
@@ -41,9 +39,8 @@ int main(int, char**){
         state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xAABBCCDD);
         state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.memory.get(0x1000, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0xAABBCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.l d1, (a0)");
     }
 
     {
@@ -54,9 +51,8 @@ int main(int, char**){
         state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xAABBCCDD);
         state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_A0, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0x1004);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.l d1, (a0)+");
     }
 
     {
@@ -67,9 +63,8 @@ int main(int, char**){
         state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xAABBCCDD);
         state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_A0, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0x0ffc);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.l d1, -(a0)");
     }
 
     {
@@ -86,9 +81,8 @@ int main(int, char**){
 
         state.memory.set(0x1004, DataSize::SIZE_WORD, 0xCCDD); // dest offset
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.memory.get(0x2008, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0xCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w ($4,a0), ($8,a1)");
     }
 
     {
@@ -105,9 +99,8 @@ int main(int, char**){
 
         state.memory.set(0x1004, DataSize::SIZE_WORD, 0xCCDD); // dest offset
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.memory.get(0x1ffe, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0xCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w ($4,a0), ($fffe,a1)");
     }
 
     {
@@ -122,9 +115,8 @@ int main(int, char**){
         state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xFFFFFFFE); // -2
         state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.memory.get(0x1006, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0xCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w d0, ($8,a0,d1)");
     }
 
     {
@@ -139,9 +131,8 @@ int main(int, char**){
         state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xFFFFFFFE); // -2
         state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.memory.get(0x1006, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0xAABBCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.l d0, ($8,a0,d1)");
     }
 
     {
@@ -154,9 +145,8 @@ int main(int, char**){
         state.memory.set(4, DataSize::SIZE_WORD, 0x0000); // padding
         state.memory.set(6, DataSize::SIZE_WORD, 0xCCDD); // data
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0xCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w ($6,pc), d0");
     }
 
     {
@@ -167,9 +157,8 @@ int main(int, char**){
         state.memory.set(0, DataSize::SIZE_WORD, 0x303A); // opcode
         state.memory.set(2, DataSize::SIZE_WORD, 0xFFFE); // src offset - 2
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0x303A);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w ($0,pc), d0");
     }
 
     {
@@ -181,9 +170,8 @@ int main(int, char**){
         state.memory.set(0, DataSize::SIZE_WORD, 0x31C0); // opcode
         state.memory.set(2, DataSize::SIZE_WORD, 0x1000); // dest word
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.memory.get(0x1000, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0xCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w d0, ($1000).w");
     }
 
     {
@@ -195,9 +183,8 @@ int main(int, char**){
         state.memory.set(0, DataSize::SIZE_WORD, 0x33C0); // opcode
         state.memory.set(2, DataSize::SIZE_LONG, 0x10000); // dest long
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.memory.get(0x10000, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0xCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w d0, ($10000).l");
     }
 
     {
@@ -208,8 +195,7 @@ int main(int, char**){
         state.memory.set(0, DataSize::SIZE_WORD, 0x303c); // opcode
         state.memory.set(2, DataSize::SIZE_WORD, 0xCCDD); // dest long
 
-        instruction.get()->execute(state);
-        uint32_t return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 0xCCDD);
+        std::string inst_string = instruction.get()->disassembly(state);
+        TEST_TRUE(inst_string == "move.w #$ccdd, d0");
     }
 }

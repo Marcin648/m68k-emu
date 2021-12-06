@@ -1,5 +1,4 @@
 #include "instructions/cmp.hpp"
-#include "instruction_functions.hpp"
 #include "helpers.hpp"
 #include <stdexcept>
 

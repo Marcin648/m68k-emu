@@ -1,9 +1,10 @@
 #include "cpu_state.hpp"
-#include "instruction_functions.hpp"
+#include "instructions/instruction.hpp"
 
 #include <cstdio>
 
 using namespace M68K;
+using namespace INSTRUCTION;
 
 uint32_t CPUState::stackPop(DataSize size){
     uint32_t stack_ptr = this->registers.get(REG_USP, SIZE_LONG);
@@ -39,7 +40,7 @@ uint32_t CPUState::getControlAddress(AddressingMode mode, RegisterType reg, Data
             addr = this->registers.get(reg, SIZE_LONG);
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
@@ -62,7 +63,7 @@ uint32_t CPUState::getControlAddress(AddressingMode mode, RegisterType reg, Data
         case ADDR_MODE_PC_INDEX: {
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
@@ -138,7 +139,7 @@ uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size)
             uint32_t addr = this->registers.get(reg, SIZE_LONG);
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
@@ -161,7 +162,7 @@ uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size)
         case ADDR_MODE_PC_INDEX: {
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
@@ -237,7 +238,7 @@ uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize
             uint32_t addr = this->registers.get(reg, SIZE_LONG);
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
@@ -258,7 +259,7 @@ uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize
         case ADDR_MODE_PC_INDEX: { // TODO
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
@@ -334,7 +335,7 @@ void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uin
             uint32_t addr = this->registers.get(reg, SIZE_LONG);
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
@@ -357,7 +358,7 @@ void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uin
         // case ADDR_MODE_PC_INDEX: { // read-only
         //     uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
         //     uint16_t ext_word = this->memory.get(pc, SIZE_WORD);
-        //     RegisterType ext_reg = INSTRUCTION::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+        //     RegisterType ext_reg = Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
         //     DataSize ext_reg_size = ((ext_word >> 11) & 0x1) ? SIZE_LONG : SIZE_WORD;
         //     int8_t ext_offset = ext_word & 0xFF;
         //     int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
