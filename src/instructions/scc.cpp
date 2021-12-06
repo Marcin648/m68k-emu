@@ -33,6 +33,19 @@ void Scc::execute(CPUState& cpu_state){
     }
 }
 
+std::string Scc::disassembly(CPUState& cpu_state){
+    uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
+    pc += SIZE_WORD;
+    cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
+
+
+    std::ostringstream output;
+    output << "s" << DISASSEMBLER::conditionSuffix(this->condition)
+           << " " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, SIZE_BYTE, cpu_state);
+    
+    return output.str();
+}
+
 std::shared_ptr<INSTRUCTION::Instruction> Scc::create(uint16_t opcode){
     return std::make_shared<Scc>(opcode);
 }

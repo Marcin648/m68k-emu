@@ -37,6 +37,28 @@ std::string DISASSEMBLER::sizeSuffix(DataSize size){
     return "";
 }
 
+std::string DISASSEMBLER::conditionSuffix(Condition cond){
+    switch(cond){
+        case COND_TRUE: { return "t"; };
+        case COND_FALSE: { return "f"; };
+        case COND_HIGHER: { return "hi"; };
+        case COND_LOWER_SAME: { return "ls"; };
+        case COND_CARRY_CLEAR: { return "cc"; };
+        case COND_CARRY_SET: { return "cs"; };
+        case COND_NOT_EQUAL: { return "ne"; };
+        case COND_EQUAL: { return "eq"; };
+        case COND_OVERFLOW_CLEAR: { return "vc"; };
+        case COND_OVERFLOW_SET: { return "vs"; };
+        case COND_PLUS: { return "pl"; };
+        case COND_MINUS: { return "mi"; };
+        case COND_GREATER_EQUAL: { return "ge"; };
+        case COND_LESS_THAN: { return "lt"; };
+        case COND_GREATER_THAN: { return "gt"; };
+        case COND_LESS_EQUAL: { return "le"; };
+    }
+    return "";
+}
+
 std::string DISASSEMBLER::effectiveAddress(AddressingMode mode, RegisterType reg, DataSize size, CPUState& cpu_state){
     std::ostringstream output_stream;
     switch(mode){

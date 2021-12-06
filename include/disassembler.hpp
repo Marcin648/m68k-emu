@@ -11,5 +11,6 @@ namespace M68K{
         std::string reg(RegisterType reg);
         std::string sizeSuffix(DataSize size);
         std::string effectiveAddress(AddressingMode mode, RegisterType reg, DataSize size, CPUState& cpu_state);
+        std::string conditionSuffix(Condition cond);
     }
 }
