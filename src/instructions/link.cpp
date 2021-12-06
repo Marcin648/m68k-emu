@@ -31,6 +31,20 @@ void Link::execute(CPUState& cpu_state){
     cpu_state.registers.set(REG_USP, SIZE_LONG, stack_ptr + displacement);
 }
 
+std::string Link::disassembly(CPUState& cpu_state){
+    int16_t displacement;
+    uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
+    pc += SIZE_WORD;
+    displacement = cpu_state.memory.get(pc, this->data_size);
+    pc += SIZE_WORD;
+    cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
+
+    std::ostringstream output;
+    output << "link " << DISASSEMBLER::reg(this->addr_reg)
+           << ", $" << std::hex << displacement;
+    return output.str();
+}
+
 std::shared_ptr<INSTRUCTION::Instruction> Link::create(uint16_t opcode){
     return std::make_shared<Link>(opcode);
 }
