@@ -45,6 +45,19 @@ void Suba::execute(CPUState& cpu_state){
     cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
 }
 
+std::string Suba::disassembly(CPUState& cpu_state){
+    uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
+    pc += SIZE_WORD;
+    cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
+
+    std::ostringstream output;
+    output << "suba" << DISASSEMBLER::sizeSuffix(this->data_size)
+           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
+           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+
+    return output.str();
+}
+
 std::shared_ptr<INSTRUCTION::Instruction> Suba::create(uint16_t opcode){
     return std::make_shared<Suba>(opcode);
 }
