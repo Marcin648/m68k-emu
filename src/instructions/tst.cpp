@@ -45,6 +45,16 @@ void Tst::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, false);
 }
 
+std::string Tst::disassembly(CPUState& cpu_state){
+    uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
+    pc += SIZE_WORD;
+    cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
+
+    std::ostringstream output;
+    output << "tst " << DISASSEMBLER::effectiveAddress(this->ea_mode, this->ea_reg, this->data_size, cpu_state);
+    return output.str();
+}
+
 std::shared_ptr<INSTRUCTION::Instruction> Tst::create(uint16_t opcode){
     return std::make_shared<Tst>(opcode);
 }
