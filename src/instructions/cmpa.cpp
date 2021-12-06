@@ -51,6 +51,19 @@ void Cmpa::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 
+std::string Cmpa::disassembly(CPUState& cpu_state){
+    uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
+    pc += SIZE_WORD;
+    cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
+
+    std::ostringstream output;
+    output << "cmpa" << DISASSEMBLER::sizeSuffix(this->data_size)
+           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
+           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+
+    return output.str();
+}
+
 std::shared_ptr<INSTRUCTION::Instruction> Cmpa::create(uint16_t opcode){
     return std::make_shared<Cmpa>(opcode);
 }
