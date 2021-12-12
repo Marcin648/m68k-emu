@@ -23,38 +23,37 @@ bool CPU::loadELF(const std::string& file_name){
     if(
         (elf_reader.get_class() != ELFIO::ELFCLASS32) ||
         (elf_reader.get_encoding() != ELFIO::ELFDATA2MSB) ||
-        (elf_reader.get_type() != ELFIO::ET_REL) ||
+        (elf_reader.get_type() != ELFIO::ET_EXEC) ||
         (elf_reader.get_machine() != ELFIO::EM_68K)
     ){
         return false;
     }
 
+    uint32_t entry_address = elf_reader.get_entry();
+    
+    for(const auto segment : elf_reader.sections){
+        // std::cout << segment->get_name() << "\t"
+        //           << segment->get_address() << "\t"
+        //           << segment->get_size() << "\t"
+        //           << segment->get_offset() << "\t"
+        //           << segment->get_addr_align() << "\t"
+        //           << segment->get_link() << "\t"
+        //           << segment->get_flags() << "\t"
+        //           << segment->get_info() << "\t"
+        //           << segment->get_type() << std::endl;
 
-    uint32_t base_address = elf_reader.get_entry(); // FIXME
-
-    for(const auto section : elf_reader.sections){
-        std::cout << section->get_name() << "\t"
-                  << section->get_address() << "\t"
-                  << section->get_size() << "\t"
-                  << section->get_offset() << "\t"
-                  << section->get_addr_align() << "\t"
-                  << section->get_link() << "\t"
-                  << section->get_flags() << "\t"
-                  << section->get_info() << "\t"
-                  << section->get_type() << std::endl;
-
-        if(section->get_name() == ".text"){
-            size_t size = section->get_size();
-            auto data = section->get_data();
+        if(segment->get_type() == ELFIO::PT_LOAD){
+            uint32_t base_address = segment->get_address();
+            uint32_t size = segment->get_size();
+            auto data = segment->get_data();
             for(size_t i = 0; i < size; i++){
-                uint32_t addr = base_address + i;
-                this->state.memory.set(addr, SIZE_BYTE, data[i]);
+                uint32_t address = base_address + i;
+                this->state.memory.set(address, SIZE_BYTE, data[i]); // little slow, but good enough
             }
-            break;
         }
     }
 
     this->state.registers.set(REG_USP, SIZE_LONG, MEMORY_SIZE);
-    this->state.registers.set(REG_PC, SIZE_LONG, base_address);
+    this->state.registers.set(REG_PC, SIZE_LONG, entry_address);
     return true;
 }
