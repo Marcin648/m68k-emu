@@ -9,7 +9,7 @@ int main(int, char**){
     {
         TEST_LABEL("bubblesort");
         CPU cpu = CPU();
-        cpu.loadELF("../../test/binary/bubblesort.c.elf");
+        cpu.loadELF("../../test/binary/bubblesort.elf");
 
         while(cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x100c4){
             cpu.step();
