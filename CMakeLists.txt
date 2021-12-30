@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.14)
-project(m68k-emu LANGUAGES CXX VERSION 0.1.0)
+
+if(NOT DEFINED PROJECT_NAME)
+  set(M68K_IS_TOP_PROJECT TRUE)
+  project(m68k-emu LANGUAGES CXX VERSION 0.1.0)
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(libs/ELFIO EXCLUDE_FROM_ALL)
 
-set(SRC
+set(M68K_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/registers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/memory.cpp
@@ -65,7 +69,7 @@ set(SRC
 
 add_library(
     m68k-emu
-    ${SRC}
+    ${M68K_SRC}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
 
@@ -74,8 +78,10 @@ include_directories(include)
 target_compile_options(m68k-emu PRIVATE -Wall -Wextra -Wpedantic -ggdb)
 target_link_libraries(m68k-emu PRIVATE elfio -static-libgcc -static-libstdc++)
 
-enable_testing()
-add_subdirectory(test)
+if(M68K_IS_TOP_PROJECT)
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
