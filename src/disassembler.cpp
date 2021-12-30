@@ -1,5 +1,6 @@
 #include "disassembler.hpp"
 
+#include "helpers.hpp"
 #include "instructions/instruction.hpp"
 
 using namespace M68K;
@@ -132,11 +133,13 @@ std::string DISASSEMBLER::effectiveAddress(AddressingMode mode, RegisterType reg
             break;
         }
         case ADDR_MODE_IMMEDIATE: {
+            DataSize memory_size = (size == SIZE_LONG ? SIZE_LONG : SIZE_WORD);
             uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
-            uint32_t value = cpu_state.memory.get(pc, size);
+            uint32_t value = cpu_state.memory.get(pc, memory_size);
+            uint32_t data = (size == SIZE_BYTE ? MASK_8(value) : value);
 
-            cpu_state.registers.set(REG_PC, SIZE_LONG, pc + size);
-            output_stream << "#$" << std::hex << value;
+            cpu_state.registers.set(REG_PC, SIZE_LONG, pc + memory_size);
+            output_stream << "#$" << std::hex << data;
             break;
         }
         case ADDR_MODE_UNKNOWN:{

@@ -1,5 +1,6 @@
 #include "cpu_state.hpp"
 #include "instructions/instruction.hpp"
+#include "helpers.hpp"
 
 #include <cstdio>
 
@@ -190,10 +191,11 @@ uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size)
             break;
         }
         case ADDR_MODE_IMMEDIATE: {
+            DataSize memory_size = (size == SIZE_LONG ? SIZE_LONG : SIZE_WORD);
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
-            uint32_t value = this->memory.get(pc, size);
-            this->registers.set(REG_PC, SIZE_LONG, pc + size);
-            data = value;
+            uint32_t value = this->memory.get(pc, memory_size);
+            this->registers.set(REG_PC, SIZE_LONG, pc + memory_size);
+            data = (size == SIZE_BYTE ? MASK_8(value) : value);
             break;
         }
         case ADDR_MODE_UNKNOWN:{
@@ -284,9 +286,10 @@ uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize
             break;
         }
         case ADDR_MODE_IMMEDIATE: {
+            DataSize memory_size = (size == SIZE_LONG ? SIZE_LONG : SIZE_WORD);
             uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
-            uint32_t value = this->memory.get(pc, size);
-            data = value;
+            uint32_t value = this->memory.get(pc, memory_size);
+            data = (size == SIZE_BYTE ? MASK_8(value) : value);
             break;
         }
         case ADDR_MODE_UNKNOWN:{
