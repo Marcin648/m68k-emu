@@ -70,7 +70,6 @@ set(M68K_SRC
 add_library(
     m68k-emu
     ${M68K_SRC}
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
 
 include_directories(include)
@@ -81,9 +80,8 @@ target_link_libraries(m68k-emu PRIVATE elfio -static-libgcc -static-libstdc++)
 if(M68K_IS_TOP_PROJECT)
     enable_testing()
     add_subdirectory(test)
+
+    set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+    set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+    include(CPack)
 endif()
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
-
