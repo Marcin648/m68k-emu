@@ -69,7 +69,7 @@ std::string Subq::disassembly(CPUState& cpu_state){
 
     std::ostringstream output;
     output << "subq" << DISASSEMBLER::sizeSuffix(this->data_size)
-           << " #$" << std::hex << this->imm_data
+           << " #$" << std::hex << (uint32_t)this->imm_data
            << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
                
     return output.str();

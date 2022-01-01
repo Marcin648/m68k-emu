@@ -103,7 +103,7 @@ std::string Bcc::disassembly(CPUState& cpu_state){
         }
     }
 
-    output << " $" << (pc + displacement);
+    output << " $" << std::hex << (pc + displacement);
     return output.str();
 }
 
