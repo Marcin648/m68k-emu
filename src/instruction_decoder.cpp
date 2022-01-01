@@ -29,7 +29,7 @@ std::vector<MaskTableElement> opcode_mask_table = {
     // {0xFFF8, 0x4840, INSTRUCTION::Swap::create},       //(0b1111111111111000, 0b0100100001000000, "Swap")
     {0xFFF8, 0x4E50, INSTRUCTION::Link::create},       //(0b1111111111111111, 0b0100111001010000, "Link")
     {0xFFF8, 0x4E58, INSTRUCTION::Unlk::create},       //(0b1111111111111000, 0b0100111001011000, "Unlk")
-    // {0xFFB8, 0x4880, INSTRUCTION::Ext::create},        //(0b1111111110111000, 0b0100100010000000, "Ext")
+    {0xFFB8, 0x4880, INSTRUCTION::Ext::create},        //(0b1111111110111000, 0b0100100010000000, "Ext")
     // {0xFFF0, 0x4E40, INSTRUCTION::Trap::create},       //(0b1111111111110000, 0b0100111001000000, "Trap")
     // {0xFFF0, 0x4E60, INSTRUCTION::MoveUSP::create},    //(0b1111111111110000, 0b0100111001100000, "MoveUSP")
     // {0xFFC0, 0x0800, INSTRUCTION::Btst::create},       //(0b1111111111000000, 0b0000100000000000, "Btst")

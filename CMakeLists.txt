@@ -58,6 +58,7 @@ set(M68K_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/rts.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/link.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/unlk.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/ext.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/bcc.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/scc.cpp
