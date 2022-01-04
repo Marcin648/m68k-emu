@@ -47,6 +47,7 @@ set(M68K_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/clr.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/neg.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/bit_manip.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/bit_shift.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/mul.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/instructions/div.cpp

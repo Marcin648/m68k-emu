@@ -23,6 +23,7 @@
 #include "instructions/clr.hpp"
 #include "instructions/neg.hpp"
 #include "instructions/bit_manip.hpp"
+#include "instructions/bit_shift.hpp"
 #include "instructions/mul.hpp"
 #include "instructions/div.hpp"
 #include "instructions/illegal.hpp"
