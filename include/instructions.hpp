@@ -22,6 +22,7 @@
 #include "instructions/eori.hpp"
 #include "instructions/clr.hpp"
 #include "instructions/neg.hpp"
+#include "instructions/bit_manip.hpp"
 #include "instructions/mul.hpp"
 #include "instructions/div.hpp"
 #include "instructions/illegal.hpp"
