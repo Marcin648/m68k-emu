@@ -67,9 +67,14 @@ void Move::execute(CPUState& cpu_state){
     uint32_t src_data = 0;
 
     src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, src_data);
 
-    if(!this->is_movea){ // if not movea
+    if(this->is_movea){
+        if(this->data_size == SIZE_WORD){
+            src_data = static_cast<uint32_t>(static_cast<int32_t>(static_cast<int16_t>(src_data)));
+        }
+        cpu_state.setData(this->dest_mode, this->dest_reg, SIZE_LONG, src_data);
+    }else{
+        cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, src_data);
         cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(src_data, this->data_size));
         cpu_state.registers.set(SR_FLAG_ZERO, src_data == 0);
         cpu_state.registers.set(SR_FLAG_OVERFLOW, false);

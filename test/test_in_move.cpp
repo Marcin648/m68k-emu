@@ -62,7 +62,7 @@ int main(int, char**){
 
         instruction.get()->execute(state);
         uint32_t return_data = state.registers.get(REG_A1, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0xCCDD);
+        TEST_TRUE(return_data == 0xFFFFCCDD);
 
         bool flag_negative = state.registers.get(SR_FLAG_NEGATIVE);
         bool flag_zero = state.registers.get(SR_FLAG_ZERO);
