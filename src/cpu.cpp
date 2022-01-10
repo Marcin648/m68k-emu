@@ -29,6 +29,8 @@ bool CPU::loadELF(const std::string& file_name){
         return false;
     }
 
+    this->state = CPUState();
+
     uint32_t entry_address = elf_reader.get_entry();
     
     for(const auto segment : elf_reader.sections){
