@@ -12,7 +12,6 @@ namespace M68K{
         class Instruction{
         protected:
             uint16_t opcode;
-            size_t instruction_size = 2;
 
         public:
             bool is_valid = true;
