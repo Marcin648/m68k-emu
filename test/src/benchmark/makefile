@@ -3,7 +3,7 @@ SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
 
-EXE = $(BIN_DIR)/bubblesort.elf
+EXE = $(BIN_DIR)/benchamrk.elf
 
 SRC_C = $(wildcard $(SRC_DIR)/*.c)
 
