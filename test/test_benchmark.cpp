@@ -29,7 +29,7 @@ int main(int, char**){
         }
         double dtime = timeInterval();
 
-        std::cout << "Execute " << n << " instructions  in " << dtime << " sec." << std::endl;
+        std::cout << "Execute " << n << " instructions  in" << dtime << " sec." << std::endl;
         std::cout << "Frequency: " << ((double)n/dtime)/1000.0 << "kHz" << std::endl;
     }
 }

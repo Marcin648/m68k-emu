@@ -23,7 +23,7 @@ void Bcc::execute(CPUState& cpu_state){
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    int32_t displacement;
+    int32_t displacement = 0;
 
     switch(this->data_size){
         case SIZE_BYTE: {
@@ -69,7 +69,7 @@ std::string Bcc::disassembly(CPUState& cpu_state){
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    int32_t displacement;
+    int32_t displacement = 0;
     switch(this->data_size){
         case SIZE_BYTE: {
             displacement = static_cast<int8_t>(this->displacement_8);
