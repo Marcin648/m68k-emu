@@ -39,7 +39,7 @@ cd m68k-emu
 git submodule update --init --recursive
 mkdir Debug
 cd Debug
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Debug ..
 make -j$(nproc)
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
