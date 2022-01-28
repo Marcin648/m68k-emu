@@ -1,5 +1,7 @@
 # CMake
 build
+Debug
+Release
 
 #IDEs
 .vscode
