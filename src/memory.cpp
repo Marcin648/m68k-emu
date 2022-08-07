@@ -20,21 +20,21 @@ uint32_t Memory::get(std::size_t address, DataSize size){
 
     switch(size){
         case DataSize::SIZE_BYTE:{
-            output_data = this->memory.at(address);
+            output_data = this->memory[address];
             break;
         }
 
         case DataSize::SIZE_WORD:{  //BIG ENDIAN
-            output_data = this->memory.at(address);
-            output_data = (output_data << 8) | this->memory.at(address + 1);
+            output_data = this->memory[address];
+            output_data = (output_data << 8) | this->memory[address + 1];
             break;
         }
 
         case DataSize::SIZE_LONG:{  //BIG ENDIAN
-            output_data = this->memory.at(address);
-            output_data = (output_data << 8) | this->memory.at(address + 1);
-            output_data = (output_data << 8) | this->memory.at(address + 2);
-            output_data = (output_data << 8) | this->memory.at(address + 3);
+            output_data = this->memory[address];
+            output_data = (output_data << 8) | this->memory[address + 1];
+            output_data = (output_data << 8) | this->memory[address + 2];
+            output_data = (output_data << 8) | this->memory[address + 3];
             break;
         }
         
@@ -64,21 +64,21 @@ void Memory::set(std::size_t address, DataSize size, uint32_t data){
 
     switch(size){
         case DataSize::SIZE_BYTE:{
-            this->memory.at(address) = MASK_8(data);
+            this->memory[address] = MASK_8(data);
             break;
         }
 
         case DataSize::SIZE_WORD:{  //BIG ENDIAN
-            this->memory.at(address) = MASK_8(data >> 8);
-            this->memory.at(address + 1) = MASK_8(data);
+            this->memory[address] = MASK_8(data >> 8);
+            this->memory[address + 1] = MASK_8(data);
             break;
         }
 
         case DataSize::SIZE_LONG:{  //BIG ENDIAN
-            this->memory.at(address) = MASK_8(data >> 24);
-            this->memory.at(address + 1) = MASK_8(data >> 16);
-            this->memory.at(address + 2) = MASK_8(data >> 8);
-            this->memory.at(address + 3) = MASK_8(data);
+            this->memory[address] = MASK_8(data >> 24);
+            this->memory[address + 1] = MASK_8(data >> 16);
+            this->memory[address + 2] = MASK_8(data >> 8);
+            this->memory[address + 3] = MASK_8(data);
             break;
         }
         
