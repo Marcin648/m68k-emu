@@ -11,7 +11,7 @@ uint32_t Registers::get(RegisterType reg, DataSize size){
         ); //TODO: Throw special exception
     }
 
-    uint32_t output_data = this->reg_buffer.at(reg);
+    uint32_t output_data = this->reg_buffer[reg];
 
     switch(size){
         case DataSize::SIZE_BYTE:{
@@ -49,7 +49,7 @@ void Registers::set(RegisterType reg, DataSize size, uint32_t data){
         ); //TODO: Throw special exception
     }
 
-    uint32_t reg_value = this->reg_buffer.at(reg);
+    uint32_t reg_value = this->reg_buffer[reg];
 
     switch(size){
         case DataSize::SIZE_BYTE:{
@@ -80,23 +80,23 @@ void Registers::set(RegisterType reg, DataSize size, uint32_t data){
         reg_value = MASK_16(reg_value);
     }
 
-    this->reg_buffer.at(reg) = reg_value;
+    this->reg_buffer[reg] = reg_value;
     return;
 }
 
 bool Registers::get(StatusRegisterFlag flag){
-    uint32_t sr_value = this->reg_buffer.at(REG_SR);
+    uint32_t sr_value = this->reg_buffer[REG_SR];
     uint32_t flag_mask = uint32_t(flag);
     return (sr_value & flag_mask) ? true : false;
 }
 
 void Registers::set(StatusRegisterFlag flag, bool value){
-    uint32_t sr_value = this->reg_buffer.at(REG_SR);
+    uint32_t sr_value = this->reg_buffer[REG_SR];
     uint32_t flag_mask = uint32_t(flag);
     sr_value &= ~flag_mask;
     if(value){
         sr_value |= flag_mask;
     }
-    this->reg_buffer.at(REG_SR) = sr_value;
+    this->reg_buffer[REG_SR] = sr_value;
     return;
 }
