@@ -33,7 +33,7 @@ bool CPU::loadELF(const std::string& file_name){
 
     uint32_t entry_address = elf_reader.get_entry();
     
-    for(const auto segment : elf_reader.sections){
+    for(const auto& segment : elf_reader.sections){
         // std::cout << segment->get_name() << "\t"
         //           << segment->get_address() << "\t"
         //           << segment->get_size() << "\t"
