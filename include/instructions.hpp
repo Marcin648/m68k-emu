@@ -54,3 +54,4 @@
 #include "instructions/sbcd.hpp"
 #include "instructions/nbcd.hpp"
 #include "instructions/movem.hpp"
+#include "instructions/movep.hpp"
