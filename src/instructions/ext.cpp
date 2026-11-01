@@ -26,7 +26,7 @@ void Ext::execute(CPUState& cpu_state){
         result = static_cast<uint16_t>(static_cast<int16_t>(static_cast<int8_t>(data_byte)));
     }else{
         uint16_t data_word = cpu_state.getData(this->addr_mode, this->addr_reg, SIZE_WORD);
-        result = static_cast<uint32_t>(static_cast<int32_t>(static_cast<int8_t>(data_word)));
+        result = static_cast<uint32_t>(static_cast<int32_t>(static_cast<int16_t>(data_word)));
     }
     cpu_state.setData(this->addr_mode, this->addr_reg, this->data_size, result);
 

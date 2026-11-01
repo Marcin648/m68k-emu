@@ -40,49 +40,55 @@ namespace M68K{
     template<typename T> inline T ROR_33(T a, T b) { return MASK_33(LSR(a, b) | LSL(a, 33 - b));}
 
 
-    template<typename T> inline bool MASK(T v, DataSize size) {
+    template<typename T> inline T MASK(T v, DataSize size) {
         switch(size){
             case SIZE_BYTE: return MASK_8(v);
             case SIZE_WORD: return MASK_16(v);
             case SIZE_LONG: return MASK_32(v);
         }
-        return false;
+        return 0;
     }
 
-    template<typename T> inline bool MASK_ABOVE(T v, DataSize size) {
+    template<typename T> inline T MASK_ABOVE(T v, DataSize size) {
         switch(size){
             case SIZE_BYTE: return MASK_ABOVE_8(v);
             case SIZE_WORD: return MASK_ABOVE_16(v);
             case SIZE_LONG: return MASK_ABOVE_32(v);
         }
-        return false;
+        return 0;
     }
 
-    template<typename T> inline bool ROL(T a, T b, DataSize size) {
+    template<typename T> inline T ROL(T a, T b, DataSize size) {
         switch(size){
             case SIZE_BYTE: return ROL_8(a, b);
             case SIZE_WORD: return ROL_16(a, b);
             case SIZE_LONG: return ROL_32(a, b);
         }
-        return false;
+        return 0;
     }
 
-    template<typename T> inline bool ROR(T a, T b, DataSize size) {
+    template<typename T> inline T ROR(T a, T b, DataSize size) {
         switch(size){
             case SIZE_BYTE: return ROR_8(a, b);
             case SIZE_WORD: return ROR_16(a, b);
             case SIZE_LONG: return ROR_32(a, b);
         }
-        return false;
+        return 0;
     }
 
-    inline bool IS_MEMORY_ALTERABLE(AddressingMode mode) {
+    inline bool IS_ALTERABLE(AddressingMode mode) {
         return !(
             (mode == ADDR_MODE_UNKNOWN) ||
             (mode == ADDR_MODE_PC_DISPLACEMENT) ||
             (mode == ADDR_MODE_PC_INDEX) ||
             (mode == ADDR_MODE_IMMEDIATE)
         );
+    }
+
+    inline bool IS_MEMORY_ALTERABLE(AddressingMode mode) {
+        return IS_ALTERABLE(mode) &&
+            (mode != ADDR_MODE_DIRECT_DATA) &&
+            (mode != ADDR_MODE_DIRECT_ADDR);
     }
 
     inline bool IS_DATA_ALTERABLE(AddressingMode mode) {
@@ -124,13 +130,14 @@ namespace M68K{
         return false;
     }
 
-    template<typename T> inline bool IS_OVERFLOW(T a, T b, DataSize size) {
-        switch(size){
-            case SIZE_BYTE: return (MSB_8(a) == MSB_8(b)) && (MSB_8(a) != MSB_8((uint32_t)a+(uint32_t)b));
-            case SIZE_WORD: return (MSB_16(a) == MSB_16(b)) && (MSB_16(a) != MSB_16((uint32_t)a+(uint32_t)b));
-            case SIZE_LONG: return (MSB_32(a) == MSB_32(b)) && (MSB_32(a) != MSB_32((uint32_t)a+(uint32_t)b));
-        }
-        return false;
+    // result = dest + src (+ X)
+    inline bool IS_OVERFLOW_ADD(uint64_t src, uint64_t dest, uint64_t result, DataSize size) {
+        return IS_NEGATIVE((src ^ result) & (dest ^ result), size);
+    }
+
+    // result = dest - src (- X)
+    inline bool IS_OVERFLOW_SUB(uint64_t src, uint64_t dest, uint64_t result, DataSize size) {
+        return IS_NEGATIVE((src ^ dest) & (dest ^ result), size);
     }
 
     template<typename T> inline bool IS_CARRY(T v, DataSize size) {

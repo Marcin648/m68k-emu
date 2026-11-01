@@ -19,6 +19,10 @@ Mul::Mul(uint16_t opcode) : Instruction(opcode){
     this->src_reg = getRegisterType(ea_mode_mode, ea_reg_part);
 
     this->data_size = SIZE_WORD;
+
+    if((this->src_mode == ADDR_MODE_UNKNOWN) || (this->src_mode == ADDR_MODE_DIRECT_ADDR)){
+        this->is_valid = false;
+    }
 }
 
 void Mul::execute(CPUState& cpu_state){
@@ -33,7 +37,7 @@ void Mul::execute(CPUState& cpu_state){
     if(this->is_signed){
         result = static_cast<uint32_t>(static_cast<int16_t>(src_data) * static_cast<int16_t>(dest_data));
     }else{
-        result = src_data * dest_data;
+        result = static_cast<uint32_t>(src_data) * static_cast<uint32_t>(dest_data);
     }
 
     cpu_state.setData(this->dest_mode, this->dest_reg, SIZE_LONG, result);

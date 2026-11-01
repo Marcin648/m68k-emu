@@ -18,10 +18,6 @@ BitManip::BitManip(uint16_t opcode) : Instruction(opcode){
     this->src_mode = src_mode_part ? ADDR_MODE_DIRECT_DATA : ADDR_MODE_IMMEDIATE;
     this->src_reg = getRegisterType(0, src_reg_part);
 
-    if(!IS_DATA_ALTERABLE(this->dest_mode)){
-        this->is_valid = false;
-    }
-
     if(this->dest_mode == ADDR_MODE_DIRECT_DATA){
         this->data_size = SIZE_LONG;
         this->data_bits_modulo = 32;
@@ -38,6 +34,19 @@ BitManip::BitManip(uint16_t opcode) : Instruction(opcode){
         case InstructionType::BCLR: {this->instruction_str = "bclr"; break;};
         case InstructionType::BSET: {this->instruction_str = "bset"; break;};
     }
+
+    if(this->instruction_type == InstructionType::BTST){
+        // data addressing: everything except An (static form can't use #imm as destination)
+        if(
+            (this->dest_mode == ADDR_MODE_UNKNOWN) ||
+            (this->dest_mode == ADDR_MODE_DIRECT_ADDR) ||
+            ((this->src_mode == ADDR_MODE_IMMEDIATE) && (this->dest_mode == ADDR_MODE_IMMEDIATE))
+        ){
+            this->is_valid = false;
+        }
+    }else if(!IS_DATA_ALTERABLE(this->dest_mode)){
+        this->is_valid = false;
+    }
 }
 
 void BitManip::execute(CPUState& cpu_state){
@@ -45,36 +54,28 @@ void BitManip::execute(CPUState& cpu_state){
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t shift = cpu_state.getData(this->src_mode, this->src_reg, this->data_size) % this->data_bits_modulo;
-    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
-    uint64_t result = dest_data;
+    // bit number is a byte (immediate is stored in a word extension)
+    uint32_t shift = cpu_state.getData(this->src_mode, this->src_reg, SIZE_BYTE) % this->data_bits_modulo;
+    uint32_t bit_mask = 1u << shift;
 
-    bool test_bit_value = (dest_data >> shift) & 0x1;
+    if(this->instruction_type == InstructionType::BTST){
+        uint32_t dest_data = cpu_state.getData(this->dest_mode, this->dest_reg, this->data_size);
+        cpu_state.registers.set(SR_FLAG_ZERO, !(dest_data & bit_mask));
+        return;
+    }
+
+    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
+    uint32_t result = dest_data;
 
     switch (this->instruction_type)
     {
-        case InstructionType::BTST: {
-            break;
-        }
-        case InstructionType::BCHG: {
-            if(test_bit_value){
-                result &= ~static_cast<uint32_t>(1 << shift);
-            }else{
-                result |= (1 << shift);
-            }
-            break;
-        }
-        case InstructionType::BCLR: {
-            result &= ~static_cast<uint32_t>(1 << shift);
-            break;
-        }
-        case InstructionType::BSET: {
-            result |= (1 << shift);
-            break;
-        }
+        case InstructionType::BCHG: { result ^= bit_mask; break; }
+        case InstructionType::BCLR: { result &= ~bit_mask; break; }
+        case InstructionType::BSET: { result |= bit_mask; break; }
+        case InstructionType::BTST: { break; }
     }
     cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
-    cpu_state.registers.set(SR_FLAG_ZERO, !test_bit_value);
+    cpu_state.registers.set(SR_FLAG_ZERO, !(dest_data & bit_mask));
 }
 
 std::string BitManip::disassembly(CPUState& cpu_state){
@@ -84,7 +85,7 @@ std::string BitManip::disassembly(CPUState& cpu_state){
 
     std::ostringstream output;
     output << this->instruction_str
-           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
+           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, SIZE_BYTE, cpu_state)
            << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
                
     return output.str();

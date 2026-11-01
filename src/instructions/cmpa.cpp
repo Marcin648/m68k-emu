@@ -40,15 +40,15 @@ void Cmpa::execute(CPUState& cpu_state){
 
     uint32_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
     if(this->data_size == SIZE_WORD){
-        src_data = static_cast<int32_t>(static_cast<int16_t>(src_data));
+        src_data = static_cast<uint32_t>(static_cast<int32_t>(static_cast<int16_t>(src_data)));
     };
-    uint32_t dest_data = cpu_state.getData(this->dest_mode, this->dest_reg, this->data_size);
-    uint64_t result = dest_data - src_data;
+    uint32_t dest_data = cpu_state.registers.get(this->dest_reg, SIZE_LONG);
+    uint64_t result = static_cast<uint64_t>(dest_data) - src_data;
 
-    cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
-    cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, this->data_size));
-    cpu_state.registers.set(SR_FLAG_OVERFLOW, IS_OVERFLOW(src_data, dest_data, this->data_size));
-    cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
+    cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, SIZE_LONG));
+    cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, SIZE_LONG));
+    cpu_state.registers.set(SR_FLAG_OVERFLOW, IS_OVERFLOW_SUB(src_data, dest_data, result, SIZE_LONG));
+    cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, SIZE_LONG));
 }
 
 std::string Cmpa::disassembly(CPUState& cpu_state){

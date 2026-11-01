@@ -29,6 +29,10 @@ And::And(uint16_t opcode) : Instruction(opcode){
 
         this->src_mode = getAddressingMode(ea_mode_part, ea_reg_part);
         this->src_reg = getRegisterType(ea_mode_part, ea_reg_part);
+
+        if((this->src_mode == ADDR_MODE_UNKNOWN) || (this->src_mode == ADDR_MODE_DIRECT_ADDR)){
+            this->is_valid = false;
+        }
     }
 
     switch(data_size_part){

@@ -19,10 +19,11 @@ void Moveq::execute(CPUState& cpu_state){
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, this->imm_data);
+    uint32_t data = static_cast<uint32_t>(static_cast<int32_t>(this->imm_data));
+    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, data);
 
-    cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(this->imm_data, this->data_size));
-    cpu_state.registers.set(SR_FLAG_ZERO, this->imm_data == 0);
+    cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(data, this->data_size));
+    cpu_state.registers.set(SR_FLAG_ZERO, data == 0);
     cpu_state.registers.set(SR_FLAG_OVERFLOW, false);
     cpu_state.registers.set(SR_FLAG_CARRY, false);
 }
@@ -34,7 +35,7 @@ std::string Moveq::disassembly(CPUState& cpu_state){
 
     std::ostringstream output;
     output << "moveq"
-           << " #$" << std::hex << (uint32_t)this->imm_data
+           << " #$" << std::hex << (uint32_t)(uint8_t)this->imm_data
            << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
                
     return output.str();

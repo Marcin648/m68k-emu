@@ -13,7 +13,7 @@ Subi::Subi(uint16_t opcode) : Instruction(opcode){
     this->dest_mode = getAddressingMode(ea_mode_part, ea_reg_part);
     this->dest_reg = getRegisterType(ea_mode_part, ea_reg_part);
 
-    if(!IS_MEMORY_ALTERABLE(this->dest_mode)){
+    if(!IS_DATA_ALTERABLE(this->dest_mode)){
         this->is_valid = false;
     }
 
@@ -44,14 +44,14 @@ void Subi::execute(CPUState& cpu_state){
 
     uint32_t src_data = cpu_state.getData(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size);
     uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
-    uint64_t result = dest_data - src_data;
+    uint64_t result = static_cast<uint64_t>(dest_data) - src_data;
 
     cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
 
     cpu_state.registers.set(SR_FLAG_EXTEND, IS_CARRY(result, this->data_size));
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
     cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, this->data_size));
-    cpu_state.registers.set(SR_FLAG_OVERFLOW, IS_OVERFLOW(src_data, dest_data, this->data_size));
+    cpu_state.registers.set(SR_FLAG_OVERFLOW, IS_OVERFLOW_SUB(src_data, dest_data, result, this->data_size));
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 

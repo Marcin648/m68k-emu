@@ -39,10 +39,13 @@ void Suba::execute(CPUState& cpu_state){
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
-    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
-    uint64_t result = dest_data - src_data;
+    if(this->data_size == SIZE_WORD){
+        src_data = static_cast<uint32_t>(static_cast<int32_t>(static_cast<int16_t>(src_data)));
+    }
+    uint32_t dest_data = cpu_state.registers.get(this->dest_reg, SIZE_LONG);
+    uint32_t result = dest_data - src_data;
 
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
+    cpu_state.registers.set(this->dest_reg, SIZE_LONG, result);
 }
 
 std::string Suba::disassembly(CPUState& cpu_state){
