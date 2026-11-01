@@ -55,3 +55,4 @@
 #include "instructions/nbcd.hpp"
 #include "instructions/movem.hpp"
 #include "instructions/movep.hpp"
+#include "instructions/rtr.hpp"
