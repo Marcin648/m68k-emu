@@ -46,3 +46,4 @@
 #include "instructions/swap.hpp"
 #include "instructions/exg.hpp"
 #include "instructions/not.hpp"
+#include "instructions/negx.hpp"
