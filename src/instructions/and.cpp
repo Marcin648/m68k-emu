@@ -55,7 +55,7 @@ And::And(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void And::execute(CPUState& cpu_state){
+void And::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -72,7 +72,7 @@ void And::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, false);
 }
 
-std::string And::disassembly(CPUState& cpu_state){
+std::string And::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -86,6 +86,6 @@ std::string And::disassembly(CPUState& cpu_state){
 }
 
 
-std::shared_ptr<INSTRUCTION::Instruction> And::create(uint16_t opcode){
-    return std::make_shared<And>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> And::create(uint16_t opcode){
+    return std::make_unique<And>(opcode);
 }

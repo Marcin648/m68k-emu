@@ -17,8 +17,9 @@ namespace M68K{
             bool is_valid = true;
 
             Instruction(uint16_t opcode) : opcode(opcode) {};
-            virtual void execute(CPUState&) {};
-            virtual std::string disassembly(CPUState&) { return "unknown"; };
+            virtual ~Instruction() = default;
+            virtual void execute(CPUState&) const {};
+            virtual std::string disassembly(CPUState&) const { return "unknown"; };
 
             static AddressingMode getAddressingMode(uint16_t part_mode, uint16_t part_reg);
             static RegisterType getRegisterType(uint16_t part_mode, uint16_t part_reg);

@@ -33,7 +33,7 @@ Suba::Suba(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Suba::execute(CPUState& cpu_state){
+void Suba::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -48,7 +48,7 @@ void Suba::execute(CPUState& cpu_state){
     cpu_state.registers.set(this->dest_reg, SIZE_LONG, result);
 }
 
-std::string Suba::disassembly(CPUState& cpu_state){
+std::string Suba::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -61,6 +61,6 @@ std::string Suba::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Suba::create(uint16_t opcode){
-    return std::make_shared<Suba>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Suba::create(uint16_t opcode){
+    return std::make_unique<Suba>(opcode);
 }

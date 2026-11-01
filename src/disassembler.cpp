@@ -5,7 +5,7 @@
 
 using namespace M68K;
 
-std::string DISASSEMBLER::reg(RegisterType reg){
+std::string_view DISASSEMBLER::reg(RegisterType reg){
     switch(reg){
         case REG_D0: { return "d0"; }
         case REG_D1: { return "d1"; }
@@ -29,7 +29,7 @@ std::string DISASSEMBLER::reg(RegisterType reg){
     return "unknown reg";
 }
 
-std::string DISASSEMBLER::sizeSuffix(DataSize size){
+std::string_view DISASSEMBLER::sizeSuffix(DataSize size){
     switch(size){
         case DataSize::SIZE_BYTE: { return ".b"; };
         case DataSize::SIZE_WORD: { return ".w"; };
@@ -38,7 +38,7 @@ std::string DISASSEMBLER::sizeSuffix(DataSize size){
     return "";
 }
 
-std::string DISASSEMBLER::conditionSuffix(Condition cond){
+std::string_view DISASSEMBLER::conditionSuffix(Condition cond){
     switch(cond){
         case COND_TRUE: { return "t"; };
         case COND_FALSE: { return "f"; };

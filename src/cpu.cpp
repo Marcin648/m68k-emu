@@ -45,13 +45,8 @@ bool CPU::loadELF(const std::string& file_name){
         //           << segment->get_type() << std::endl;
 
         if(segment->get_type() == ELFIO::PT_LOAD){
-            uint32_t base_address = segment->get_address();
-            uint32_t size = segment->get_size();
-            auto data = segment->get_data();
-            for(size_t i = 0; i < size; i++){
-                uint32_t address = base_address + i;
-                this->state.memory.set(address, SIZE_BYTE, data[i]); // little slow, but good enough
-            }
+            const auto* data = reinterpret_cast<const uint8_t*>(segment->get_data());
+            this->state.memory.load(segment->get_address(), std::span(data, segment->get_size()));
         }
     }
 

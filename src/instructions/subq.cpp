@@ -46,7 +46,7 @@ Subq::Subq(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Subq::execute(CPUState& cpu_state){
+void Subq::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -71,7 +71,7 @@ void Subq::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 
-std::string Subq::disassembly(CPUState& cpu_state){
+std::string Subq::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -84,6 +84,6 @@ std::string Subq::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Subq::create(uint16_t opcode){
-    return std::make_shared<Subq>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Subq::create(uint16_t opcode){
+    return std::make_unique<Subq>(opcode);
 }

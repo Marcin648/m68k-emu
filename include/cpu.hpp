@@ -8,7 +8,6 @@ namespace M68K{
     
     public:
         CPU() = default;
-        CPU(CPU&) = default;
 
         CPUState state = CPUState();
         InstructionDecoder instruction_decoder = InstructionDecoder();
