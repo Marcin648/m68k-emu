@@ -2,11 +2,11 @@
 #include "instruction.hpp"
 #include <memory>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class BitShift : public Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class BitShift : public Instruction {
         private:
-            enum InstructionType{
+            enum InstructionType {
                 AS = 0x00,
                 LS = 0x01,
                 ROX = 0x02,
@@ -19,12 +19,13 @@ namespace M68K{
 
             bool direction_left = false;
             bool is_imm = false;
-            bool is_memory = false; 
+            bool is_memory = false;
 
             InstructionType instruction_type = InstructionType::AS;
             std::string instruction_str;
-            
+
             DataSize data_size;
+
         public:
             BitShift(uint16_t opcode);
             void execute(CPUState& cpu_state) const override;

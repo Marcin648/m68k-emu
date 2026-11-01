@@ -2,14 +2,14 @@
 #include <cstdint>
 #include <vector>
 
-namespace M68K{
-    enum DataSize{
+namespace M68K {
+    enum DataSize {
         SIZE_BYTE = 1,
         SIZE_WORD = 2,
         SIZE_LONG = 4
     };
 
-    enum AddressingMode{
+    enum AddressingMode {
         ADDR_MODE_DIRECT_DATA = 0,
         ADDR_MODE_DIRECT_ADDR = 1,
         ADDR_MODE_INDIRECT = 2,
@@ -25,7 +25,7 @@ namespace M68K{
         ADDR_MODE_UNKNOWN = -1,
     };
 
-    enum Condition{
+    enum Condition {
         COND_TRUE = 0,
         COND_FALSE = 1,
         COND_HIGHER = 2,

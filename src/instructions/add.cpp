@@ -5,7 +5,7 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Add::Add(uint16_t opcode) : Instruction(opcode){
+Add::Add(uint16_t opcode) : Instruction(opcode) {
     uint16_t data_reg_part = (opcode >> 9) & 0x7;
     uint16_t ea_mode_part = (opcode >> 3) & 0x7;
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
@@ -13,17 +13,17 @@ Add::Add(uint16_t opcode) : Instruction(opcode){
 
     this->op_mode = (opcode >> 8) & 0x1;
 
-    if(this->op_mode){
+    if (this->op_mode) {
         this->dest_mode = getAddressingMode(ea_mode_part, ea_reg_part);
         this->dest_reg = getRegisterType(ea_mode_part, ea_reg_part);
 
         this->src_mode = ADDR_MODE_DIRECT_DATA;
         this->src_reg = getRegisterType(0, data_reg_part);
 
-        if(!IS_MEMORY_ALTERABLE(this->dest_mode)){
+        if (!IS_MEMORY_ALTERABLE(this->dest_mode)) {
             this->is_valid = false;
         }
-    }else{
+    } else {
         this->dest_mode = ADDR_MODE_DIRECT_DATA;
         this->dest_reg = getRegisterType(0, data_reg_part);
 
@@ -31,27 +31,27 @@ Add::Add(uint16_t opcode) : Instruction(opcode){
         this->src_reg = getRegisterType(ea_mode_part, ea_reg_part);
     }
 
-    switch(data_size_part){
-        case 0x00:{ // 0b00
+    switch (data_size_part) {
+        case 0x00: { // 0b00
             this->data_size = SIZE_BYTE;
             break;
         }
-        case 0x01:{ // 0b01
+        case 0x01: { // 0b01
             this->data_size = SIZE_WORD;
             break;
         }
-        case 0x02:{ // 0b10
+        case 0x02: { // 0b10
             this->data_size = SIZE_LONG;
             break;
         }
-        
-        default:{
+
+        default: {
             this->is_valid = false;
         }
     }
 }
 
-void Add::execute(CPUState& cpu_state) const{
+void Add::execute(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -69,7 +69,7 @@ void Add::execute(CPUState& cpu_state) const{
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 
-std::string Add::disassembly(CPUState& cpu_state) const{
+std::string Add::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -78,10 +78,10 @@ std::string Add::disassembly(CPUState& cpu_state) const{
     output << "add" << DISASSEMBLER::sizeSuffix(this->data_size)
            << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
            << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
-               
+
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Add::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Add::create(uint16_t opcode) {
     return std::make_unique<Add>(opcode);
 }

@@ -7,9 +7,9 @@
 #include <string>
 #include <cstdint>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class Instruction {
         protected:
             uint16_t opcode;
 

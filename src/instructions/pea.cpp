@@ -5,7 +5,7 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Pea::Pea(uint16_t opcode) : Instruction(opcode){
+Pea::Pea(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_mode_part = (opcode >> 3) & 0x7;
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
 
@@ -14,12 +14,12 @@ Pea::Pea(uint16_t opcode) : Instruction(opcode){
 
     this->data_size = SIZE_LONG;
 
-    if(!IS_CONTROL_ADDR(this->addr_mode)){
+    if (!IS_CONTROL_ADDR(this->addr_mode)) {
         this->is_valid = false;
     }
 }
 
-void Pea::execute(CPUState& cpu_state) const{
+void Pea::execute(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -28,7 +28,7 @@ void Pea::execute(CPUState& cpu_state) const{
     cpu_state.stackPush(SIZE_LONG, addr);
 }
 
-std::string Pea::disassembly(CPUState& cpu_state) const{
+std::string Pea::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -38,6 +38,6 @@ std::string Pea::disassembly(CPUState& cpu_state) const{
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Pea::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Pea::create(uint16_t opcode) {
     return std::make_unique<Pea>(opcode);
 }

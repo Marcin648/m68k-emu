@@ -10,7 +10,7 @@ using namespace M68K;
 TEST_CASE("MUL: mulu #$0002, D0", "[instruction][mul]") {
     auto instruction = INSTRUCTION::Mul::create(0xC0FC); // mulu #$0002, D0
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x1000);
     state.memory.set(0, DataSize::SIZE_WORD, 0xC0FC); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0x0002); // imm
@@ -35,7 +35,7 @@ TEST_CASE("MUL: mulu #$0002, D0", "[instruction][mul]") {
 TEST_CASE("MUL: muls #$FFFE, D0", "[instruction][mul]") {
     auto instruction = INSTRUCTION::Mul::create(0xC1FC); // muls #$FFFE, D0
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x1000);
     state.memory.set(0, DataSize::SIZE_WORD, 0xC1FC); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0xFFFE); // imm

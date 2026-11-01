@@ -10,7 +10,7 @@ using namespace M68K;
 TEST_CASE("SUBI: subi.w #$0001, D0", "[instruction][subi]") {
     auto instruction = INSTRUCTION::Subi::create(0x0440); // subi.w #$0001, D0
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x8000);
 
     state.memory.set(0, DataSize::SIZE_WORD, 0x0440); // opcode

@@ -7,7 +7,7 @@ TEST_CASE("Program: fibonacci", "[program]") {
     CPU cpu = CPU();
     cpu.loadELF(M68K_TEST_BINARY_DIR "/fibonacci.elf");
 
-    while(cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x10058){
+    while (cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x10058) {
         cpu.step();
     }
 

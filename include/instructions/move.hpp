@@ -2,9 +2,9 @@
 #include "instruction.hpp"
 #include <memory>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class Move : public Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class Move : public Instruction {
         private:
             AddressingMode dest_mode = ADDR_MODE_UNKNOWN;
             AddressingMode src_mode = ADDR_MODE_UNKNOWN;
@@ -15,6 +15,7 @@ namespace M68K{
             DataSize data_size;
 
             bool is_movea = false;
+
         public:
             Move(uint16_t opcode);
             void execute(CPUState& cpu_state) const override;

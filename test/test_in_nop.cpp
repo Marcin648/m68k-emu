@@ -9,7 +9,7 @@ using namespace M68K;
 TEST_CASE("NOP: nop", "[instruction][nop]") {
     auto instruction = INSTRUCTION::Nop::create(0x4E71); // nop
     CPUState state = CPUState();
-    
+
 
     instruction.get()->execute(state);
     uint32_t return_data = state.registers.get(REG_PC, DataSize::SIZE_LONG);

@@ -7,8 +7,8 @@
 #include "registers.hpp"
 #include "cpu_state.hpp"
 
-namespace M68K{
-    namespace DISASSEMBLER{   
+namespace M68K {
+    namespace DISASSEMBLER {
         std::string_view reg(RegisterType reg);
         std::string_view sizeSuffix(DataSize size);
         std::string effectiveAddress(AddressingMode mode, RegisterType reg, DataSize size, CPUState& cpu_state);

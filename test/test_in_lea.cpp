@@ -9,7 +9,7 @@ using namespace M68K;
 TEST_CASE("LEA: lea 0xAABBCCDD, A1", "[instruction][lea]") {
     auto instruction = INSTRUCTION::Lea::create(0x43F9); // lea 0xAABBCCDD, A1
     CPUState state = CPUState();
-    
+
     state.memory.set(0x0000, SIZE_WORD, 0x43F9); // opcode
     state.memory.set(0x0002, SIZE_LONG, 0xAABBCCDD); // address
 

@@ -9,7 +9,7 @@ using namespace M68K;
 TEST_CASE("Bit manipulation: btst D0, D1", "[instruction][bit_manip]") {
     auto instruction = INSTRUCTION::BitManip::create(0x0101); // btst D0, D1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, SIZE_LONG, 41);
     state.registers.set(REG_D1, SIZE_LONG, (1 << 9));
 
@@ -33,7 +33,7 @@ TEST_CASE("Bit manipulation: btst D0, D1", "[instruction][bit_manip]") {
 TEST_CASE("Bit manipulation: btst D0, (A1)", "[instruction][bit_manip]") {
     auto instruction = INSTRUCTION::BitManip::create(0x0111); // btst D0, (A1)
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, SIZE_LONG, 41);
     state.registers.set(REG_A0, SIZE_LONG, 0);
 
@@ -59,7 +59,7 @@ TEST_CASE("Bit manipulation: btst D0, (A1)", "[instruction][bit_manip]") {
 TEST_CASE("Bit manipulation: bchg D0, D1", "[instruction][bit_manip]") {
     auto instruction = INSTRUCTION::BitManip::create(0x0141); // bchg D0, D1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, SIZE_LONG, 41);
     state.registers.set(REG_D1, SIZE_LONG, (1 << 9));
 
@@ -83,7 +83,7 @@ TEST_CASE("Bit manipulation: bchg D0, D1", "[instruction][bit_manip]") {
 TEST_CASE("Bit manipulation: bclr D0, D1", "[instruction][bit_manip]") {
     auto instruction = INSTRUCTION::BitManip::create(0x0181); // bclr D0, D1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, SIZE_LONG, 41);
     state.registers.set(REG_D1, SIZE_LONG, (1 << 9));
 
@@ -107,7 +107,7 @@ TEST_CASE("Bit manipulation: bclr D0, D1", "[instruction][bit_manip]") {
 TEST_CASE("Bit manipulation: bset D0, D1", "[instruction][bit_manip]") {
     auto instruction = INSTRUCTION::BitManip::create(0x01C1); // bclr D0, D1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, SIZE_LONG, 41);
     state.registers.set(REG_D1, SIZE_LONG, 0);
 

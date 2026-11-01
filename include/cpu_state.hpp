@@ -2,12 +2,12 @@
 #include "memory.hpp"
 #include "registers.hpp"
 
-namespace M68K{
-    class CPUState{   
+namespace M68K {
+    class CPUState {
     public:
         CPUState() = default;
 
-        Registers registers = Registers(); 
+        Registers registers = Registers();
         Memory memory = Memory();
 
         uint32_t stackPop(DataSize size);

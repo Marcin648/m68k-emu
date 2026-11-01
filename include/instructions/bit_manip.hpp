@@ -2,11 +2,11 @@
 #include "instruction.hpp"
 #include <memory>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class BitManip : public Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class BitManip : public Instruction {
         private:
-            enum InstructionType{
+            enum InstructionType {
                 BTST = 0x00,
                 BCHG = 0x01,
                 BCLR = 0x02,
@@ -23,6 +23,7 @@ namespace M68K{
 
             uint8_t data_bits_modulo;
             DataSize data_size;
+
         public:
             BitManip(uint16_t opcode);
             void execute(CPUState& cpu_state) const override;

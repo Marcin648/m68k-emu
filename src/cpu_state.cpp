@@ -7,7 +7,7 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-uint32_t CPUState::stackPop(DataSize size){
+uint32_t CPUState::stackPop(DataSize size) {
     uint32_t stack_ptr = this->registers.get(REG_USP, SIZE_LONG);
     uint32_t data = this->memory.get(stack_ptr, size);
     stack_ptr += static_cast<uint32_t>(size);
@@ -15,16 +15,16 @@ uint32_t CPUState::stackPop(DataSize size){
     return data;
 }
 
-void CPUState::stackPush(DataSize size, uint32_t data){
+void CPUState::stackPush(DataSize size, uint32_t data) {
     uint32_t stack_ptr = this->registers.get(REG_USP, SIZE_LONG);
     stack_ptr -= static_cast<uint32_t>(size);
     this->registers.set(REG_USP, SIZE_LONG, stack_ptr);
     this->memory.set(stack_ptr, size, data);
 }
 
-uint32_t CPUState::getControlAddress(AddressingMode mode, RegisterType reg, DataSize size){
+uint32_t CPUState::getControlAddress(AddressingMode mode, RegisterType reg, DataSize size) {
     uint32_t addr = 0;
-    switch(mode){
+    switch (mode) {
         case ADDR_MODE_INDIRECT: {
             addr = this->registers.get(reg, SIZE_LONG);
             break;
@@ -46,7 +46,7 @@ uint32_t CPUState::getControlAddress(AddressingMode mode, RegisterType reg, Data
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
 
-            if(ext_reg_size == SIZE_WORD){
+            if (ext_reg_size == SIZE_WORD) {
                 ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
             }
 
@@ -69,7 +69,7 @@ uint32_t CPUState::getControlAddress(AddressingMode mode, RegisterType reg, Data
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
 
-            if(ext_reg_size == SIZE_WORD){
+            if (ext_reg_size == SIZE_WORD) {
                 ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
             }
 
@@ -94,16 +94,16 @@ uint32_t CPUState::getControlAddress(AddressingMode mode, RegisterType reg, Data
         case ADDR_MODE_INDIRECT_PREDECREMENT:
         case ADDR_MODE_DIRECT_ADDR:
         case ADDR_MODE_DIRECT_DATA:
-        case ADDR_MODE_UNKNOWN:{
+        case ADDR_MODE_UNKNOWN: {
             break;
         }
     }
     return addr;
 }
 
-uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size){
+uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size) {
     uint32_t data = 0;
-    switch(mode){
+    switch (mode) {
         case ADDR_MODE_DIRECT_ADDR:
         case ADDR_MODE_DIRECT_DATA: {
             data = this->registers.get(reg, size);
@@ -145,7 +145,7 @@ uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size)
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
 
-            if(ext_reg_size == SIZE_WORD){
+            if (ext_reg_size == SIZE_WORD) {
                 ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
             }
 
@@ -168,7 +168,7 @@ uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size)
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
 
-            if(ext_reg_size == SIZE_WORD){
+            if (ext_reg_size == SIZE_WORD) {
                 ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
             }
 
@@ -198,16 +198,16 @@ uint32_t CPUState::getData(AddressingMode mode, RegisterType reg, DataSize size)
             data = (size == SIZE_BYTE ? MASK_8(value) : value);
             break;
         }
-        case ADDR_MODE_UNKNOWN:{
+        case ADDR_MODE_UNKNOWN: {
             break;
         }
     }
     return data;
 }
 
-uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize size){
+uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize size) {
     uint32_t data = 0;
-    switch(mode){
+    switch (mode) {
         case ADDR_MODE_DIRECT_ADDR:
         case ADDR_MODE_DIRECT_DATA: {
             data = this->registers.get(reg, size);
@@ -245,7 +245,7 @@ uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
 
-            if(ext_reg_size == SIZE_WORD){
+            if (ext_reg_size == SIZE_WORD) {
                 ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
             }
 
@@ -266,7 +266,7 @@ uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
 
-            if(ext_reg_size == SIZE_WORD){
+            if (ext_reg_size == SIZE_WORD) {
                 ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
             }
 
@@ -292,16 +292,15 @@ uint32_t CPUState::getDataSilent(AddressingMode mode, RegisterType reg, DataSize
             data = (size == SIZE_BYTE ? MASK_8(value) : value);
             break;
         }
-        case ADDR_MODE_UNKNOWN:{
+        case ADDR_MODE_UNKNOWN: {
             break;
         }
     }
     return data;
 }
 
-void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uint32_t data){
-    switch (mode)
-    {
+void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uint32_t data) {
+    switch (mode) {
         case ADDR_MODE_DIRECT_ADDR:
         case ADDR_MODE_DIRECT_DATA: {
             this->registers.set(reg, size, data);
@@ -343,7 +342,7 @@ void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uin
             int8_t ext_offset = ext_word & 0xFF;
             int32_t ext_reg_offset = this->registers.get(ext_reg, ext_reg_size);
 
-            if(ext_reg_size == SIZE_WORD){
+            if (ext_reg_size == SIZE_WORD) {
                 ext_reg_offset = static_cast<int16_t>(ext_reg_offset);
             }
 
@@ -391,47 +390,47 @@ void CPUState::setData(AddressingMode mode, RegisterType reg, DataSize size, uin
         case ADDR_MODE_PC_DISPLACEMENT:
         case ADDR_MODE_PC_INDEX:
         case ADDR_MODE_IMMEDIATE:
-        case ADDR_MODE_UNKNOWN:{
+        case ADDR_MODE_UNKNOWN: {
             break;
         }
     }
 }
 
-bool CPUState::checkCondition(Condition cond){
+bool CPUState::checkCondition(Condition cond) {
     //bool flag_extend = this->registers.get(SR_FLAG_EXTEND);
     bool flag_negative = this->registers.get(SR_FLAG_NEGATIVE);
     bool flag_zero = this->registers.get(SR_FLAG_ZERO);
     bool flag_overflow = this->registers.get(SR_FLAG_OVERFLOW);
     bool flag_carry = this->registers.get(SR_FLAG_CARRY);
 
-    switch(cond){
-        case COND_TRUE: { return true; }
-        case COND_FALSE: { return false; }
-        case COND_HIGHER: { return !flag_carry && !flag_zero; }
-        case COND_LOWER_SAME: {return flag_carry || flag_zero; }
-        case COND_CARRY_CLEAR: {return !flag_carry; }
-        case COND_CARRY_SET: {return flag_carry; }
-        case COND_NOT_EQUAL: {return !flag_zero; }
-        case COND_EQUAL: {return flag_zero; }
-        case COND_OVERFLOW_CLEAR: {return !flag_overflow; }
-        case COND_OVERFLOW_SET: {return flag_overflow; }
-        case COND_PLUS: {return !flag_negative; }
-        case COND_MINUS: {return flag_negative; }
-        case COND_GREATER_EQUAL: {return (flag_negative && flag_overflow) || (!flag_negative && !flag_overflow); }
-        case COND_LESS_THAN: {return (flag_negative && !flag_overflow) || (!flag_negative && flag_overflow); }
-        case COND_GREATER_THAN: {return (flag_negative && flag_overflow && !flag_zero) || (!flag_negative && !flag_overflow && !flag_zero); }
-        case COND_LESS_EQUAL: {return (flag_negative && !flag_overflow) || ((!flag_negative && flag_overflow) || flag_zero); }
+    switch (cond) {
+        case COND_TRUE: return true;
+        case COND_FALSE: return false;
+        case COND_HIGHER: return !flag_carry && !flag_zero;
+        case COND_LOWER_SAME: return flag_carry || flag_zero;
+        case COND_CARRY_CLEAR: return !flag_carry;
+        case COND_CARRY_SET: return flag_carry;
+        case COND_NOT_EQUAL: return !flag_zero;
+        case COND_EQUAL: return flag_zero;
+        case COND_OVERFLOW_CLEAR: return !flag_overflow;
+        case COND_OVERFLOW_SET: return flag_overflow;
+        case COND_PLUS: return !flag_negative;
+        case COND_MINUS: return flag_negative;
+        case COND_GREATER_EQUAL: return (flag_negative && flag_overflow) || (!flag_negative && !flag_overflow);
+        case COND_LESS_THAN: return (flag_negative && !flag_overflow) || (!flag_negative && flag_overflow);
+        case COND_GREATER_THAN: return (flag_negative && flag_overflow && !flag_zero) || (!flag_negative && !flag_overflow && !flag_zero);
+        case COND_LESS_EQUAL: return (flag_negative && !flag_overflow) || ((!flag_negative && flag_overflow) || flag_zero);
     }
     return false;
 }
 
-void CPUState::debugPrint(){
+void CPUState::debugPrint() {
     puts("CPU state:");
-    for(size_t i = 0; i < 8; i++){
+    for (size_t i = 0; i < 8; i++) {
         printf("D%zu: 0x%08X\n", i, this->registers.get(static_cast<RegisterType>(i), SIZE_LONG));
     }
-    for(size_t i = 0; i < 8; i++){
-        printf("A%zu: 0x%08X\n", i, this->registers.get(static_cast<RegisterType>(i+8), SIZE_LONG));
+    for (size_t i = 0; i < 8; i++) {
+        printf("A%zu: 0x%08X\n", i, this->registers.get(static_cast<RegisterType>(i + 8), SIZE_LONG));
     }
     printf("USP: 0x%08X\n", this->registers.get(REG_USP, SIZE_LONG));
     printf("PC: 0x%08X\n", this->registers.get(REG_PC, SIZE_LONG));

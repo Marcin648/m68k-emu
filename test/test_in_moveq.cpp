@@ -10,7 +10,7 @@ using namespace M68K;
 TEST_CASE("MOVEQ: moveq #100, D0", "[instruction][moveq]") {
     auto instruction = INSTRUCTION::Moveq::create(0x7064); // moveq #100, D0
     CPUState state = CPUState();
-    
+
     instruction.get()->execute(state);
     uint32_t return_data = state.registers.get(REG_D0, DataSize::SIZE_LONG);
     CHECK(return_data == 100);

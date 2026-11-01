@@ -10,7 +10,7 @@ using namespace M68K;
 TEST_CASE("ADDA: adda.w D0, A1", "[instruction][adda]") {
     auto instruction = INSTRUCTION::Adda::create(0xD2C0); // adda.w D0, A1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_A1, DataSize::SIZE_LONG, 0x2000);
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x1000);
 

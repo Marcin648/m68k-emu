@@ -10,7 +10,7 @@ using namespace M68K;
 TEST_CASE("SUBQ: subq #7, D0", "[instruction][subq]") {
     auto instruction = INSTRUCTION::Subq::create(0x5E40); // subq #7, D0
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, SIZE_WORD, 107);
 
     instruction.get()->execute(state);

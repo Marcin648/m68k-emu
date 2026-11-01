@@ -2,9 +2,9 @@
 #include "instruction.hpp"
 #include <memory>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class And : public Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class And : public Instruction {
         private:
             AddressingMode dest_mode = ADDR_MODE_UNKNOWN;
             AddressingMode src_mode = ADDR_MODE_UNKNOWN;
@@ -15,6 +15,7 @@ namespace M68K{
             uint8_t op_mode = 0;
 
             DataSize data_size;
+
         public:
             And(uint16_t opcode);
             void execute(CPUState& cpu_state) const override;

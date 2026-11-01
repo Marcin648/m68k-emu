@@ -12,7 +12,7 @@ TEST_CASE("JSR/RTS: jsr (A0) then rts", "[instruction][jsr][rts]") {
 
     SECTION("jsr (A0)") {
         auto instruction_jsr = INSTRUCTION::Jsr::create(0x4E90); // jsr (A0)
-        
+
         state.registers.set(REG_USP, SIZE_LONG, MEMORY_SIZE);
         state.registers.set(REG_PC, SIZE_LONG, 0xF000);
         state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x2000);

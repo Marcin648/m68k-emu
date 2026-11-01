@@ -10,7 +10,7 @@ using namespace M68K;
 TEST_CASE("SUBA: suba.w D0, A1", "[instruction][suba]") {
     auto instruction = INSTRUCTION::Suba::create(0x92C0); // suba.w D0, A1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_A1, DataSize::SIZE_LONG, 0x2000);
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x1000);
 
