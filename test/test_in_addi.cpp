@@ -10,7 +10,7 @@ using namespace M68K;
 TEST_CASE("ADDI: addi.w #$0001, D0", "[instruction][addi]") {
     auto instruction = INSTRUCTION::Addi::create(0x0640); // addi.w #$0001, D0
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x7FFF);
 
     state.memory.set(0, DataSize::SIZE_WORD, 0x0640); // opcode

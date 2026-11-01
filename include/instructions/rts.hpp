@@ -2,9 +2,9 @@
 #include "instruction.hpp"
 #include <memory>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class Rts : public Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class Rts : public Instruction {
         private:
         public:
             Rts(uint16_t opcode);

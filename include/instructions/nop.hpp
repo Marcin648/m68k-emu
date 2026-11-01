@@ -2,9 +2,9 @@
 #include "instruction.hpp"
 #include <memory>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class Nop : public Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class Nop : public Instruction {
         public:
             Nop(uint16_t opcode);
             void execute(CPUState& cpu_state) const override;

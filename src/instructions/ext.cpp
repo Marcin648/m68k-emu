@@ -5,7 +5,7 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Ext::Ext(uint16_t opcode) : Instruction(opcode){
+Ext::Ext(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
     uint16_t data_size_part = (opcode >> 6) & 0x1;
 
@@ -15,16 +15,16 @@ Ext::Ext(uint16_t opcode) : Instruction(opcode){
     this->data_size = data_size_part ? SIZE_LONG : SIZE_WORD;
 }
 
-void Ext::execute(CPUState& cpu_state) const{
+void Ext::execute(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t result = 0;
-    if(this->data_size == SIZE_WORD){
+    if (this->data_size == SIZE_WORD) {
         uint8_t data_byte = cpu_state.getData(this->addr_mode, this->addr_reg, SIZE_BYTE);
         result = static_cast<uint16_t>(static_cast<int16_t>(static_cast<int8_t>(data_byte)));
-    }else{
+    } else {
         uint16_t data_word = cpu_state.getData(this->addr_mode, this->addr_reg, SIZE_WORD);
         result = static_cast<uint32_t>(static_cast<int32_t>(static_cast<int16_t>(data_word)));
     }
@@ -36,7 +36,7 @@ void Ext::execute(CPUState& cpu_state) const{
     cpu_state.registers.set(SR_FLAG_CARRY, false);
 }
 
-std::string Ext::disassembly(CPUState& cpu_state) const{
+std::string Ext::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -46,6 +46,6 @@ std::string Ext::disassembly(CPUState& cpu_state) const{
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Ext::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Ext::create(uint16_t opcode) {
     return std::make_unique<Ext>(opcode);
 }

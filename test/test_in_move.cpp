@@ -9,7 +9,7 @@ using namespace M68K;
 TEST_CASE("MOVE: move.w A1, D1", "[instruction][move]") {
     auto instruction = INSTRUCTION::Move::create(0x3209); // move.w A1, D1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_A1, DataSize::SIZE_LONG, 0xAABBCCDD);
 
     instruction.get()->execute(state);
@@ -30,7 +30,7 @@ TEST_CASE("MOVE: move.w A1, D1", "[instruction][move]") {
 TEST_CASE("MOVE: move.l A1, D1", "[instruction][move]") {
     auto instruction = INSTRUCTION::Move::create(0x2209); // move.l A1, D1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_A1, DataSize::SIZE_LONG, 0xAABBCCDD);
 
     instruction.get()->execute(state);
@@ -51,7 +51,7 @@ TEST_CASE("MOVE: move.l A1, D1", "[instruction][move]") {
 TEST_CASE("MOVE: movea.w D0, A1", "[instruction][move]") {
     auto instruction = INSTRUCTION::Move::create(0x3240); // movea.w D0, A1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0xAABBCCDD);
 
     instruction.get()->execute(state);
@@ -72,7 +72,7 @@ TEST_CASE("MOVE: movea.w D0, A1", "[instruction][move]") {
 TEST_CASE("MOVE: movea.l D0, A1", "[instruction][move]") {
     auto instruction = INSTRUCTION::Move::create(0x2240); // movea.w D0, A1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0xAABBCCDD);
 
     instruction.get()->execute(state);

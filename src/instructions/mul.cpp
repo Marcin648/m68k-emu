@@ -5,13 +5,13 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Mul::Mul(uint16_t opcode) : Instruction(opcode){
+Mul::Mul(uint16_t opcode) : Instruction(opcode) {
     uint16_t data_reg_part = (opcode >> 9) & 0x7;
     uint16_t ea_mode_mode = (opcode >> 3) & 0x7;
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
 
     this->is_signed = (opcode >> 8) & 0x1;
-   
+
     this->dest_mode = ADDR_MODE_DIRECT_DATA;
     this->dest_reg = getRegisterType(0, data_reg_part);
 
@@ -20,12 +20,12 @@ Mul::Mul(uint16_t opcode) : Instruction(opcode){
 
     this->data_size = SIZE_WORD;
 
-    if((this->src_mode == ADDR_MODE_UNKNOWN) || (this->src_mode == ADDR_MODE_DIRECT_ADDR)){
+    if ((this->src_mode == ADDR_MODE_UNKNOWN) || (this->src_mode == ADDR_MODE_DIRECT_ADDR)) {
         this->is_valid = false;
     }
 }
 
-void Mul::execute(CPUState& cpu_state) const{
+void Mul::execute(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -34,9 +34,9 @@ void Mul::execute(CPUState& cpu_state) const{
     uint16_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
     uint32_t result;
 
-    if(this->is_signed){
+    if (this->is_signed) {
         result = static_cast<uint32_t>(static_cast<int16_t>(src_data) * static_cast<int16_t>(dest_data));
-    }else{
+    } else {
         result = static_cast<uint32_t>(src_data) * static_cast<uint32_t>(dest_data);
     }
 
@@ -48,7 +48,7 @@ void Mul::execute(CPUState& cpu_state) const{
     cpu_state.registers.set(SR_FLAG_CARRY, false);
 }
 
-std::string Mul::disassembly(CPUState& cpu_state) const{
+std::string Mul::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -57,10 +57,10 @@ std::string Mul::disassembly(CPUState& cpu_state) const{
     output << (this->is_signed ? "muls" : "mulu") << DISASSEMBLER::sizeSuffix(this->data_size)
            << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
            << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
-               
+
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Mul::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Mul::create(uint16_t opcode) {
     return std::make_unique<Mul>(opcode);
 }

@@ -2,11 +2,12 @@
 #include "instruction.hpp"
 #include <memory>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class Unlk : public Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class Unlk : public Instruction {
         private:
             RegisterType addr_reg = REG_A0;
+
         public:
             Unlk(uint16_t opcode);
             void execute(CPUState& cpu_state) const override;

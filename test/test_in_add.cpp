@@ -10,7 +10,7 @@ using namespace M68K;
 TEST_CASE("ADD: add.w #$CCDD, D1", "[instruction][add]") {
     auto instruction = INSTRUCTION::Add::create(0xD27C); // add.w $AABBCCDD, D1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D1, DataSize::SIZE_LONG, 0x11111111);
     state.memory.set(0, DataSize::SIZE_WORD, 0xD27C); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0xCCDD); // value to add
@@ -35,7 +35,7 @@ TEST_CASE("ADD: add.w #$CCDD, D1", "[instruction][add]") {
 TEST_CASE("ADD: add.w (A1), D0", "[instruction][add]") {
     auto instruction = INSTRUCTION::Add::create(0xD051); // add.w (A1), D0
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_A1, DataSize::SIZE_LONG, 0x1000);
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x0001);
     state.memory.set(0x1000, DataSize::SIZE_WORD, 0x7FFF);
@@ -60,7 +60,7 @@ TEST_CASE("ADD: add.w (A1), D0", "[instruction][add]") {
 TEST_CASE("ADD: add.w D0, (A1)", "[instruction][add]") {
     auto instruction = INSTRUCTION::Add::create(0xD151); // add.w D0, (A1)
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_A1, DataSize::SIZE_LONG, 0x1000);
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x0001);
     state.memory.set(0x1000, DataSize::SIZE_WORD, 0x7FFF);

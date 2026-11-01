@@ -4,7 +4,7 @@
 
 using namespace M68K;
 using namespace INSTRUCTION;
-BitShift::BitShift(uint16_t opcode) : Instruction(opcode){
+BitShift::BitShift(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_mode_part = (opcode >> 3) & 0x7;
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
     uint16_t direction_part = (opcode >> 8) & 0x1;
@@ -13,25 +13,25 @@ BitShift::BitShift(uint16_t opcode) : Instruction(opcode){
     this->direction_left = direction_part == 1;
     this->is_memory = false;
 
-    switch(data_size_part){
-        case 0x00:{ // 0b00
+    switch (data_size_part) {
+        case 0x00: { // 0b00
             this->data_size = SIZE_BYTE;
             break;
         }
-        case 0x01:{ // 0b01
+        case 0x01: { // 0b01
             this->data_size = SIZE_WORD;
             break;
         }
-        case 0x02:{ // 0b10
+        case 0x02: { // 0b10
             this->data_size = SIZE_LONG;
             break;
         }
-        case 0x03:{ // 0b11
+        case 0x03: { // 0b11
             this->data_size = SIZE_WORD;
             this->is_memory = true;
             break;
         }
-        default:{
+        default: {
             this->is_valid = false;
         }
     }
@@ -41,43 +41,42 @@ BitShift::BitShift(uint16_t opcode) : Instruction(opcode){
     uint16_t is_reg_part = (opcode >> 5) & 0x1;
     uint16_t count_part = (opcode >> 9) & 0x7;
 
-    if(this->is_memory){
+    if (this->is_memory) {
         this->addr_mode = getAddressingMode(addr_mode_part, addr_reg_part);
         this->addr_reg = getRegisterType(addr_mode_part, addr_reg_part);
         this->is_imm = true;
         this->imm_shift = 1;
-        if(!IS_MEMORY_ALTERABLE(this->addr_mode)){
+        if (!IS_MEMORY_ALTERABLE(this->addr_mode)) {
             this->is_valid = false;
         }
-    }else{
+    } else {
         this->is_imm = (is_reg_part == 0);
-        if(this->is_imm){
+        if (this->is_imm) {
             this->imm_shift = (count_part == 0) ? 8 : count_part;
-        }else{
+        } else {
             this->shift_reg = getRegisterType(0, count_part);
         }
         this->addr_mode = ADDR_MODE_DIRECT_DATA;
         this->addr_reg = getRegisterType(0, addr_reg_part);
     }
-    
+
     this->instruction_type = static_cast<InstructionType>(instruction_type_part);
-    switch (this->instruction_type)
-    {
-        case InstructionType::AS: {this->instruction_str = "as"; break;};
-        case InstructionType::LS: {this->instruction_str = "ls"; break;};
-        case InstructionType::ROX: {this->instruction_str = "rox"; break;};
-        case InstructionType::RO: {this->instruction_str = "ro"; break;};
+    switch (this->instruction_type) {
+        case InstructionType::AS: this->instruction_str = "as"; break;
+        case InstructionType::LS: this->instruction_str = "ls"; break;
+        case InstructionType::ROX: this->instruction_str = "rox"; break;
+        case InstructionType::RO: this->instruction_str = "ro"; break;
     }
     this->instruction_str += (this->direction_left ? "l" : "r");
 }
 
-void BitShift::execute(CPUState& cpu_state) const{
+void BitShift::execute(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t shift = this->imm_shift;
-    if(!this->is_imm){
+    if (!this->is_imm) {
         shift = cpu_state.getData(ADDR_MODE_DIRECT_DATA, this->shift_reg, SIZE_LONG) % 64;
     }
 
@@ -89,42 +88,42 @@ void BitShift::execute(CPUState& cpu_state) const{
     bool overflow = false;
 
     // shift one bit at a time, carry holds the last bit shifted out
-    for(uint32_t i = 0; i < shift; i++){
+    for (uint32_t i = 0; i < shift; i++) {
         bool msb = data & msb_mask;
         bool lsb = data & 0x1;
 
-        if(this->direction_left){
+        if (this->direction_left) {
             carry = msb;
             data <<= 1;
-            switch(this->instruction_type){
+            switch (this->instruction_type) {
                 case InstructionType::AS: {
-                    if(static_cast<bool>(data & msb_mask) != msb){
+                    if (static_cast<bool>(data & msb_mask) != msb) {
                         overflow = true;
                     }
                     break;
                 }
-                case InstructionType::LS: { break; }
-                case InstructionType::ROX: { data |= extend ? 0x1 : 0x0; break; }
-                case InstructionType::RO: { data |= msb ? 0x1 : 0x0; break; }
+                case InstructionType::LS: break;
+                case InstructionType::ROX: data |= extend ? 0x1 : 0x0; break;
+                case InstructionType::RO: data |= msb ? 0x1 : 0x0; break;
             }
-        }else{
+        } else {
             carry = lsb;
             data >>= 1;
-            switch(this->instruction_type){
-                case InstructionType::AS: { data |= msb ? msb_mask : 0x0; break; }
-                case InstructionType::LS: { break; }
-                case InstructionType::ROX: { data |= extend ? msb_mask : 0x0; break; }
-                case InstructionType::RO: { data |= lsb ? msb_mask : 0x0; break; }
+            switch (this->instruction_type) {
+                case InstructionType::AS: data |= msb ? msb_mask : 0x0; break;
+                case InstructionType::LS: break;
+                case InstructionType::ROX: data |= extend ? msb_mask : 0x0; break;
+                case InstructionType::RO: data |= lsb ? msb_mask : 0x0; break;
             }
         }
         data = MASK(data, this->data_size);
 
-        if(this->instruction_type != InstructionType::RO){
+        if (this->instruction_type != InstructionType::RO) {
             extend = carry;
         }
     }
 
-    if((this->instruction_type == InstructionType::ROX) && (shift == 0)){
+    if ((this->instruction_type == InstructionType::ROX) && (shift == 0)) {
         carry = extend;
     }
 
@@ -137,7 +136,7 @@ void BitShift::execute(CPUState& cpu_state) const{
     cpu_state.registers.set(SR_FLAG_CARRY, carry);
 }
 
-std::string BitShift::disassembly(CPUState& cpu_state) const{
+std::string BitShift::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -145,19 +144,19 @@ std::string BitShift::disassembly(CPUState& cpu_state) const{
     std::ostringstream output;
 
     output << this->instruction_str << DISASSEMBLER::sizeSuffix(this->data_size) << " ";
-    if(this->is_memory){
+    if (this->is_memory) {
         output << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
-    }else if(this->is_imm){
+    } else if (this->is_imm) {
         output << "#$" << std::hex << static_cast<uint32_t>(this->imm_shift);
         output << ", " << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
-    }else{
+    } else {
         output << DISASSEMBLER::effectiveAddress(ADDR_MODE_DIRECT_DATA, this->shift_reg, this->data_size, cpu_state);
         output << ", " << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
     }
-               
+
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> BitShift::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> BitShift::create(uint16_t opcode) {
     return std::make_unique<BitShift>(opcode);
 }

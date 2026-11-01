@@ -5,13 +5,13 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Link::Link(uint16_t opcode) : Instruction(opcode){
+Link::Link(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
     this->addr_reg = getRegisterType(1, addr_reg_part);
     this->data_size = SIZE_WORD;
 }
 
-void Link::execute(CPUState& cpu_state) const{
+void Link::execute(CPUState& cpu_state) const {
     uint32_t pc;
     uint32_t addr_data;
     uint32_t stack_ptr;
@@ -31,7 +31,7 @@ void Link::execute(CPUState& cpu_state) const{
     cpu_state.registers.set(REG_USP, SIZE_LONG, stack_ptr + displacement);
 }
 
-std::string Link::disassembly(CPUState& cpu_state) const{
+std::string Link::disassembly(CPUState& cpu_state) const {
     int16_t displacement;
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
@@ -45,6 +45,6 @@ std::string Link::disassembly(CPUState& cpu_state) const{
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Link::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Link::create(uint16_t opcode) {
     return std::make_unique<Link>(opcode);
 }

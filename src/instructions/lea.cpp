@@ -5,7 +5,7 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Lea::Lea(uint16_t opcode) : Instruction(opcode){
+Lea::Lea(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_reg_part = (opcode >> 9) & 0x7;
     uint16_t ea_mode_part = (opcode >> 3) & 0x7;
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
@@ -15,12 +15,12 @@ Lea::Lea(uint16_t opcode) : Instruction(opcode){
     this->addr_reg = getRegisterType(1, addr_reg_part);
     this->data_size = SIZE_LONG;
 
-    if(!IS_CONTROL_ADDR(this->src_mode)){
+    if (!IS_CONTROL_ADDR(this->src_mode)) {
         this->is_valid = false;
     }
 }
 
-void Lea::execute(CPUState& cpu_state) const{
+void Lea::execute(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -29,7 +29,7 @@ void Lea::execute(CPUState& cpu_state) const{
     cpu_state.setData(ADDR_MODE_DIRECT_ADDR, this->addr_reg, this->data_size, src_data);
 }
 
-std::string Lea::disassembly(CPUState& cpu_state) const{
+std::string Lea::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -41,6 +41,6 @@ std::string Lea::disassembly(CPUState& cpu_state) const{
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Lea::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Lea::create(uint16_t opcode) {
     return std::make_unique<Lea>(opcode);
 }

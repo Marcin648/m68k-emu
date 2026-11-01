@@ -12,7 +12,7 @@ TEST_CASE("Scc: svs D0 (V set)", "[instruction][scc]") {
 
     auto instruction = INSTRUCTION::Scc::create(0x59C0); // svs D0
 
-    state.registers.set(REG_D0, SIZE_BYTE, 0x00);    
+    state.registers.set(REG_D0, SIZE_BYTE, 0x00);
     state.registers.set(SR_FLAG_OVERFLOW, true);
 
     instruction.get()->execute(state);
@@ -26,7 +26,7 @@ TEST_CASE("Scc: svs D0 (V clear)", "[instruction][scc]") {
 
     auto instruction = INSTRUCTION::Scc::create(0x59C0); // svs D0
 
-    state.registers.set(REG_D0, SIZE_BYTE, 0xFF);    
+    state.registers.set(REG_D0, SIZE_BYTE, 0xFF);
     state.registers.set(SR_FLAG_OVERFLOW, false);
 
     instruction.get()->execute(state);

@@ -2,9 +2,9 @@
 #include "instruction.hpp"
 #include <memory>
 
-namespace M68K{
-    namespace INSTRUCTION{
-        class Illegal : public Instruction{
+namespace M68K {
+    namespace INSTRUCTION {
+        class Illegal : public Instruction {
         public:
             Illegal(uint16_t opcode) : Instruction(opcode) {};
             void execute(CPUState& cpu_state) const override;

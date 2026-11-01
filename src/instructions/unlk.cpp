@@ -5,12 +5,12 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Unlk::Unlk(uint16_t opcode) : Instruction(opcode){
+Unlk::Unlk(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
     this->addr_reg = getRegisterType(1, addr_reg_part);
 }
 
-void Unlk::execute(CPUState& cpu_state) const{
+void Unlk::execute(CPUState& cpu_state) const {
     uint32_t pc;
     uint32_t addr_data;
 
@@ -25,7 +25,7 @@ void Unlk::execute(CPUState& cpu_state) const{
     cpu_state.registers.set(this->addr_reg, SIZE_LONG, addr_data);
 }
 
-std::string Unlk::disassembly(CPUState& cpu_state) const{
+std::string Unlk::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -35,6 +35,6 @@ std::string Unlk::disassembly(CPUState& cpu_state) const{
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Unlk::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Unlk::create(uint16_t opcode) {
     return std::make_unique<Unlk>(opcode);
 }

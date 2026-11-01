@@ -1,6 +1,6 @@
 #include <catch2/catch_session.hpp>
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
     Catch::Session session;
 
     // A single run of the program benchmark takes several seconds, so the default of
@@ -8,7 +8,7 @@ int main(int argc, char* argv[]){
     session.configData().benchmarkSamples = 5;
 
     int result = session.applyCommandLine(argc, argv);
-    if(result != 0){
+    if (result != 0) {
         return result;
     }
 

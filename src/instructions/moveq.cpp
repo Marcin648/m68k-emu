@@ -5,7 +5,7 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Moveq::Moveq(uint16_t opcode) : Instruction(opcode){
+Moveq::Moveq(uint16_t opcode) : Instruction(opcode) {
     uint16_t reg_part = (opcode >> 9) & 0x7;
 
     this->dest_mode = ADDR_MODE_DIRECT_DATA;
@@ -14,7 +14,7 @@ Moveq::Moveq(uint16_t opcode) : Instruction(opcode){
     this->data_size = SIZE_LONG;
 }
 
-void Moveq::execute(CPUState& cpu_state) const{
+void Moveq::execute(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -28,7 +28,7 @@ void Moveq::execute(CPUState& cpu_state) const{
     cpu_state.registers.set(SR_FLAG_CARRY, false);
 }
 
-std::string Moveq::disassembly(CPUState& cpu_state) const{
+std::string Moveq::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -37,10 +37,10 @@ std::string Moveq::disassembly(CPUState& cpu_state) const{
     output << "moveq"
            << " #$" << std::hex << (uint32_t)(uint8_t)this->imm_data
            << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
-               
+
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Moveq::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Moveq::create(uint16_t opcode) {
     return std::make_unique<Moveq>(opcode);
 }

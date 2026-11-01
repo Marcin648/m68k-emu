@@ -54,7 +54,7 @@ TEST_CASE("Memory: set out of range long", "[memory]") {
 struct LoadedMemory {
     Memory memory;
 
-    LoadedMemory(){
+    LoadedMemory() {
         memory.set(0x00, DataSize::SIZE_LONG, 0xAABBCCDD);
     }
 };

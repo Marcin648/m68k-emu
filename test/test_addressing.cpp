@@ -9,7 +9,7 @@ using namespace M68K;
 TEST_CASE("Addressing: direct - move.w A1, D1", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x3209); // move.w A1, D1
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_A1, DataSize::SIZE_LONG, 0xAABBCCDD);
 
     instruction.get()->execute(state);
@@ -20,7 +20,7 @@ TEST_CASE("Addressing: direct - move.w A1, D1", "[addressing]") {
 TEST_CASE("Addressing: addr direct - movea.l D1, A0", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x2041); // movea.l D1, A0
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xAABBCCDD);
 
     instruction.get()->execute(state);
@@ -31,7 +31,7 @@ TEST_CASE("Addressing: addr direct - movea.l D1, A0", "[addressing]") {
 TEST_CASE("Addressing: addr indirect - move.l D1, (A0)", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x2081); // move.l D1, (A0)
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xAABBCCDD);
     state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
 
@@ -43,7 +43,7 @@ TEST_CASE("Addressing: addr indirect - move.l D1, (A0)", "[addressing]") {
 TEST_CASE("Addressing: addr indirect++ - move.l D1, (A0)+", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x20C1); // move.l D1, (A0)+
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xAABBCCDD);
     state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
 
@@ -55,7 +55,7 @@ TEST_CASE("Addressing: addr indirect++ - move.l D1, (A0)+", "[addressing]") {
 TEST_CASE("Addressing: addr --indirect - move.l D1, -(A0)", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x2101); // move.l D1, -(A0)
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D1, DataSize::SIZE_LONG, 0xAABBCCDD);
     state.registers.set(REG_A0, DataSize::SIZE_LONG, 0x1000);
 
@@ -67,7 +67,7 @@ TEST_CASE("Addressing: addr --indirect - move.l D1, -(A0)", "[addressing]") {
 TEST_CASE("Addressing: addr displacement - move.w (A0, 4), (A1, 8)", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x3368); // move.w (A0, 4), (A1, 8)
     CPUState state = CPUState();
-    
+
     state.memory.set(0, DataSize::SIZE_WORD, 0x3368); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0x0004); // src offset
     state.memory.set(4, DataSize::SIZE_WORD, 0x0008); // dest offset
@@ -85,7 +85,7 @@ TEST_CASE("Addressing: addr displacement - move.w (A0, 4), (A1, 8)", "[addressin
 TEST_CASE("Addressing: addr displacement negative - move.w (A0, 4), (A1, -2)", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x3368); // move.w (A0, 4), (A1, -2)
     CPUState state = CPUState();
-    
+
     state.memory.set(0, DataSize::SIZE_WORD, 0x3368); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0x0004); // src offset
     state.memory.set(4, DataSize::SIZE_WORD, 0xFFFE); // dest offset
@@ -103,7 +103,7 @@ TEST_CASE("Addressing: addr displacement negative - move.w (A0, 4), (A1, -2)", "
 TEST_CASE("Addressing: addr index word - move.w D0, (8, A0, D1.W)", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x3180); // move.w D0, (8, A0, D1.W)
     CPUState state = CPUState();
-    
+
     state.memory.set(0, DataSize::SIZE_WORD, 0x3180); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0x1008); // index (8, A0, D1.W)
 
@@ -119,7 +119,7 @@ TEST_CASE("Addressing: addr index word - move.w D0, (8, A0, D1.W)", "[addressing
 TEST_CASE("Addressing: addr index long - move.l D0, (8, A0, D1.L)", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x2180); // move.l D0, (8, A0, D1.L)
     CPUState state = CPUState();
-    
+
     state.memory.set(0, DataSize::SIZE_WORD, 0x2180); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0x1808); // index (8, A0, D1.L)
 
@@ -135,7 +135,7 @@ TEST_CASE("Addressing: addr index long - move.l D0, (8, A0, D1.L)", "[addressing
 TEST_CASE("Addressing: pc displacement - move.w (PC, 6), D0", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x303A); // move.w (PC, 6), D0
     CPUState state = CPUState();
-    
+
     state.memory.set(0, DataSize::SIZE_WORD, 0x303A); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0x0004); // src offset - 2
     state.memory.set(4, DataSize::SIZE_WORD, 0x0000); // padding
@@ -149,7 +149,7 @@ TEST_CASE("Addressing: pc displacement - move.w (PC, 6), D0", "[addressing]") {
 TEST_CASE("Addressing: pc displacement negative - move.w (PC, 0), D0", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x303A); // move.w (PC, 0), D0
     CPUState state = CPUState();
-    
+
     state.memory.set(0, DataSize::SIZE_WORD, 0x303A); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0xFFFE); // src offset - 2
 
@@ -161,7 +161,7 @@ TEST_CASE("Addressing: pc displacement negative - move.w (PC, 0), D0", "[address
 TEST_CASE("Addressing: absolute short - move.w D0, $1000", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x31C0); // move.w D0, $1000
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0xAABBCCDD);
     state.memory.set(0, DataSize::SIZE_WORD, 0x31C0); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0x1000); // dest word
@@ -174,7 +174,7 @@ TEST_CASE("Addressing: absolute short - move.w D0, $1000", "[addressing]") {
 TEST_CASE("Addressing: absolute long - move.w D0, $10000", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x33C0); // move.w D0, $10000
     CPUState state = CPUState();
-    
+
     state.registers.set(REG_D0, DataSize::SIZE_LONG, 0xAABBCCDD);
     state.memory.set(0, DataSize::SIZE_WORD, 0x33C0); // opcode
     state.memory.set(2, DataSize::SIZE_LONG, 0x10000); // dest long
@@ -187,7 +187,7 @@ TEST_CASE("Addressing: absolute long - move.w D0, $10000", "[addressing]") {
 TEST_CASE("Addressing: immediate - move.w $CCDD, D0", "[addressing]") {
     auto instruction = INSTRUCTION::Move::create(0x303c); // move.w $CCDD, D0
     CPUState state = CPUState();
-    
+
     state.memory.set(0, DataSize::SIZE_WORD, 0x303c); // opcode
     state.memory.set(2, DataSize::SIZE_WORD, 0xCCDD); // dest long
 

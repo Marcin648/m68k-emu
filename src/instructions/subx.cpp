@@ -5,7 +5,7 @@
 using namespace M68K;
 using namespace INSTRUCTION;
 
-Subx::Subx(uint16_t opcode) : Instruction(opcode){
+Subx::Subx(uint16_t opcode) : Instruction(opcode) {
     uint16_t dest_reg_part = (opcode >> 9) & 0x7;
     uint16_t src_reg_part = (opcode >> 0) & 0x7;
     uint16_t mode_part = (opcode >> 3) & 0x1;
@@ -17,27 +17,27 @@ Subx::Subx(uint16_t opcode) : Instruction(opcode){
     this->src_mode = this->dest_mode;
     this->src_reg = getRegisterType(mode_part, src_reg_part);
 
-    switch(data_size_part){
-        case 0x00:{ // 0b00
+    switch (data_size_part) {
+        case 0x00: { // 0b00
             this->data_size = SIZE_BYTE;
             break;
         }
-        case 0x01:{ // 0b01
+        case 0x01: { // 0b01
             this->data_size = SIZE_WORD;
             break;
         }
-        case 0x02:{ // 0b10
+        case 0x02: { // 0b10
             this->data_size = SIZE_LONG;
             break;
         }
-        
-        default:{
+
+        default: {
             this->is_valid = false;
         }
     }
 }
 
-void Subx::execute(CPUState& cpu_state) const{
+void Subx::execute(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -50,8 +50,8 @@ void Subx::execute(CPUState& cpu_state) const{
 
     cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
 
-    if(!IS_ZERO(result, this->data_size)){ // change only if non zero
-        cpu_state.registers.set(SR_FLAG_ZERO, false); 
+    if (!IS_ZERO(result, this->data_size)) { // change only if non zero
+        cpu_state.registers.set(SR_FLAG_ZERO, false);
     }
 
     cpu_state.registers.set(SR_FLAG_EXTEND, IS_CARRY(result, this->data_size));
@@ -60,7 +60,7 @@ void Subx::execute(CPUState& cpu_state) const{
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 
-std::string Subx::disassembly(CPUState& cpu_state) const{
+std::string Subx::disassembly(CPUState& cpu_state) const {
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -69,10 +69,10 @@ std::string Subx::disassembly(CPUState& cpu_state) const{
     output << "subx" << DISASSEMBLER::sizeSuffix(this->data_size)
            << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
            << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
-  
+
     return output.str();
 }
 
-std::unique_ptr<INSTRUCTION::Instruction> Subx::create(uint16_t opcode){
+std::unique_ptr<INSTRUCTION::Instruction> Subx::create(uint16_t opcode) {
     return std::make_unique<Subx>(opcode);
 }
