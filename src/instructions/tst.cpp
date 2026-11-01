@@ -9,8 +9,8 @@ Tst::Tst(uint16_t opcode) : Instruction(opcode) {
     uint16_t ea_mode_part = (opcode >> 3) & 0x7;
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
 
-    this->ea_mode = getAddressingMode(ea_mode_part, ea_reg_part);
-    this->ea_reg = getRegisterType(ea_mode_part, ea_reg_part);
+    this->ea_mode = get_addressing_mode(ea_mode_part, ea_reg_part);
+    this->ea_reg = get_register_type(ea_mode_part, ea_reg_part);
 
     if (!IS_DATA_ALTERABLE(this->ea_mode)) {
         this->is_valid = false;
@@ -41,7 +41,7 @@ void Tst::execute(CPUState& cpu_state) const {
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t ea_data = cpu_state.getData(this->ea_mode, this->ea_reg, this->data_size);
+    uint32_t ea_data = cpu_state.get_data(this->ea_mode, this->ea_reg, this->data_size);
 
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(ea_data, this->data_size));
     cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(ea_data, this->data_size));
@@ -55,7 +55,7 @@ std::string Tst::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "tst " << DISASSEMBLER::effectiveAddress(this->ea_mode, this->ea_reg, this->data_size, cpu_state);
+    output << "tst " << DISASSEMBLER::effective_address(this->ea_mode, this->ea_reg, this->data_size, cpu_state);
     return output.str();
 }
 

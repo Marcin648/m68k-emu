@@ -90,7 +90,7 @@ TEST_CASE("SUB: sub.l D0, D1 (borrow)", "[instruction][sub]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0xFFFFFFFF);
-    checkFlags(state, true, true, false, false, true);
+    check_flags(state, true, true, false, false, true);
 }
 
 TEST_CASE("SUB: sub.w D0, D1 (overflow)", "[instruction][sub]") {
@@ -101,7 +101,7 @@ TEST_CASE("SUB: sub.w D0, D1 (overflow)", "[instruction][sub]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00007FFF);
-    checkFlags(state, false, false, false, true, false);
+    check_flags(state, false, false, false, true, false);
 }
 
 TEST_CASE("SUB: sub.b D0, D1 (no overflow)", "[instruction][sub]") {
@@ -112,5 +112,5 @@ TEST_CASE("SUB: sub.b D0, D1 (no overflow)", "[instruction][sub]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00000000);
-    checkFlags(state, false, false, true, false, false);
+    check_flags(state, false, false, true, false, false);
 }

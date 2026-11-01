@@ -9,12 +9,12 @@ void CPU::step() {
     uint32_t pc = this->state.registers.get(REG_PC);
     uint16_t opcode = this->state.memory.get(pc, SIZE_WORD);
 
-    auto instruction = this->instruction_decoder.Decode(opcode);
+    auto instruction = this->instruction_decoder.decode(opcode);
     //std::cout << typeid(*instruction).name() << std::endl;
     instruction->execute(this->state);
 }
 
-bool CPU::loadELF(const std::string& file_name) {
+bool CPU::load_elf(const std::string& file_name) {
     ELFIO::elfio elf_reader;
     if (!elf_reader.load(file_name)) {
         return false;

@@ -10,12 +10,12 @@ namespace M68K {
     private:
         std::vector<std::unique_ptr<INSTRUCTION::Instruction>> opcode_table;
 
-        void generateOpcodeTable();
+        void generate_opcode_table();
 
     public:
         InstructionDecoder();
 
-        const INSTRUCTION::Instruction* Decode(uint16_t opcode) const {
+        const INSTRUCTION::Instruction* decode(uint16_t opcode) const {
             return this->opcode_table[opcode].get();
         }
     };

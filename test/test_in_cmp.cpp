@@ -15,7 +15,7 @@ TEST_CASE("CMP: cmp.l D0, D1 (borrow)", "[instruction][cmp]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00000000);
-    checkFlags(state, false, true, false, false, true);
+    check_flags(state, false, true, false, false, true);
 }
 
 TEST_CASE("CMP: cmp.w D0, D1 (overflow)", "[instruction][cmp]") {
@@ -25,7 +25,7 @@ TEST_CASE("CMP: cmp.w D0, D1 (overflow)", "[instruction][cmp]") {
     state.registers.set(REG_D1, SIZE_LONG, 0x00008000);
 
     instruction.get()->execute(state);
-    checkFlags(state, false, false, false, true, false);
+    check_flags(state, false, false, false, true, false);
 }
 
 TEST_CASE("CMPI: cmpi.l #1, D0 (borrow)", "[instruction][cmpi]") {
@@ -37,7 +37,7 @@ TEST_CASE("CMPI: cmpi.l #1, D0 (borrow)", "[instruction][cmpi]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_PC, SIZE_LONG) == 6);
-    checkFlags(state, false, true, false, false, true);
+    check_flags(state, false, true, false, false, true);
 }
 
 TEST_CASE("CMPA: cmpa.w D0, A1 (compares 32 bits)", "[instruction][cmpa]") {
@@ -47,7 +47,7 @@ TEST_CASE("CMPA: cmpa.w D0, A1 (compares 32 bits)", "[instruction][cmpa]") {
     state.registers.set(REG_A1, SIZE_LONG, 0x00010000);
 
     instruction.get()->execute(state);
-    checkFlags(state, false, false, false, false, false);
+    check_flags(state, false, false, false, false, false);
 }
 
 TEST_CASE("CMPA: cmpa.w D0, A1 (sign-extended source)", "[instruction][cmpa]") {
@@ -57,5 +57,5 @@ TEST_CASE("CMPA: cmpa.w D0, A1 (sign-extended source)", "[instruction][cmpa]") {
     state.registers.set(REG_A1, SIZE_LONG, 0xFFFFFFFF);
 
     instruction.get()->execute(state);
-    checkFlags(state, false, false, true, false, false);
+    check_flags(state, false, false, true, false, false);
 }

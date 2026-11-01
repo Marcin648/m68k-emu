@@ -10,8 +10,8 @@ Clr::Clr(uint16_t opcode) : Instruction(opcode) {
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
     uint16_t data_size_part = (opcode >> 6) & 0x3;
 
-    this->dest_mode = getAddressingMode(ea_mode_part, ea_reg_part);
-    this->dest_reg = getRegisterType(ea_mode_part, ea_reg_part);
+    this->dest_mode = get_addressing_mode(ea_mode_part, ea_reg_part);
+    this->dest_reg = get_register_type(ea_mode_part, ea_reg_part);
 
     if (!IS_DATA_ALTERABLE(this->dest_mode)) {
         this->is_valid = false;
@@ -42,7 +42,7 @@ void Clr::execute(CPUState& cpu_state) const {
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, 0);
+    cpu_state.set_data(this->dest_mode, this->dest_reg, this->data_size, 0);
 
     cpu_state.registers.set(SR_FLAG_NEGATIVE, false);
     cpu_state.registers.set(SR_FLAG_ZERO, true);
@@ -56,8 +56,8 @@ std::string Clr::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "clr" << DISASSEMBLER::sizeSuffix(this->data_size)
-           << " " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    output << "clr" << DISASSEMBLER::size_suffix(this->data_size)
+           << " " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
 
     return output.str();
 }

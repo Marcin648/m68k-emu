@@ -1,0 +1,16 @@
+Checks: '-*,readability-identifier-naming'
+HeaderFilterRegex: '.*'
+ExcludeHeaderFilterRegex: '.*[\\/]_deps[\\/].*'
+CheckOptions:
+  readability-identifier-naming.ClassCase: CamelCase
+  readability-identifier-naming.ClassIgnoredRegexp: '^[A-Z][A-Z0-9]*$'
+  readability-identifier-naming.StructCase: CamelCase
+  readability-identifier-naming.EnumCase: CamelCase
+  readability-identifier-naming.EnumConstantCase: UPPER_CASE
+  readability-identifier-naming.FunctionCase: lower_case
+  readability-identifier-naming.FunctionIgnoredRegexp: '^[A-Z][A-Z0-9_]*$'
+  readability-identifier-naming.MethodCase: lower_case
+  readability-identifier-naming.VariableCase: lower_case
+  readability-identifier-naming.ParameterCase: lower_case
+  readability-identifier-naming.MemberCase: lower_case
+  readability-identifier-naming.ConstexprVariableCase: UPPER_CASE

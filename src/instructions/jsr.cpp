@@ -9,8 +9,8 @@ Jsr::Jsr(uint16_t opcode) : Instruction(opcode) {
     uint16_t ea_mode_part = (opcode >> 3) & 0x7;
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
 
-    this->dest_mode = getAddressingMode(ea_mode_part, ea_reg_part);
-    this->dest_reg = getRegisterType(ea_mode_part, ea_reg_part);
+    this->dest_mode = get_addressing_mode(ea_mode_part, ea_reg_part);
+    this->dest_reg = get_register_type(ea_mode_part, ea_reg_part);
     this->data_size = SIZE_LONG;
 
     if (!IS_CONTROL_ADDR(this->dest_mode)) {
@@ -23,10 +23,10 @@ void Jsr::execute(CPUState& cpu_state) const {
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t dest_addr = cpu_state.getControlAddress(this->dest_mode, this->dest_reg, this->data_size);
+    uint32_t dest_addr = cpu_state.get_control_address(this->dest_mode, this->dest_reg, this->data_size);
     pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
 
-    cpu_state.stackPush(SIZE_LONG, pc);
+    cpu_state.stack_push(SIZE_LONG, pc);
     cpu_state.registers.set(REG_PC, SIZE_LONG, dest_addr);
 }
 
@@ -36,7 +36,7 @@ std::string Jsr::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "jsr " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    output << "jsr " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
     return output.str();
 }
 

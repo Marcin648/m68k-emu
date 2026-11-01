@@ -90,7 +90,7 @@ TEST_CASE("ADD: add.l D0, D1 (carry)", "[instruction][add]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00000000);
-    checkFlags(state, true, false, true, false, true);
+    check_flags(state, true, false, true, false, true);
 }
 
 TEST_CASE("ADD: add.l D0, D1 (overflow)", "[instruction][add]") {
@@ -101,5 +101,5 @@ TEST_CASE("ADD: add.l D0, D1 (overflow)", "[instruction][add]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x80000000);
-    checkFlags(state, false, true, false, true, false);
+    check_flags(state, false, true, false, true, false);
 }

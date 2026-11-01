@@ -66,5 +66,5 @@ TEST_CASE("MUL: mulu #$FFFF, D0", "[instruction][mul]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFE0001);
-    checkFlags(state, false, true, false, false, false);
+    check_flags(state, false, true, false, false, false);
 }

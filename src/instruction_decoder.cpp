@@ -106,7 +106,7 @@ namespace {
     };
 }
 
-void InstructionDecoder::generateOpcodeTable() {
+void InstructionDecoder::generate_opcode_table() {
     this->opcode_table.clear();
     this->opcode_table.reserve(0x10000);
 
@@ -129,5 +129,5 @@ void InstructionDecoder::generateOpcodeTable() {
 }
 
 InstructionDecoder::InstructionDecoder() {
-    this->generateOpcodeTable();
+    this->generate_opcode_table();
 }

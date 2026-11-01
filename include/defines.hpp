@@ -44,5 +44,5 @@ namespace M68K {
         COND_LESS_EQUAL = 15,
     };
 
-    const std::size_t MEMORY_SIZE = 0x01000000; // 16 MB
+    constexpr std::size_t MEMORY_SIZE = 0x01000000; // 16 MB
 }

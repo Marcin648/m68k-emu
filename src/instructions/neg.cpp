@@ -10,8 +10,8 @@ Neg::Neg(uint16_t opcode) : Instruction(opcode) {
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
     uint16_t data_size_part = (opcode >> 6) & 0x3;
 
-    this->dest_mode = getAddressingMode(ea_mode_part, ea_reg_part);
-    this->dest_reg = getRegisterType(ea_mode_part, ea_reg_part);
+    this->dest_mode = get_addressing_mode(ea_mode_part, ea_reg_part);
+    this->dest_reg = get_register_type(ea_mode_part, ea_reg_part);
 
     if (!IS_DATA_ALTERABLE(this->dest_mode)) {
         this->is_valid = false;
@@ -43,10 +43,10 @@ void Neg::execute(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t src_data = 0;
-    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
+    uint32_t dest_data = cpu_state.get_data_silent(this->dest_mode, this->dest_reg, this->data_size);
     uint64_t result = static_cast<uint64_t>(src_data) - dest_data;
 
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
+    cpu_state.set_data(this->dest_mode, this->dest_reg, this->data_size, result);
 
     cpu_state.registers.set(SR_FLAG_EXTEND, IS_CARRY(result, this->data_size));
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
@@ -61,7 +61,7 @@ std::string Neg::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "neg " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    output << "neg " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
     return output.str();
 }
 

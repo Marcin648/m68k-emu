@@ -42,8 +42,8 @@ BitShift::BitShift(uint16_t opcode) : Instruction(opcode) {
     uint16_t count_part = (opcode >> 9) & 0x7;
 
     if (this->is_memory) {
-        this->addr_mode = getAddressingMode(addr_mode_part, addr_reg_part);
-        this->addr_reg = getRegisterType(addr_mode_part, addr_reg_part);
+        this->addr_mode = get_addressing_mode(addr_mode_part, addr_reg_part);
+        this->addr_reg = get_register_type(addr_mode_part, addr_reg_part);
         this->is_imm = true;
         this->imm_shift = 1;
         if (!IS_MEMORY_ALTERABLE(this->addr_mode)) {
@@ -54,10 +54,10 @@ BitShift::BitShift(uint16_t opcode) : Instruction(opcode) {
         if (this->is_imm) {
             this->imm_shift = (count_part == 0) ? 8 : count_part;
         } else {
-            this->shift_reg = getRegisterType(0, count_part);
+            this->shift_reg = get_register_type(0, count_part);
         }
         this->addr_mode = ADDR_MODE_DIRECT_DATA;
-        this->addr_reg = getRegisterType(0, addr_reg_part);
+        this->addr_reg = get_register_type(0, addr_reg_part);
     }
 
     this->instruction_type = static_cast<InstructionType>(instruction_type_part);
@@ -77,10 +77,10 @@ void BitShift::execute(CPUState& cpu_state) const {
 
     uint32_t shift = this->imm_shift;
     if (!this->is_imm) {
-        shift = cpu_state.getData(ADDR_MODE_DIRECT_DATA, this->shift_reg, SIZE_LONG) % 64;
+        shift = cpu_state.get_data(ADDR_MODE_DIRECT_DATA, this->shift_reg, SIZE_LONG) % 64;
     }
 
-    uint32_t data = cpu_state.getDataSilent(this->addr_mode, this->addr_reg, this->data_size);
+    uint32_t data = cpu_state.get_data_silent(this->addr_mode, this->addr_reg, this->data_size);
     const uint32_t msb_mask = 1u << (this->data_size * 8 - 1);
 
     bool extend = cpu_state.registers.get(SR_FLAG_EXTEND);
@@ -127,7 +127,7 @@ void BitShift::execute(CPUState& cpu_state) const {
         carry = extend;
     }
 
-    cpu_state.setData(this->addr_mode, this->addr_reg, this->data_size, data);
+    cpu_state.set_data(this->addr_mode, this->addr_reg, this->data_size, data);
 
     cpu_state.registers.set(SR_FLAG_EXTEND, extend);
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(data, this->data_size));
@@ -143,15 +143,15 @@ std::string BitShift::disassembly(CPUState& cpu_state) const {
 
     std::ostringstream output;
 
-    output << this->instruction_str << DISASSEMBLER::sizeSuffix(this->data_size) << " ";
+    output << this->instruction_str << DISASSEMBLER::size_suffix(this->data_size) << " ";
     if (this->is_memory) {
-        output << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
+        output << DISASSEMBLER::effective_address(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
     } else if (this->is_imm) {
         output << "#$" << std::hex << static_cast<uint32_t>(this->imm_shift);
-        output << ", " << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
+        output << ", " << DISASSEMBLER::effective_address(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
     } else {
-        output << DISASSEMBLER::effectiveAddress(ADDR_MODE_DIRECT_DATA, this->shift_reg, this->data_size, cpu_state);
-        output << ", " << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
+        output << DISASSEMBLER::effective_address(ADDR_MODE_DIRECT_DATA, this->shift_reg, this->data_size, cpu_state);
+        output << ", " << DISASSEMBLER::effective_address(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
     }
 
     return output.str();

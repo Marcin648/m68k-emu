@@ -13,10 +13,10 @@ Mul::Mul(uint16_t opcode) : Instruction(opcode) {
     this->is_signed = (opcode >> 8) & 0x1;
 
     this->dest_mode = ADDR_MODE_DIRECT_DATA;
-    this->dest_reg = getRegisterType(0, data_reg_part);
+    this->dest_reg = get_register_type(0, data_reg_part);
 
-    this->src_mode = getAddressingMode(ea_mode_mode, ea_reg_part);
-    this->src_reg = getRegisterType(ea_mode_mode, ea_reg_part);
+    this->src_mode = get_addressing_mode(ea_mode_mode, ea_reg_part);
+    this->src_reg = get_register_type(ea_mode_mode, ea_reg_part);
 
     this->data_size = SIZE_WORD;
 
@@ -30,8 +30,8 @@ void Mul::execute(CPUState& cpu_state) const {
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint16_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
-    uint16_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
+    uint16_t src_data = cpu_state.get_data(this->src_mode, this->src_reg, this->data_size);
+    uint16_t dest_data = cpu_state.get_data_silent(this->dest_mode, this->dest_reg, this->data_size);
     uint32_t result;
 
     if (this->is_signed) {
@@ -40,7 +40,7 @@ void Mul::execute(CPUState& cpu_state) const {
         result = static_cast<uint32_t>(src_data) * static_cast<uint32_t>(dest_data);
     }
 
-    cpu_state.setData(this->dest_mode, this->dest_reg, SIZE_LONG, result);
+    cpu_state.set_data(this->dest_mode, this->dest_reg, SIZE_LONG, result);
 
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, SIZE_LONG));
     cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, SIZE_LONG));
@@ -54,9 +54,9 @@ std::string Mul::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << (this->is_signed ? "muls" : "mulu") << DISASSEMBLER::sizeSuffix(this->data_size)
-           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
-           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    output << (this->is_signed ? "muls" : "mulu") << DISASSEMBLER::size_suffix(this->data_size)
+           << " " << DISASSEMBLER::effective_address(this->src_mode, this->src_reg, this->data_size, cpu_state)
+           << ", " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
 
     return output.str();
 }

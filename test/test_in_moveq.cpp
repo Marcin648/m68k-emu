@@ -35,5 +35,5 @@ TEST_CASE("MOVEQ: moveq #-1, D0 (sign-extended)", "[instruction][moveq]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFFFFFF);
-    checkFlags(state, false, true, false, false, false);
+    check_flags(state, false, true, false, false, false);
 }

@@ -5,7 +5,7 @@ using namespace M68K;
 
 TEST_CASE("Program: bubblesort", "[program]") {
     CPU cpu = CPU();
-    cpu.loadELF(M68K_TEST_BINARY_DIR "/bubblesort.elf");
+    cpu.load_elf(M68K_TEST_BINARY_DIR "/bubblesort.elf");
 
     while (cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x100c4) {
         cpu.step();

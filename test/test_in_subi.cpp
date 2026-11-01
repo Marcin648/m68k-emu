@@ -43,5 +43,5 @@ TEST_CASE("SUBI: subi.l #1, D0 (borrow)", "[instruction][subi]") {
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFFFFFF);
     CHECK(state.registers.get(REG_PC, SIZE_LONG) == 6);
-    checkFlags(state, true, true, false, false, true);
+    check_flags(state, true, true, false, false, true);
 }

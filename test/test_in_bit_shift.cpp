@@ -16,7 +16,7 @@ TEST_CASE("BitShift: lsl.b #1, D0", "[instruction][bit_shift]") {
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x12345602);
     CHECK(state.registers.get(REG_PC, SIZE_LONG) == 2);
-    checkFlags(state, true, false, false, false, true);
+    check_flags(state, true, false, false, false, true);
 }
 
 TEST_CASE("BitShift: lsr.w #8, D1 (count 0 means 8)", "[instruction][bit_shift]") {
@@ -27,7 +27,7 @@ TEST_CASE("BitShift: lsr.w #8, D1 (count 0 means 8)", "[instruction][bit_shift]"
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x111100AB);
-    checkFlags(state, true, false, false, false, true);
+    check_flags(state, true, false, false, false, true);
 }
 
 TEST_CASE("BitShift: asr.b #2, D0", "[instruction][bit_shift]") {
@@ -38,7 +38,7 @@ TEST_CASE("BitShift: asr.b #2, D0", "[instruction][bit_shift]") {
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x000000E0);
-    checkFlags(state, true, true, false, false, true);
+    check_flags(state, true, true, false, false, true);
 }
 
 TEST_CASE("BitShift: asl.b #1, D0 (overflow)", "[instruction][bit_shift]") {
@@ -49,7 +49,7 @@ TEST_CASE("BitShift: asl.b #1, D0 (overflow)", "[instruction][bit_shift]") {
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000080);
-    checkFlags(state, false, true, false, true, false);
+    check_flags(state, false, true, false, true, false);
 }
 
 TEST_CASE("BitShift: asl.l D1, D0", "[instruction][bit_shift]") {
@@ -61,7 +61,7 @@ TEST_CASE("BitShift: asl.l D1, D0", "[instruction][bit_shift]") {
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000010);
-    checkFlags(state, true, false, false, true, true);
+    check_flags(state, true, false, false, true, true);
 }
 
 TEST_CASE("BitShift: rol.w #1, D0 (X not affected)", "[instruction][bit_shift]") {
@@ -72,7 +72,7 @@ TEST_CASE("BitShift: rol.w #1, D0 (X not affected)", "[instruction][bit_shift]")
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000003);
-    checkFlags(state, false, false, false, false, true);
+    check_flags(state, false, false, false, false, true);
 }
 
 TEST_CASE("BitShift: ror.l #4, D2", "[instruction][bit_shift]") {
@@ -84,7 +84,7 @@ TEST_CASE("BitShift: ror.l #4, D2", "[instruction][bit_shift]") {
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D2, SIZE_LONG) == 0x81234567);
-    checkFlags(state, true, true, false, false, true);
+    check_flags(state, true, true, false, false, true);
 }
 
 TEST_CASE("BitShift: roxl.b #1, D0 (X=1)", "[instruction][bit_shift]") {
@@ -96,7 +96,7 @@ TEST_CASE("BitShift: roxl.b #1, D0 (X=1)", "[instruction][bit_shift]") {
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000001);
-    checkFlags(state, true, false, false, false, true);
+    check_flags(state, true, false, false, false, true);
 }
 
 TEST_CASE("BitShift: roxr.w #1, D0 (uses X, not C)", "[instruction][bit_shift]") {
@@ -109,7 +109,7 @@ TEST_CASE("BitShift: roxr.w #1, D0 (uses X, not C)", "[instruction][bit_shift]")
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000000);
-    checkFlags(state, true, false, true, false, true);
+    check_flags(state, true, false, true, false, true);
 }
 
 TEST_CASE("BitShift: roxl.l D1, D0 (count 0, C = X)", "[instruction][bit_shift]") {
@@ -122,7 +122,7 @@ TEST_CASE("BitShift: roxl.l D1, D0 (count 0, C = X)", "[instruction][bit_shift]"
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000005);
-    checkFlags(state, true, false, false, false, true);
+    check_flags(state, true, false, false, false, true);
 }
 
 TEST_CASE("BitShift: lsl.l D1, D0 (count 0)", "[instruction][bit_shift]") {
@@ -136,7 +136,7 @@ TEST_CASE("BitShift: lsl.l D1, D0 (count 0)", "[instruction][bit_shift]") {
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x80000000);
-    checkFlags(state, true, true, false, false, false);
+    check_flags(state, true, true, false, false, false);
 }
 
 TEST_CASE("BitShift: lsr.l D1, D0 (count modulo 64)", "[instruction][bit_shift]") {
@@ -148,7 +148,7 @@ TEST_CASE("BitShift: lsr.l D1, D0 (count modulo 64)", "[instruction][bit_shift]"
     instruction.get()->execute(state);
 
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000000);
-    checkFlags(state, true, false, true, false, true);
+    check_flags(state, true, false, true, false, true);
 }
 
 TEST_CASE("BitShift: lsr.w (A0)", "[instruction][bit_shift]") {
@@ -160,7 +160,7 @@ TEST_CASE("BitShift: lsr.w (A0)", "[instruction][bit_shift]") {
     instruction.get()->execute(state);
 
     CHECK(state.memory.get(0x2000, SIZE_WORD) == 0x4000);
-    checkFlags(state, true, false, false, false, true);
+    check_flags(state, true, false, false, false, true);
 }
 
 TEST_CASE("BitShift: asl.w 4(A0)", "[instruction][bit_shift]") {
@@ -175,5 +175,5 @@ TEST_CASE("BitShift: asl.w 4(A0)", "[instruction][bit_shift]") {
 
     CHECK(state.memory.get(0x2004, SIZE_WORD) == 0x8000);
     CHECK(state.registers.get(REG_PC, SIZE_LONG) == 4);
-    checkFlags(state, false, true, false, true, false);
+    check_flags(state, false, true, false, true, false);
 }
