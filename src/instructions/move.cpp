@@ -59,7 +59,7 @@ Move::Move(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Move::execute(CPUState& cpu_state){
+void Move::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -82,7 +82,7 @@ void Move::execute(CPUState& cpu_state){
     }
 }
 
-std::string Move::disassembly(CPUState& cpu_state){
+std::string Move::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -95,6 +95,6 @@ std::string Move::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Move::create(uint16_t opcode){
-    return std::make_shared<Move>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Move::create(uint16_t opcode){
+    return std::make_unique<Move>(opcode);
 }

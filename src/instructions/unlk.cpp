@@ -10,7 +10,7 @@ Unlk::Unlk(uint16_t opcode) : Instruction(opcode){
     this->addr_reg = getRegisterType(1, addr_reg_part);
 }
 
-void Unlk::execute(CPUState& cpu_state){
+void Unlk::execute(CPUState& cpu_state) const{
     uint32_t pc;
     uint32_t addr_data;
 
@@ -25,7 +25,7 @@ void Unlk::execute(CPUState& cpu_state){
     cpu_state.registers.set(this->addr_reg, SIZE_LONG, addr_data);
 }
 
-std::string Unlk::disassembly(CPUState& cpu_state){
+std::string Unlk::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -35,6 +35,6 @@ std::string Unlk::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Unlk::create(uint16_t opcode){
-    return std::make_shared<Unlk>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Unlk::create(uint16_t opcode){
+    return std::make_unique<Unlk>(opcode);
 }

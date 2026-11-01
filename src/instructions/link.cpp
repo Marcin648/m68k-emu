@@ -11,7 +11,7 @@ Link::Link(uint16_t opcode) : Instruction(opcode){
     this->data_size = SIZE_WORD;
 }
 
-void Link::execute(CPUState& cpu_state){
+void Link::execute(CPUState& cpu_state) const{
     uint32_t pc;
     uint32_t addr_data;
     uint32_t stack_ptr;
@@ -31,7 +31,7 @@ void Link::execute(CPUState& cpu_state){
     cpu_state.registers.set(REG_USP, SIZE_LONG, stack_ptr + displacement);
 }
 
-std::string Link::disassembly(CPUState& cpu_state){
+std::string Link::disassembly(CPUState& cpu_state) const{
     int16_t displacement;
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
@@ -45,6 +45,6 @@ std::string Link::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Link::create(uint16_t opcode){
-    return std::make_shared<Link>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Link::create(uint16_t opcode){
+    return std::make_unique<Link>(opcode);
 }

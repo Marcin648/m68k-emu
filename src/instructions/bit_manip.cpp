@@ -49,7 +49,7 @@ BitManip::BitManip(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void BitManip::execute(CPUState& cpu_state){
+void BitManip::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -78,7 +78,7 @@ void BitManip::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_ZERO, !(dest_data & bit_mask));
 }
 
-std::string BitManip::disassembly(CPUState& cpu_state){
+std::string BitManip::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -91,6 +91,6 @@ std::string BitManip::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> BitManip::create(uint16_t opcode){
-    return std::make_shared<BitManip>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> BitManip::create(uint16_t opcode){
+    return std::make_unique<BitManip>(opcode);
 }

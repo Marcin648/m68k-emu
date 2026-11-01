@@ -37,7 +37,7 @@ Clr::Clr(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Clr::execute(CPUState& cpu_state){
+void Clr::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -50,7 +50,7 @@ void Clr::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, false);
 }
 
-std::string Clr::disassembly(CPUState& cpu_state){
+std::string Clr::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -62,6 +62,6 @@ std::string Clr::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Clr::create(uint16_t opcode){
-    return std::make_shared<Clr>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Clr::create(uint16_t opcode){
+    return std::make_unique<Clr>(opcode);
 }

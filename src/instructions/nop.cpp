@@ -9,13 +9,13 @@ Nop::Nop(uint16_t opcode) : Instruction(opcode){
     ;
 }
 
-void Nop::execute(CPUState& cpu_state){
+void Nop::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 }
 
-std::string Nop::disassembly(CPUState& cpu_state){
+std::string Nop::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -23,6 +23,6 @@ std::string Nop::disassembly(CPUState& cpu_state){
 }
 
 
-std::shared_ptr<INSTRUCTION::Instruction> Nop::create(uint16_t opcode){
-    return std::make_shared<Nop>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Nop::create(uint16_t opcode){
+    return std::make_unique<Nop>(opcode);
 }

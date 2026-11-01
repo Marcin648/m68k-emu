@@ -33,7 +33,7 @@ Adda::Adda(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Adda::execute(CPUState& cpu_state){
+void Adda::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -48,7 +48,7 @@ void Adda::execute(CPUState& cpu_state){
     cpu_state.registers.set(this->dest_reg, SIZE_LONG, result);
 }
 
-std::string Adda::disassembly(CPUState& cpu_state){
+std::string Adda::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -61,6 +61,6 @@ std::string Adda::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Adda::create(uint16_t opcode){
-    return std::make_shared<Adda>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Adda::create(uint16_t opcode){
+    return std::make_unique<Adda>(opcode);
 }

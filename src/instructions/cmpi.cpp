@@ -37,7 +37,7 @@ Cmpi::Cmpi(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Cmpi::execute(CPUState& cpu_state){
+void Cmpi::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -52,7 +52,7 @@ void Cmpi::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 
-std::string Cmpi::disassembly(CPUState& cpu_state){
+std::string Cmpi::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -65,6 +65,6 @@ std::string Cmpi::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Cmpi::create(uint16_t opcode){
-    return std::make_shared<Cmpi>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Cmpi::create(uint16_t opcode){
+    return std::make_unique<Cmpi>(opcode);
 }

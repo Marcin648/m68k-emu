@@ -1,9 +1,10 @@
 #pragma once
+#include <array>
 #include <cstdint>
 #include <cstddef>
-#include <vector>
 
 #include "defines.hpp"
+#include "helpers.hpp"
 
 namespace M68K{
     enum RegisterType{
@@ -39,18 +40,61 @@ namespace M68K{
     };
 
     class Registers{
-    private:
-        std::vector<uint32_t> reg_buffer = std::vector<uint32_t>(REG_BUFFER_SIZE);
     public:
-        static const size_t REG_BUFFER_SIZE = 18;
+        static constexpr std::size_t REG_BUFFER_SIZE = 18;
 
-        Registers() = default;
-        Registers(Registers&) = default;
+    private:
+        std::array<uint32_t, REG_BUFFER_SIZE> reg_buffer{};
 
-        uint32_t get(RegisterType reg, DataSize size = DataSize::SIZE_LONG);
-        void set(RegisterType reg, DataSize size, uint32_t data);
+        [[noreturn]] static void throwInvalidRegister(RegisterType reg);
+        [[noreturn]] static void throwInvalidSize(DataSize size);
 
-        bool get(StatusRegisterFlag flag);
-        void set(StatusRegisterFlag flag, bool value);
+    public:
+        uint32_t get(RegisterType reg, DataSize size = DataSize::SIZE_LONG) const{
+            if(static_cast<std::size_t>(reg) >= REG_BUFFER_SIZE){
+                throwInvalidRegister(reg);
+            }
+
+            uint32_t value = this->reg_buffer[reg];
+            switch(size){
+                case DataSize::SIZE_BYTE: return MASK_8(value);
+                case DataSize::SIZE_WORD: return MASK_16(value);
+                case DataSize::SIZE_LONG: return value;
+            }
+            throwInvalidSize(size);
+        }
+
+        void set(RegisterType reg, DataSize size, uint32_t data){
+            if(static_cast<std::size_t>(reg) >= REG_BUFFER_SIZE){
+                throwInvalidRegister(reg);
+            }
+
+            uint32_t reg_value = this->reg_buffer[reg];
+            switch(size){
+                case DataSize::SIZE_BYTE: reg_value = MASK_ABOVE_8(reg_value) | MASK_8(data); break;
+                case DataSize::SIZE_WORD: reg_value = MASK_ABOVE_16(reg_value) | MASK_16(data); break;
+                case DataSize::SIZE_LONG: reg_value = data; break;
+                default: throwInvalidSize(size);
+            }
+
+            if(reg == REG_SR){
+                reg_value = MASK_16(reg_value);
+            }
+
+            this->reg_buffer[reg] = reg_value;
+        }
+
+        bool get(StatusRegisterFlag flag) const{
+            return (this->reg_buffer[REG_SR] & static_cast<uint32_t>(flag)) != 0;
+        }
+
+        void set(StatusRegisterFlag flag, bool value){
+            uint32_t flag_mask = static_cast<uint32_t>(flag);
+            uint32_t sr_value = this->reg_buffer[REG_SR] & ~flag_mask;
+            if(value){
+                sr_value |= flag_mask;
+            }
+            this->reg_buffer[REG_SR] = sr_value;
+        }
     };
 }

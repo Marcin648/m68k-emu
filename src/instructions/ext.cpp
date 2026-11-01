@@ -15,7 +15,7 @@ Ext::Ext(uint16_t opcode) : Instruction(opcode){
     this->data_size = data_size_part ? SIZE_LONG : SIZE_WORD;
 }
 
-void Ext::execute(CPUState& cpu_state){
+void Ext::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -36,7 +36,7 @@ void Ext::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, false);
 }
 
-std::string Ext::disassembly(CPUState& cpu_state){
+std::string Ext::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -46,6 +46,6 @@ std::string Ext::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Ext::create(uint16_t opcode){
-    return std::make_shared<Ext>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Ext::create(uint16_t opcode){
+    return std::make_unique<Ext>(opcode);
 }

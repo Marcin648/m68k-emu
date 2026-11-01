@@ -37,7 +37,7 @@ Addx::Addx(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Addx::execute(CPUState& cpu_state){
+void Addx::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -60,7 +60,7 @@ void Addx::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 
-std::string Addx::disassembly(CPUState& cpu_state){
+std::string Addx::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -74,6 +74,6 @@ std::string Addx::disassembly(CPUState& cpu_state){
 }
 
 
-std::shared_ptr<INSTRUCTION::Instruction> Addx::create(uint16_t opcode){
-    return std::make_shared<Addx>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Addx::create(uint16_t opcode){
+    return std::make_unique<Addx>(opcode);
 }

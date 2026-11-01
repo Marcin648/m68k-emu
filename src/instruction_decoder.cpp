@@ -1,19 +1,19 @@
 #include "instruction_decoder.hpp"
 #include "instructions.hpp"
 #include <vector>
-#include <functional>
 #include <memory>
 #include <cstdint>
 
 using namespace M68K;
 
+namespace{
 struct MaskTableElement{
     uint32_t mask;
     uint32_t value;
-    std::function<std::shared_ptr<INSTRUCTION::Instruction>(uint16_t)> create_function;
+    std::unique_ptr<INSTRUCTION::Instruction> (*create_function)(uint16_t);
 };
 
-std::vector<MaskTableElement> opcode_mask_table = {
+const MaskTableElement opcode_mask_table[] = {
     // {0xFFFF, 0x003C, INSTRUCTION::OriToCCR::create},   //(0b1111111111111111, 0b0000000000111100, "OriToCCR")
     // {0xFFFF, 0x007C, INSTRUCTION::OriToSR::create},    //(0b1111111111111111, 0b0000000001111100, "OriToSR")
     // {0xFFFF, 0x023C, INSTRUCTION::AndiToCCR::create},  //(0b1111111111111111, 0b0000001000111100, "AndiToCCR")
@@ -104,30 +104,30 @@ std::vector<MaskTableElement> opcode_mask_table = {
     {0xF000, 0x9000, INSTRUCTION::Sub::create},        //(0b1111000000000000, 0b1001000000000000, "Sub")
     {0xF000, 0xD000, INSTRUCTION::Add::create},        //(0b1111000000000000, 0b1101000000000000, "Add")
 };
+}
 
 void InstructionDecoder::generateOpcodeTable(){
     this->opcode_table.clear();
     this->opcode_table.reserve(0x10000);
 
     for(uint32_t opcode = 0; opcode < 0x10000; opcode++){
-        std::shared_ptr<M68K::INSTRUCTION::Instruction> instruction = INSTRUCTION::Illegal::create(opcode);
-        for(auto& opcode_mask : opcode_mask_table){
+        std::unique_ptr<INSTRUCTION::Instruction> instruction;
+        for(const auto& opcode_mask : opcode_mask_table){
             if((opcode & opcode_mask.mask) == opcode_mask.value){
                 auto instruction_candidate = opcode_mask.create_function(opcode);
-                if(instruction_candidate.get()->is_valid){
-                    instruction = instruction_candidate;
+                if(instruction_candidate->is_valid){
+                    instruction = std::move(instruction_candidate);
                 }
                 break;
             }
         }
-        this->opcode_table.emplace_back(instruction);
+        if(!instruction){
+            instruction = INSTRUCTION::Illegal::create(opcode);
+        }
+        this->opcode_table.emplace_back(std::move(instruction));
     }
 }
 
 InstructionDecoder::InstructionDecoder(){
     this->generateOpcodeTable();
-}
-
-INSTRUCTION::Instruction* InstructionDecoder::Decode(uint16_t opcode){
-    return opcode_table[opcode].get();
 }

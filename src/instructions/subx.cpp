@@ -37,7 +37,7 @@ Subx::Subx(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Subx::execute(CPUState& cpu_state){
+void Subx::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -60,7 +60,7 @@ void Subx::execute(CPUState& cpu_state){
     cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 
-std::string Subx::disassembly(CPUState& cpu_state){
+std::string Subx::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -73,6 +73,6 @@ std::string Subx::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Subx::create(uint16_t opcode){
-    return std::make_shared<Subx>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Subx::create(uint16_t opcode){
+    return std::make_unique<Subx>(opcode);
 }

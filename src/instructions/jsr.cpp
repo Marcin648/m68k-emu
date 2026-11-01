@@ -18,7 +18,7 @@ Jsr::Jsr(uint16_t opcode) : Instruction(opcode){
     }
 }
 
-void Jsr::execute(CPUState& cpu_state){
+void Jsr::execute(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -30,7 +30,7 @@ void Jsr::execute(CPUState& cpu_state){
     cpu_state.registers.set(REG_PC, SIZE_LONG, dest_addr);
 }
 
-std::string Jsr::disassembly(CPUState& cpu_state){
+std::string Jsr::disassembly(CPUState& cpu_state) const{
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -40,6 +40,6 @@ std::string Jsr::disassembly(CPUState& cpu_state){
     return output.str();
 }
 
-std::shared_ptr<INSTRUCTION::Instruction> Jsr::create(uint16_t opcode){
-    return std::make_shared<Jsr>(opcode);
+std::unique_ptr<INSTRUCTION::Instruction> Jsr::create(uint16_t opcode){
+    return std::make_unique<Jsr>(opcode);
 }

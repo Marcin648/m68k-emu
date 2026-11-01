@@ -8,13 +8,14 @@
 namespace M68K{
     class InstructionDecoder{
     private:
-        std::vector<std::shared_ptr<INSTRUCTION::Instruction>> opcode_table;
+        std::vector<std::unique_ptr<INSTRUCTION::Instruction>> opcode_table;
 
         void generateOpcodeTable();
     public:
         InstructionDecoder();
-        InstructionDecoder(InstructionDecoder&) = default;
 
-        INSTRUCTION::Instruction* Decode(uint16_t opcode);
+        const INSTRUCTION::Instruction* Decode(uint16_t opcode) const{
+            return this->opcode_table[opcode].get();
+        }
     };
 }
