@@ -50,3 +50,4 @@
 #include "instructions/negx.hpp"
 #include "instructions/tas.hpp"
 #include "instructions/dbcc.hpp"
+#include "instructions/abcd.hpp"
