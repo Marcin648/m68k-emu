@@ -43,3 +43,4 @@
 #include "instructions/ccr_logic.hpp"
 #include "instructions/move_to_ccr.hpp"
 #include "instructions/move_from_sr.hpp"
+#include "instructions/swap.hpp"
