@@ -41,3 +41,4 @@
 #include "instructions/cmpa.hpp"
 #include "instructions/cmpi.hpp"
 #include "instructions/ccr_logic.hpp"
+#include "instructions/move_to_ccr.hpp"
