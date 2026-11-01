@@ -1,4 +1,5 @@
-#include "tests_functions.hpp"
+#include <catch2/catch_test_macros.hpp>
+#include <stdexcept>
 
 #include "m68k.hpp"
 #include "memory.hpp"
@@ -6,118 +7,89 @@
 
 using namespace M68K;
 
-int main(int, char**){
-    TEST_NAME("memory");
+// Data store
 
+TEST_CASE("Memory: set long", "[memory]") {
+    Memory memory;
+    CHECK_NOTHROW(memory.set(0x00, DataSize::SIZE_LONG, 0xAABBCCDD));
+}
+
+TEST_CASE("Memory: set word", "[memory]") {
+    Memory memory;
+    CHECK_NOTHROW(memory.set(0x00, DataSize::SIZE_WORD, 0xAABB));
+}
+
+TEST_CASE("Memory: set byte", "[memory]") {
+    Memory memory;
+    CHECK_NOTHROW(memory.set(0x00, DataSize::SIZE_BYTE, 0xAA));
+}
+
+TEST_CASE("Memory: set long odd address", "[memory]") {
+    Memory memory;
+    CHECK_THROWS_AS(memory.set(0x01, DataSize::SIZE_LONG, 0xAABBCCDD), std::length_error);
+}
+
+TEST_CASE("Memory: set word odd address", "[memory]") {
+    Memory memory;
+    CHECK_THROWS_AS(memory.set(0x01, DataSize::SIZE_WORD, 0xAABB), std::length_error);
+}
+
+TEST_CASE("Memory: set byte odd address", "[memory]") {
+    Memory memory;
+    CHECK_NOTHROW(memory.set(0x01, DataSize::SIZE_BYTE, 0xAA));
+}
+
+TEST_CASE("Memory: set out of range long", "[memory]") {
+    Memory memory;
+    CHECK_THROWS_AS(memory.set(0xFFFFFE, DataSize::SIZE_LONG, 0xAABBCCDD), std::out_of_range);
+}
+
+// TEST_CASE("Memory: set out of range word", "[memory]") { // it's not posible
+//     Memory memory;
+//     CHECK_THROWS_AS(memory.set(0xFFFFFF, DataSize::SIZE_WORD, 0xAABB), std::out_of_range);
+// }
+
+// Data load
+
+struct LoadedMemory {
     Memory memory;
 
-    // Data store
-    TEST_LABEL("set long");
-    TEST_NO_THROW({
+    LoadedMemory(){
         memory.set(0x00, DataSize::SIZE_LONG, 0xAABBCCDD);
-    });
+    }
+};
 
-    TEST_LABEL("set word");
-    TEST_NO_THROW({
-        memory.set(0x00, DataSize::SIZE_WORD, 0xAABB);
-    });
-
-    TEST_LABEL("set byte");
-    TEST_NO_THROW({
-        memory.set(0x00, DataSize::SIZE_BYTE, 0xAA);
-    });
-
-    TEST_LABEL("set long odd address");
-    TEST_THROW(
-        std::length_error,
-        {
-            memory.set(0x01, DataSize::SIZE_LONG, 0xAABBCCDD);
-        }
-    );
-
-    TEST_LABEL("set word odd address");
-    TEST_THROW(
-        std::length_error,
-        {
-            memory.set(0x01, DataSize::SIZE_WORD, 0xAABB);
-        }
-    );
-
-    TEST_LABEL("set byte odd address");
-    TEST_NO_THROW(
-        {
-            memory.set(0x01, DataSize::SIZE_BYTE, 0xAA);
-        }
-    );
-
-    TEST_LABEL("set out of range long");
-    TEST_THROW(
-        std::out_of_range,
-        {
-            memory.set(0xFFFFFE, DataSize::SIZE_LONG, 0xAABBCCDD);
-        }
-    );
-
-    // TEST_LABEL("set out of range word");  // it's not posible
-    // TEST_THROW(
-    //     std::out_of_range,
-    //     {
-    //         memory.set(0xFFFFFF, DataSize::SIZE_WORD, 0xAABB);
-    //     }
-    // );
-    
-    // Data load
-    uint32_t data;
-    memory.set(0x00, DataSize::SIZE_LONG, 0xAABBCCDD);
-
-    TEST_LABEL("get long");
-    data = memory.get(0x00, DataSize::SIZE_LONG);
-    TEST_TRUE(data == 0xAABBCCDD);
-
-    TEST_LABEL("get word");
-    data = memory.get(0x00, DataSize::SIZE_WORD);
-    TEST_TRUE(data == 0xAABB);
-
-    TEST_LABEL("get byte");
-    data = memory.get(0x00, DataSize::SIZE_BYTE);
-    TEST_TRUE(data == 0xAA);
-
-    TEST_LABEL("get long odd address");
-    TEST_THROW(
-        std::length_error,
-        {
-            data = memory.get(0x01, DataSize::SIZE_LONG);
-        }
-    );
-
-    TEST_LABEL("get word odd address");
-    TEST_THROW(
-        std::length_error,
-        {
-            data = memory.get(0x01, DataSize::SIZE_WORD);
-        }
-    );
-
-    TEST_LABEL("get byte odd address");
-    TEST_NO_THROW(
-        {
-            data = memory.get(0x01, DataSize::SIZE_BYTE);
-        }
-    );
-
-    TEST_LABEL("get out of range long");
-    TEST_THROW(
-        std::out_of_range,
-        {
-            data = memory.get(0xFFFFFE, DataSize::SIZE_LONG);
-        }
-    );
-
-    // TEST_LABEL("get out of range word"); // it's not posible
-    // TEST_THROW(
-    //     std::out_of_range,
-    //     {
-    //         data = memory.get(0xFFFFFF, DataSize::SIZE_WORD);
-    //     }
-    // );
+TEST_CASE_METHOD(LoadedMemory, "Memory: get long", "[memory]") {
+    uint32_t data = memory.get(0x00, DataSize::SIZE_LONG);
+    CHECK(data == 0xAABBCCDD);
 }
+
+TEST_CASE_METHOD(LoadedMemory, "Memory: get word", "[memory]") {
+    uint32_t data = memory.get(0x00, DataSize::SIZE_WORD);
+    CHECK(data == 0xAABB);
+}
+
+TEST_CASE_METHOD(LoadedMemory, "Memory: get byte", "[memory]") {
+    uint32_t data = memory.get(0x00, DataSize::SIZE_BYTE);
+    CHECK(data == 0xAA);
+}
+
+TEST_CASE_METHOD(LoadedMemory, "Memory: get long odd address", "[memory]") {
+    CHECK_THROWS_AS(memory.get(0x01, DataSize::SIZE_LONG), std::length_error);
+}
+
+TEST_CASE_METHOD(LoadedMemory, "Memory: get word odd address", "[memory]") {
+    CHECK_THROWS_AS(memory.get(0x01, DataSize::SIZE_WORD), std::length_error);
+}
+
+TEST_CASE_METHOD(LoadedMemory, "Memory: get byte odd address", "[memory]") {
+    CHECK_NOTHROW(memory.get(0x01, DataSize::SIZE_BYTE));
+}
+
+TEST_CASE_METHOD(LoadedMemory, "Memory: get out of range long", "[memory]") {
+    CHECK_THROWS_AS(memory.get(0xFFFFFE, DataSize::SIZE_LONG), std::out_of_range);
+}
+
+// TEST_CASE_METHOD(LoadedMemory, "Memory: get out of range word", "[memory]") { // it's not posible
+//     CHECK_THROWS_AS(memory.get(0xFFFFFF, DataSize::SIZE_WORD), std::out_of_range);
+// }
