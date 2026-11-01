@@ -18,7 +18,7 @@ Subq::Subq(uint16_t opcode) : Instruction(opcode){
         this->imm_data = 8;
     }
     
-    if(!IS_MEMORY_ALTERABLE(this->dest_mode)){
+    if(!IS_ALTERABLE(this->dest_mode)){
         this->is_valid = false;
     }
 
@@ -40,6 +40,10 @@ Subq::Subq(uint16_t opcode) : Instruction(opcode){
             this->is_valid = false;
         }
     }
+
+    if((this->dest_mode == ADDR_MODE_DIRECT_ADDR) && (this->data_size == SIZE_BYTE)){
+        this->is_valid = false;
+    }
 }
 
 void Subq::execute(CPUState& cpu_state){
@@ -48,18 +52,23 @@ void Subq::execute(CPUState& cpu_state){
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t src_data = this->imm_data;
+
+    if(this->dest_mode == ADDR_MODE_DIRECT_ADDR){ // always long, flags not affected
+        uint32_t addr_data = cpu_state.registers.get(this->dest_reg, SIZE_LONG);
+        cpu_state.registers.set(this->dest_reg, SIZE_LONG, addr_data - src_data);
+        return;
+    }
+
     uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
-    uint64_t result = dest_data - src_data;
+    uint64_t result = static_cast<uint64_t>(dest_data) - src_data;
 
     cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
 
-    if(this->dest_mode != ADDR_MODE_DIRECT_ADDR){
-        cpu_state.registers.set(SR_FLAG_EXTEND, IS_CARRY(result, this->data_size));
-        cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
-        cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, this->data_size));
-        cpu_state.registers.set(SR_FLAG_OVERFLOW, IS_OVERFLOW(src_data, dest_data, this->data_size));
-        cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
-    }
+    cpu_state.registers.set(SR_FLAG_EXTEND, IS_CARRY(result, this->data_size));
+    cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
+    cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, this->data_size));
+    cpu_state.registers.set(SR_FLAG_OVERFLOW, IS_OVERFLOW_SUB(src_data, dest_data, result, this->data_size));
+    cpu_state.registers.set(SR_FLAG_CARRY, IS_CARRY(result, this->data_size));
 }
 
 std::string Subq::disassembly(CPUState& cpu_state){

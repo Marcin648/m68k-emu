@@ -20,7 +20,7 @@ Eor::Eor(uint16_t opcode) : Instruction(opcode){
         this->src_mode = ADDR_MODE_DIRECT_DATA;
         this->src_reg = getRegisterType(0, data_reg_part);
 
-        if(!IS_MEMORY_ALTERABLE(this->dest_mode)){
+        if(!IS_DATA_ALTERABLE(this->dest_mode)){
             this->is_valid = false;
         }
     }else{

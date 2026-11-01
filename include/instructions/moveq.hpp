@@ -9,7 +9,7 @@ namespace M68K{
             AddressingMode dest_mode = ADDR_MODE_DIRECT_DATA;
             RegisterType dest_reg = REG_D0;
 
-            uint8_t imm_data = 0;
+            int8_t imm_data = 0;
             DataSize data_size;
         public:
             Moveq(uint16_t opcode);

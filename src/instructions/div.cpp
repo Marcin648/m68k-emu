@@ -19,6 +19,10 @@ Div::Div(uint16_t opcode) : Instruction(opcode){
     this->src_reg = getRegisterType(ea_mode_mode, ea_reg_part);
 
     this->data_size = SIZE_WORD;
+
+    if((this->src_mode == ADDR_MODE_UNKNOWN) || (this->src_mode == ADDR_MODE_DIRECT_ADDR)){
+        this->is_valid = false;
+    }
 }
 
 void Div::execute(CPUState& cpu_state){
@@ -27,15 +31,27 @@ void Div::execute(CPUState& cpu_state){
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint16_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
-    uint16_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
+    uint32_t dest_data = cpu_state.registers.get(this->dest_reg, SIZE_LONG);
     uint32_t result;
 
     if(this->is_signed){
-        result = static_cast<uint16_t>(static_cast<int16_t>(dest_data) / static_cast<int16_t>(src_data));
-        result |= static_cast<uint16_t>(static_cast<int16_t>(dest_data) % static_cast<int16_t>(src_data)) << 16;
+        int64_t quotient = static_cast<int64_t>(static_cast<int32_t>(dest_data)) / static_cast<int16_t>(src_data);
+        int64_t remainder = static_cast<int64_t>(static_cast<int32_t>(dest_data)) % static_cast<int16_t>(src_data);
+        if((quotient < INT16_MIN) || (quotient > INT16_MAX)){
+            cpu_state.registers.set(SR_FLAG_OVERFLOW, true);
+            cpu_state.registers.set(SR_FLAG_CARRY, false);
+            return;
+        }
+        result = MASK_16(static_cast<uint32_t>(quotient)) | (static_cast<uint32_t>(remainder) << 16);
     }else{
-        result = dest_data / src_data;
-        result |= (dest_data % src_data) << 16;
+        uint32_t quotient = dest_data / src_data;
+        uint32_t remainder = dest_data % src_data;
+        if(quotient > UINT16_MAX){
+            cpu_state.registers.set(SR_FLAG_OVERFLOW, true);
+            cpu_state.registers.set(SR_FLAG_CARRY, false);
+            return;
+        }
+        result = quotient | (remainder << 16);
     }
 
     cpu_state.setData(this->dest_mode, this->dest_reg, SIZE_LONG, result);
@@ -52,7 +68,7 @@ std::string Div::disassembly(CPUState& cpu_state){
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << (this->is_signed ? "mivs" : "divu") << DISASSEMBLER::sizeSuffix(this->data_size)
+    output << (this->is_signed ? "divs" : "divu") << DISASSEMBLER::sizeSuffix(this->data_size)
            << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
            << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
                

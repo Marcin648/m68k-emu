@@ -48,7 +48,7 @@ void Bcc::execute(CPUState& cpu_state){
         }
 
         case COND_FALSE: { // BSR
-            cpu_state.stackPush(SIZE_LONG, pc);
+            cpu_state.stackPush(SIZE_LONG, cpu_state.registers.get(REG_PC, SIZE_LONG));
             pc += displacement;
             cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
             break;

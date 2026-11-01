@@ -12,6 +12,10 @@ Tst::Tst(uint16_t opcode) : Instruction(opcode){
     this->ea_mode = getAddressingMode(ea_mode_part, ea_reg_part);
     this->ea_reg = getRegisterType(ea_mode_part, ea_reg_part);
 
+    if(!IS_DATA_ALTERABLE(this->ea_mode)){
+        this->is_valid = false;
+    }
+
     uint16_t data_size_part = (opcode >> 6) & 0x3;
     switch(data_size_part){
         case 0x00:{ // 0b00

@@ -4,10 +4,6 @@
 
 using namespace M68K;
 using namespace INSTRUCTION;
-/*
-    FIX ME
-    SR FLAGS IS NOT WORKING CORRECTLY
-*/
 BitShift::BitShift(uint16_t opcode) : Instruction(opcode){
     uint16_t addr_mode_part = (opcode >> 3) & 0x7;
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
@@ -40,26 +36,27 @@ BitShift::BitShift(uint16_t opcode) : Instruction(opcode){
         }
     }
 
-    uint16_t instruction_type_part = (opcode >> (this->is_memory ? 3 : 9)) & 0x3;
-    uint16_t is_imm_part = (opcode >> 5) & 0x1;
-    uint16_t rotation_part = (opcode >> 9) & 0x7;
-
-    this->is_imm = is_imm_part == 1;
+    // register form: type in bits 4-3, memory form: type in bits 10-9
+    uint16_t instruction_type_part = (opcode >> (this->is_memory ? 9 : 3)) & 0x3;
+    uint16_t is_reg_part = (opcode >> 5) & 0x1;
+    uint16_t count_part = (opcode >> 9) & 0x7;
 
     if(this->is_memory){
         this->addr_mode = getAddressingMode(addr_mode_part, addr_reg_part);
         this->addr_reg = getRegisterType(addr_mode_part, addr_reg_part);
+        this->is_imm = true;
         this->imm_shift = 1;
         if(!IS_MEMORY_ALTERABLE(this->addr_mode)){
             this->is_valid = false;
         }
     }else{
+        this->is_imm = (is_reg_part == 0);
         if(this->is_imm){
-            this->imm_shift = rotation_part + 1;
+            this->imm_shift = (count_part == 0) ? 8 : count_part;
         }else{
-            this->shift_reg = getRegisterType(0, rotation_part);
+            this->shift_reg = getRegisterType(0, count_part);
         }
-        this->addr_mode = getAddressingMode(0, 0);
+        this->addr_mode = ADDR_MODE_DIRECT_DATA;
         this->addr_reg = getRegisterType(0, addr_reg_part);
     }
     
@@ -79,117 +76,65 @@ void BitShift::execute(CPUState& cpu_state){
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint64_t addr_data = cpu_state.getDataSilent(this->addr_mode, this->addr_reg, this->data_size);
-    uint64_t shift = this->imm_shift;
-    uint64_t result = 0;
-    if(!this->is_memory && !this->is_imm){
-        shift = cpu_state.getData(ADDR_MODE_DIRECT_DATA, this->shift_reg, this->data_size) % 64;
+    uint32_t shift = this->imm_shift;
+    if(!this->is_imm){
+        shift = cpu_state.getData(ADDR_MODE_DIRECT_DATA, this->shift_reg, SIZE_LONG) % 64;
     }
 
-    switch (this->instruction_type)
-    {
-        case InstructionType::AS: {
-            if(direction_left){
-                result = addr_data << shift;
-                cpu_state.registers.set(SR_FLAG_CARRY, (addr_data << shift) & 1);
-                cpu_state.registers.set(SR_FLAG_EXTEND, (addr_data << shift) & 1);
-            }else{
-                if(IS_NEGATIVE(addr_data, this->data_size)){
-                    result = addr_data >> shift | ~(~static_cast<uint64_t>(0) >> shift);
-                }else{
-                    result = addr_data >> shift;
+    uint32_t data = cpu_state.getDataSilent(this->addr_mode, this->addr_reg, this->data_size);
+    const uint32_t msb_mask = 1u << (this->data_size * 8 - 1);
+
+    bool extend = cpu_state.registers.get(SR_FLAG_EXTEND);
+    bool carry = false;
+    bool overflow = false;
+
+    // shift one bit at a time, carry holds the last bit shifted out
+    for(uint32_t i = 0; i < shift; i++){
+        bool msb = data & msb_mask;
+        bool lsb = data & 0x1;
+
+        if(this->direction_left){
+            carry = msb;
+            data <<= 1;
+            switch(this->instruction_type){
+                case InstructionType::AS: {
+                    if(static_cast<bool>(data & msb_mask) != msb){
+                        overflow = true;
+                    }
+                    break;
                 }
-                cpu_state.registers.set(SR_FLAG_CARRY, (addr_data >> (shift - 1)) & 1);
-                cpu_state.registers.set(SR_FLAG_EXTEND, (addr_data >> (shift - 1)) & 1);
+                case InstructionType::LS: { break; }
+                case InstructionType::ROX: { data |= extend ? 0x1 : 0x0; break; }
+                case InstructionType::RO: { data |= msb ? 0x1 : 0x0; break; }
             }
-            break;
+        }else{
+            carry = lsb;
+            data >>= 1;
+            switch(this->instruction_type){
+                case InstructionType::AS: { data |= msb ? msb_mask : 0x0; break; }
+                case InstructionType::LS: { break; }
+                case InstructionType::ROX: { data |= extend ? msb_mask : 0x0; break; }
+                case InstructionType::RO: { data |= lsb ? msb_mask : 0x0; break; }
+            }
         }
-        case InstructionType::LS: {
-            if(direction_left){
-                result = addr_data << shift;
-                cpu_state.registers.set(SR_FLAG_CARRY, (addr_data << shift) & 1);
-                cpu_state.registers.set(SR_FLAG_EXTEND, (addr_data << shift) & 1);
-            }else{
-                result = addr_data >> shift;
-                cpu_state.registers.set(SR_FLAG_CARRY, (addr_data >> (shift - 1)) & 1);
-                cpu_state.registers.set(SR_FLAG_EXTEND, (addr_data >> (shift - 1)) & 1);
-            }
-            break;
-        }
-        case InstructionType::ROX: {
-            uint64_t carry = cpu_state.registers.get(SR_FLAG_CARRY) ? 1 : 0;
-            if(direction_left){
-                switch(this->data_size){
-                    case SIZE_BYTE:{
-                        result = addr_data | (carry << 8);
-                        result = ROL_9(result, shift);
-                        cpu_state.registers.set(SR_FLAG_CARRY, (result));
-                        cpu_state.registers.set(SR_FLAG_EXTEND, (result));
-                        break;
-                    }
-                    case SIZE_WORD: {
-                        result = addr_data | (carry << 16);
-                        result = ROL_17(result, shift);
-                        cpu_state.registers.set(SR_FLAG_CARRY, (result >> 8));
-                        cpu_state.registers.set(SR_FLAG_EXTEND, (result >> 8));
-                        break;
-                    }
-                    case SIZE_LONG: {
-                        result = addr_data | (carry << 32);
-                        result = ROL_33(result, shift);
-                        cpu_state.registers.set(SR_FLAG_CARRY, (result >> 24));
-                        cpu_state.registers.set(SR_FLAG_EXTEND, (result >> 24));
-                        break;
-                    }
-                }
-            }else{
-                switch(this->data_size){
-                    case SIZE_BYTE:{
-                        result = result | (carry << 8);
-                        result = ROR_9(result, shift);
-                        cpu_state.registers.set(SR_FLAG_CARRY, (result));
-                        cpu_state.registers.set(SR_FLAG_EXTEND, (result));
-                        break;
-                    }
-                    case SIZE_WORD: {
-                        result = result | (carry << 16);
-                        result = ROR_17(result, shift);
-                        cpu_state.registers.set(SR_FLAG_CARRY, (result >> 8));
-                        cpu_state.registers.set(SR_FLAG_EXTEND, (result >> 8));
-                        break;
-                    }
-                    case SIZE_LONG: {
-                        result = result | (carry << 32);
-                        result = ROR_33(result, shift);
-                        cpu_state.registers.set(SR_FLAG_CARRY, (result >> 24));
-                        cpu_state.registers.set(SR_FLAG_EXTEND, (result >> 24));
-                        break;
-                    }
-                }
-            }
-            // cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
-            // cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, this->data_size));
-            // cpu_state.registers.set(SR_FLAG_OVERFLOW, false);
-            break;
-        }
-        case InstructionType::RO: {
-            if(direction_left){
-                result = ROL(addr_data, shift, this->data_size);
-                cpu_state.registers.set(SR_FLAG_CARRY, addr_data >> (8 - shift));
-            }else{
-                result = ROR(addr_data, shift, this->data_size);
-                cpu_state.registers.set(SR_FLAG_CARRY, addr_data << (9 - shift));
-            }
-            // cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
-            // cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, this->data_size));
-            // cpu_state.registers.set(SR_FLAG_OVERFLOW, false);
-            break;
+        data = MASK(data, this->data_size);
+
+        if(this->instruction_type != InstructionType::RO){
+            extend = carry;
         }
     }
 
-    cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
-    cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(result, this->data_size));
-    cpu_state.registers.set(SR_FLAG_OVERFLOW, false);   
+    if((this->instruction_type == InstructionType::ROX) && (shift == 0)){
+        carry = extend;
+    }
+
+    cpu_state.setData(this->addr_mode, this->addr_reg, this->data_size, data);
+
+    cpu_state.registers.set(SR_FLAG_EXTEND, extend);
+    cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(data, this->data_size));
+    cpu_state.registers.set(SR_FLAG_ZERO, IS_ZERO(data, this->data_size));
+    cpu_state.registers.set(SR_FLAG_OVERFLOW, overflow);
+    cpu_state.registers.set(SR_FLAG_CARRY, carry);
 }
 
 std::string BitShift::disassembly(CPUState& cpu_state){
@@ -199,12 +144,14 @@ std::string BitShift::disassembly(CPUState& cpu_state){
 
     std::ostringstream output;
 
-    output << this->instruction_str << " ";
-    if(this->is_imm){
-        output << " #$" << std::hex << this->imm_shift;
+    output << this->instruction_str << DISASSEMBLER::sizeSuffix(this->data_size) << " ";
+    if(this->is_memory){
+        output << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
+    }else if(this->is_imm){
+        output << "#$" << std::hex << static_cast<uint32_t>(this->imm_shift);
         output << ", " << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
     }else{
-        output << " "  << DISASSEMBLER::effectiveAddress(ADDR_MODE_DIRECT_DATA, this->shift_reg, this->data_size, cpu_state);
+        output << DISASSEMBLER::effectiveAddress(ADDR_MODE_DIRECT_DATA, this->shift_reg, this->data_size, cpu_state);
         output << ", " << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
     }
                

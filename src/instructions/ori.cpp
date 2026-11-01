@@ -13,7 +13,7 @@ Ori::Ori(uint16_t opcode) : Instruction(opcode){
     this->dest_mode = getAddressingMode(ea_mode_part, ea_reg_part);
     this->dest_reg = getRegisterType(ea_mode_part, ea_reg_part);
 
-    if(!IS_MEMORY_ALTERABLE(this->dest_mode)){
+    if(!IS_DATA_ALTERABLE(this->dest_mode)){
         this->is_valid = false;
     }
 

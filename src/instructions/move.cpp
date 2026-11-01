@@ -17,7 +17,7 @@ Move::Move(uint16_t opcode) : Instruction(opcode){
     this->dest_reg = getRegisterType(dest_mode_part, dest_reg_part);
     this->src_reg = getRegisterType(src_mode_part, src_reg_part);
 
-    if((this->src_mode == ADDR_MODE_UNKNOWN) || (!IS_MEMORY_ALTERABLE(this->dest_mode))){
+    if((this->src_mode == ADDR_MODE_UNKNOWN) || (!IS_ALTERABLE(this->dest_mode))){
         this->is_valid = false;
     }
 
