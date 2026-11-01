@@ -51,3 +51,4 @@
 #include "instructions/tas.hpp"
 #include "instructions/dbcc.hpp"
 #include "instructions/abcd.hpp"
+#include "instructions/sbcd.hpp"
