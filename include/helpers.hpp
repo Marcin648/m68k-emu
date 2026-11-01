@@ -21,6 +21,7 @@ namespace M68K {
     template<typename T> inline T MASK_HIGH_BYTE(T value) { return value & 0xf0; }
 
     template<typename T> inline T MASK_ADDR(T value) { return value & 0x00ffffff; }
+    template<typename T> inline T MASK_CCR(T value) { return value & 0x1f; }
 
     template<typename T> inline T LSL(T a, T b) { return a << b; }
     template<typename T> inline T LSR(T a, T b) { return a >> b; }
