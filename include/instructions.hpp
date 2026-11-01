@@ -48,3 +48,4 @@
 #include "instructions/not.hpp"
 #include "instructions/negx.hpp"
 #include "instructions/tas.hpp"
+#include "instructions/dbcc.hpp"
