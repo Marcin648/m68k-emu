@@ -12,10 +12,10 @@ Cmp::Cmp(uint16_t opcode) : Instruction(opcode) {
     uint16_t data_size_part = (opcode >> 6) & 0x3;
 
     this->dest_mode = ADDR_MODE_DIRECT_DATA;
-    this->dest_reg = getRegisterType(0, data_reg_part);
+    this->dest_reg = get_register_type(0, data_reg_part);
 
-    this->src_mode = getAddressingMode(ea_mode_part, ea_reg_part);
-    this->src_reg = getRegisterType(ea_mode_part, ea_reg_part);
+    this->src_mode = get_addressing_mode(ea_mode_part, ea_reg_part);
+    this->src_reg = get_register_type(ea_mode_part, ea_reg_part);
 
 
     switch (data_size_part) {
@@ -42,8 +42,8 @@ void Cmp::execute(CPUState& cpu_state) const {
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
-    uint32_t dest_data = cpu_state.getData(this->dest_mode, this->dest_reg, this->data_size);
+    uint32_t src_data = cpu_state.get_data(this->src_mode, this->src_reg, this->data_size);
+    uint32_t dest_data = cpu_state.get_data(this->dest_mode, this->dest_reg, this->data_size);
     uint64_t result = static_cast<uint64_t>(dest_data) - src_data;
 
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
@@ -58,9 +58,9 @@ std::string Cmp::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "cmp" << DISASSEMBLER::sizeSuffix(this->data_size)
-           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
-           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    output << "cmp" << DISASSEMBLER::size_suffix(this->data_size)
+           << " " << DISASSEMBLER::effective_address(this->src_mode, this->src_reg, this->data_size, cpu_state)
+           << ", " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
 
     return output.str();
 }

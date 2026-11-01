@@ -9,8 +9,8 @@ Pea::Pea(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_mode_part = (opcode >> 3) & 0x7;
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
 
-    this->addr_mode = getAddressingMode(addr_mode_part, addr_reg_part);
-    this->addr_reg = getRegisterType(addr_mode_part, addr_reg_part);
+    this->addr_mode = get_addressing_mode(addr_mode_part, addr_reg_part);
+    this->addr_reg = get_register_type(addr_mode_part, addr_reg_part);
 
     this->data_size = SIZE_LONG;
 
@@ -24,8 +24,8 @@ void Pea::execute(CPUState& cpu_state) const {
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t addr = cpu_state.getControlAddress(this->addr_mode, this->addr_reg, this->data_size);
-    cpu_state.stackPush(SIZE_LONG, addr);
+    uint32_t addr = cpu_state.get_control_address(this->addr_mode, this->addr_reg, this->data_size);
+    cpu_state.stack_push(SIZE_LONG, addr);
 }
 
 std::string Pea::disassembly(CPUState& cpu_state) const {
@@ -34,7 +34,7 @@ std::string Pea::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "pea " << DISASSEMBLER::effectiveAddress(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
+    output << "pea " << DISASSEMBLER::effective_address(this->addr_mode, this->addr_reg, this->data_size, cpu_state);
     return output.str();
 }
 

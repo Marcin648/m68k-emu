@@ -37,7 +37,7 @@ TEST_CASE("ADDQ: addq.l #1, D0 (carry)", "[instruction][addq]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000000);
-    checkFlags(state, true, false, true, false, true);
+    check_flags(state, true, false, true, false, true);
 }
 
 TEST_CASE("ADDQ: addq.w #1, A0 (full 32-bit, no flags)", "[instruction][addq]") {
@@ -47,5 +47,5 @@ TEST_CASE("ADDQ: addq.w #1, A0 (full 32-bit, no flags)", "[instruction][addq]") 
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_A0, SIZE_LONG) == 0x00010000);
-    checkFlags(state, false, false, false, false, false);
+    check_flags(state, false, false, false, false, false);
 }

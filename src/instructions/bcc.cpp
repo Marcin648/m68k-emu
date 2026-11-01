@@ -8,7 +8,7 @@ using namespace INSTRUCTION;
 Bcc::Bcc(uint16_t opcode) : Instruction(opcode) {
     uint16_t cond_part = (opcode >> 8) & 0xF;
 
-    this->condition = getCondition(cond_part);
+    this->condition = get_condition(cond_part);
     this->displacement_8 = (opcode >> 0) & 0xFF;
 
     switch (this->displacement_8) {
@@ -31,11 +31,11 @@ void Bcc::execute(CPUState& cpu_state) const {
             break;
         }
         case SIZE_WORD: {
-            displacement = static_cast<int16_t>(cpu_state.getData(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size));
+            displacement = static_cast<int16_t>(cpu_state.get_data(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size));
             break;
         }
         case SIZE_LONG: {
-            displacement = static_cast<int32_t>(cpu_state.getData(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size));
+            displacement = static_cast<int32_t>(cpu_state.get_data(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size));
             break;
         }
     }
@@ -48,14 +48,14 @@ void Bcc::execute(CPUState& cpu_state) const {
         }
 
         case COND_FALSE: { // BSR
-            cpu_state.stackPush(SIZE_LONG, cpu_state.registers.get(REG_PC, SIZE_LONG));
+            cpu_state.stack_push(SIZE_LONG, cpu_state.registers.get(REG_PC, SIZE_LONG));
             pc += displacement;
             cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
             break;
         }
 
         default: { //Bcc
-            bool cond_result = cpu_state.checkCondition(this->condition);
+            bool cond_result = cpu_state.check_condition(this->condition);
             if (cond_result) {
                 pc += displacement;
                 cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
@@ -76,11 +76,11 @@ std::string Bcc::disassembly(CPUState& cpu_state) const {
             break;
         }
         case SIZE_WORD: {
-            displacement = static_cast<int16_t>(cpu_state.getData(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size));
+            displacement = static_cast<int16_t>(cpu_state.get_data(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size));
             break;
         }
         case SIZE_LONG: {
-            displacement = static_cast<int32_t>(cpu_state.getData(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size));
+            displacement = static_cast<int32_t>(cpu_state.get_data(ADDR_MODE_IMMEDIATE, REG_D0, this->data_size));
             break;
         }
     }
@@ -98,7 +98,7 @@ std::string Bcc::disassembly(CPUState& cpu_state) const {
         }
 
         default: { //Bcc
-            output << "b" << DISASSEMBLER::conditionSuffix(this->condition);
+            output << "b" << DISASSEMBLER::condition_suffix(this->condition);
             break;
         }
     }

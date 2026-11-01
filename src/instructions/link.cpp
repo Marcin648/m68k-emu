@@ -7,7 +7,7 @@ using namespace INSTRUCTION;
 
 Link::Link(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
-    this->addr_reg = getRegisterType(1, addr_reg_part);
+    this->addr_reg = get_register_type(1, addr_reg_part);
     this->data_size = SIZE_WORD;
 }
 
@@ -24,7 +24,7 @@ void Link::execute(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     addr_data = cpu_state.registers.get(this->addr_reg, SIZE_LONG);
-    cpu_state.stackPush(SIZE_LONG, addr_data);
+    cpu_state.stack_push(SIZE_LONG, addr_data);
 
     stack_ptr = cpu_state.registers.get(REG_USP, SIZE_LONG);
     cpu_state.registers.set(this->addr_reg, SIZE_LONG, stack_ptr);

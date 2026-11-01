@@ -37,7 +37,7 @@ TEST_CASE("SUBQ: subq.l #1, D0 (borrow)", "[instruction][subq]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFFFFFF);
-    checkFlags(state, true, true, false, false, true);
+    check_flags(state, true, true, false, false, true);
 }
 
 TEST_CASE("SUBQ: subq.w #1, D0 (overflow)", "[instruction][subq]") {
@@ -47,7 +47,7 @@ TEST_CASE("SUBQ: subq.w #1, D0 (overflow)", "[instruction][subq]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00007FFF);
-    checkFlags(state, false, false, false, true, false);
+    check_flags(state, false, false, false, true, false);
 }
 
 TEST_CASE("SUBQ: subq.w #1, A0 (full 32-bit, no flags)", "[instruction][subq]") {
@@ -57,5 +57,5 @@ TEST_CASE("SUBQ: subq.w #1, A0 (full 32-bit, no flags)", "[instruction][subq]") 
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_A0, SIZE_LONG) == 0x0000FFFF);
-    checkFlags(state, false, false, false, false, false);
+    check_flags(state, false, false, false, false, false);
 }

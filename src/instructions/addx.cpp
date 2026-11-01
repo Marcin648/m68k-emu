@@ -12,10 +12,10 @@ Addx::Addx(uint16_t opcode) : Instruction(opcode) {
     uint16_t data_size_part = (opcode >> 6) & 0x3;
 
     this->dest_mode = mode_part == 0 ? ADDR_MODE_DIRECT_DATA : ADDR_MODE_INDIRECT_PREDECREMENT;
-    this->dest_reg = getRegisterType(mode_part, dest_reg_part);
+    this->dest_reg = get_register_type(mode_part, dest_reg_part);
 
     this->src_mode = this->dest_mode;
-    this->src_reg = getRegisterType(mode_part, src_reg_part);
+    this->src_reg = get_register_type(mode_part, src_reg_part);
 
     switch (data_size_part) {
         case 0x00: { // 0b00
@@ -44,11 +44,11 @@ void Addx::execute(CPUState& cpu_state) const {
 
 
     uint32_t extend_data = cpu_state.registers.get(SR_FLAG_EXTEND) ? 1 : 0;
-    uint32_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
-    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
+    uint32_t src_data = cpu_state.get_data(this->src_mode, this->src_reg, this->data_size);
+    uint32_t dest_data = cpu_state.get_data_silent(this->dest_mode, this->dest_reg, this->data_size);
     uint64_t result = static_cast<uint64_t>(dest_data) + src_data + extend_data;
 
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
+    cpu_state.set_data(this->dest_mode, this->dest_reg, this->data_size, result);
 
     if (!IS_ZERO(result, this->data_size)) { // change only if non zero
         cpu_state.registers.set(SR_FLAG_ZERO, false);
@@ -66,9 +66,9 @@ std::string Addx::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "addx" << DISASSEMBLER::sizeSuffix(this->data_size)
-           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
-           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    output << "addx" << DISASSEMBLER::size_suffix(this->data_size)
+           << " " << DISASSEMBLER::effective_address(this->src_mode, this->src_reg, this->data_size, cpu_state)
+           << ", " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
 
     return output.str();
 }

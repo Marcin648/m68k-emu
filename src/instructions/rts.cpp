@@ -14,7 +14,7 @@ void Rts::execute(CPUState& cpu_state) const {
     pc += SIZE_WORD;
     //cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t return_addr = cpu_state.stackPop(SIZE_LONG);
+    uint32_t return_addr = cpu_state.stack_pop(SIZE_LONG);
     cpu_state.registers.set(REG_PC, SIZE_LONG, return_addr);
 }
 

@@ -46,13 +46,13 @@ namespace M68K {
     private:
         std::array<uint32_t, REG_BUFFER_SIZE> reg_buffer{};
 
-        [[noreturn]] static void throwInvalidRegister(RegisterType reg);
-        [[noreturn]] static void throwInvalidSize(DataSize size);
+        [[noreturn]] static void throw_invalid_register(RegisterType reg);
+        [[noreturn]] static void throw_invalid_size(DataSize size);
 
     public:
         uint32_t get(RegisterType reg, DataSize size = DataSize::SIZE_LONG) const {
             if (static_cast<std::size_t>(reg) >= REG_BUFFER_SIZE) {
-                throwInvalidRegister(reg);
+                throw_invalid_register(reg);
             }
 
             uint32_t value = this->reg_buffer[reg];
@@ -61,12 +61,12 @@ namespace M68K {
                 case DataSize::SIZE_WORD: return MASK_16(value);
                 case DataSize::SIZE_LONG: return value;
             }
-            throwInvalidSize(size);
+            throw_invalid_size(size);
         }
 
         void set(RegisterType reg, DataSize size, uint32_t data) {
             if (static_cast<std::size_t>(reg) >= REG_BUFFER_SIZE) {
-                throwInvalidRegister(reg);
+                throw_invalid_register(reg);
             }
 
             uint32_t reg_value = this->reg_buffer[reg];
@@ -74,7 +74,7 @@ namespace M68K {
                 case DataSize::SIZE_BYTE: reg_value = MASK_ABOVE_8(reg_value) | MASK_8(data); break;
                 case DataSize::SIZE_WORD: reg_value = MASK_ABOVE_16(reg_value) | MASK_16(data); break;
                 case DataSize::SIZE_LONG: reg_value = data; break;
-                default: throwInvalidSize(size);
+                default: throw_invalid_size(size);
             }
 
             if (reg == REG_SR) {

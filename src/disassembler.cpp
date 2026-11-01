@@ -29,7 +29,7 @@ std::string_view DISASSEMBLER::reg(RegisterType reg) {
     return "unknown reg";
 }
 
-std::string_view DISASSEMBLER::sizeSuffix(DataSize size) {
+std::string_view DISASSEMBLER::size_suffix(DataSize size) {
     switch (size) {
         case DataSize::SIZE_BYTE: return ".b";
         case DataSize::SIZE_WORD: return ".w";
@@ -38,7 +38,7 @@ std::string_view DISASSEMBLER::sizeSuffix(DataSize size) {
     return "";
 }
 
-std::string_view DISASSEMBLER::conditionSuffix(Condition cond) {
+std::string_view DISASSEMBLER::condition_suffix(Condition cond) {
     switch (cond) {
         case COND_TRUE: return "t";
         case COND_FALSE: return "f";
@@ -60,7 +60,7 @@ std::string_view DISASSEMBLER::conditionSuffix(Condition cond) {
     return "";
 }
 
-std::string DISASSEMBLER::effectiveAddress(AddressingMode mode, RegisterType reg, DataSize size, CPUState& cpu_state) {
+std::string DISASSEMBLER::effective_address(AddressingMode mode, RegisterType reg, DataSize size, CPUState& cpu_state) {
     std::ostringstream output_stream;
     switch (mode) {
         case ADDR_MODE_DIRECT_ADDR:
@@ -91,7 +91,7 @@ std::string DISASSEMBLER::effectiveAddress(AddressingMode mode, RegisterType reg
         case ADDR_MODE_INDIRECT_INDEX: {
             uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = cpu_state.memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = INSTRUCTION::Instruction::get_register_type((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             int8_t ext_offset = ext_word & 0xFF;
 
             cpu_state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);
@@ -109,7 +109,7 @@ std::string DISASSEMBLER::effectiveAddress(AddressingMode mode, RegisterType reg
         case ADDR_MODE_PC_INDEX: {
             uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
             uint16_t ext_word = cpu_state.memory.get(pc, SIZE_WORD);
-            RegisterType ext_reg = INSTRUCTION::Instruction::getRegisterType((ext_word & 0x8000), (ext_word >> 12) & 0x7);
+            RegisterType ext_reg = INSTRUCTION::Instruction::get_register_type((ext_word & 0x8000), (ext_word >> 12) & 0x7);
             int8_t ext_offset = ext_word & 0xFF;
 
             cpu_state.registers.set(REG_PC, SIZE_LONG, pc + SIZE_WORD);

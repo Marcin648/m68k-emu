@@ -7,7 +7,7 @@ using namespace INSTRUCTION;
 
 Unlk::Unlk(uint16_t opcode) : Instruction(opcode) {
     uint16_t addr_reg_part = (opcode >> 0) & 0x7;
-    this->addr_reg = getRegisterType(1, addr_reg_part);
+    this->addr_reg = get_register_type(1, addr_reg_part);
 }
 
 void Unlk::execute(CPUState& cpu_state) const {
@@ -21,7 +21,7 @@ void Unlk::execute(CPUState& cpu_state) const {
     addr_data = cpu_state.registers.get(this->addr_reg, SIZE_LONG);
     cpu_state.registers.set(REG_USP, SIZE_LONG, addr_data);
 
-    addr_data = cpu_state.stackPop(SIZE_LONG);
+    addr_data = cpu_state.stack_pop(SIZE_LONG);
     cpu_state.registers.set(this->addr_reg, SIZE_LONG, addr_data);
 }
 

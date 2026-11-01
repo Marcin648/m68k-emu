@@ -36,7 +36,7 @@ TEST_CASE("EXT: ext.l D1 (positive word)", "[instruction][ext]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00000080);
-    checkFlags(state, false, false, false, false, false);
+    check_flags(state, false, false, false, false, false);
 }
 
 TEST_CASE("EXT: ext.l D1 (negative word)", "[instruction][ext]") {
@@ -46,5 +46,5 @@ TEST_CASE("EXT: ext.l D1 (negative word)", "[instruction][ext]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0xFFFF8000);
-    checkFlags(state, false, true, false, false, false);
+    check_flags(state, false, true, false, false, false);
 }

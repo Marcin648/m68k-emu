@@ -12,10 +12,10 @@ Cmpa::Cmpa(uint16_t opcode) : Instruction(opcode) {
     uint16_t data_size_part = (opcode >> 8) & 0x1;
 
     this->dest_mode = ADDR_MODE_DIRECT_ADDR;
-    this->dest_reg = getRegisterType(1, addr_reg_part);
+    this->dest_reg = get_register_type(1, addr_reg_part);
 
-    this->src_mode = getAddressingMode(ea_mode_mode, ea_reg_part);
-    this->src_reg = getRegisterType(ea_mode_mode, ea_reg_part);
+    this->src_mode = get_addressing_mode(ea_mode_mode, ea_reg_part);
+    this->src_reg = get_register_type(ea_mode_mode, ea_reg_part);
 
     switch (data_size_part) {
         case 0x00: { // 0b0
@@ -38,7 +38,7 @@ void Cmpa::execute(CPUState& cpu_state) const {
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t src_data = cpu_state.getData(this->src_mode, this->src_reg, this->data_size);
+    uint32_t src_data = cpu_state.get_data(this->src_mode, this->src_reg, this->data_size);
     if (this->data_size == SIZE_WORD) {
         src_data = static_cast<uint32_t>(static_cast<int32_t>(static_cast<int16_t>(src_data)));
     };
@@ -57,9 +57,9 @@ std::string Cmpa::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "cmpa" << DISASSEMBLER::sizeSuffix(this->data_size)
-           << " " << DISASSEMBLER::effectiveAddress(this->src_mode, this->src_reg, this->data_size, cpu_state)
-           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+    output << "cmpa" << DISASSEMBLER::size_suffix(this->data_size)
+           << " " << DISASSEMBLER::effective_address(this->src_mode, this->src_reg, this->data_size, cpu_state)
+           << ", " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
 
     return output.str();
 }

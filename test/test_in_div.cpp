@@ -76,7 +76,7 @@ TEST_CASE("DIV: divu #2, D0 (32-bit dividend)", "[instruction][div]") {
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00008000);
     CHECK(state.registers.get(REG_PC, SIZE_LONG) == 4);
-    checkFlags(state, false, true, false, false, false);
+    check_flags(state, false, true, false, false, false);
 }
 
 TEST_CASE("DIV: divu #2, D0 (overflow)", "[instruction][div]") {
@@ -88,7 +88,7 @@ TEST_CASE("DIV: divu #2, D0 (overflow)", "[instruction][div]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00100000);
-    checkFlags(state, false, false, false, true, false);
+    check_flags(state, false, false, false, true, false);
 }
 
 TEST_CASE("DIV: divs #4, D0 (negative dividend)", "[instruction][div]") {
@@ -100,7 +100,7 @@ TEST_CASE("DIV: divs #4, D0 (negative dividend)", "[instruction][div]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFF9E58);
-    checkFlags(state, false, true, false, false, false);
+    check_flags(state, false, true, false, false, false);
 }
 
 TEST_CASE("DIV: divs #1, D0 (overflow)", "[instruction][div]") {
@@ -112,5 +112,5 @@ TEST_CASE("DIV: divs #1, D0 (overflow)", "[instruction][div]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00100000);
-    checkFlags(state, false, false, false, true, false);
+    check_flags(state, false, false, false, true, false);
 }

@@ -10,8 +10,8 @@ Addq::Addq(uint16_t opcode) : Instruction(opcode) {
     uint16_t ea_reg_part = (opcode >> 0) & 0x7;
     uint16_t data_size_part = (opcode >> 6) & 0x3;
 
-    this->dest_mode = getAddressingMode(ea_mode_part, ea_reg_part);
-    this->dest_reg = getRegisterType(ea_mode_part, ea_reg_part);
+    this->dest_mode = get_addressing_mode(ea_mode_part, ea_reg_part);
+    this->dest_reg = get_register_type(ea_mode_part, ea_reg_part);
 
     this->imm_data = (opcode >> 9) & 0x7;
     if (this->imm_data == 0) {
@@ -59,10 +59,10 @@ void Addq::execute(CPUState& cpu_state) const {
         return;
     }
 
-    uint32_t dest_data = cpu_state.getDataSilent(this->dest_mode, this->dest_reg, this->data_size);
+    uint32_t dest_data = cpu_state.get_data_silent(this->dest_mode, this->dest_reg, this->data_size);
     uint64_t result = static_cast<uint64_t>(dest_data) + src_data;
 
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, result);
+    cpu_state.set_data(this->dest_mode, this->dest_reg, this->data_size, result);
 
     cpu_state.registers.set(SR_FLAG_EXTEND, IS_CARRY(result, this->data_size));
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(result, this->data_size));
@@ -77,9 +77,9 @@ std::string Addq::disassembly(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     std::ostringstream output;
-    output << "addq" << DISASSEMBLER::sizeSuffix(this->data_size)
+    output << "addq" << DISASSEMBLER::size_suffix(this->data_size)
            << " #$" << std::hex << (uint32_t)this->imm_data
-           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+           << ", " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
 
     return output.str();
 }

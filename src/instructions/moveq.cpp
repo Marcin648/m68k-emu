@@ -9,7 +9,7 @@ Moveq::Moveq(uint16_t opcode) : Instruction(opcode) {
     uint16_t reg_part = (opcode >> 9) & 0x7;
 
     this->dest_mode = ADDR_MODE_DIRECT_DATA;
-    this->dest_reg = getRegisterType(0, reg_part);
+    this->dest_reg = get_register_type(0, reg_part);
     this->imm_data = (opcode >> 0) & 0xFF;
     this->data_size = SIZE_LONG;
 }
@@ -20,7 +20,7 @@ void Moveq::execute(CPUState& cpu_state) const {
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t data = static_cast<uint32_t>(static_cast<int32_t>(this->imm_data));
-    cpu_state.setData(this->dest_mode, this->dest_reg, this->data_size, data);
+    cpu_state.set_data(this->dest_mode, this->dest_reg, this->data_size, data);
 
     cpu_state.registers.set(SR_FLAG_NEGATIVE, IS_NEGATIVE(data, this->data_size));
     cpu_state.registers.set(SR_FLAG_ZERO, data == 0);
@@ -36,7 +36,7 @@ std::string Moveq::disassembly(CPUState& cpu_state) const {
     std::ostringstream output;
     output << "moveq"
            << " #$" << std::hex << (uint32_t)(uint8_t)this->imm_data
-           << ", " << DISASSEMBLER::effectiveAddress(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
+           << ", " << DISASSEMBLER::effective_address(this->dest_mode, this->dest_reg, this->data_size, cpu_state);
 
     return output.str();
 }

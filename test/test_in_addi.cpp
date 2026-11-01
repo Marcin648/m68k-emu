@@ -43,5 +43,5 @@ TEST_CASE("ADDI: addi.l #1, D0 (carry)", "[instruction][addi]") {
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000000);
     CHECK(state.registers.get(REG_PC, SIZE_LONG) == 6);
-    checkFlags(state, true, false, true, false, true);
+    check_flags(state, true, false, true, false, true);
 }

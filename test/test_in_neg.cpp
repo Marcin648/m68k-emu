@@ -14,7 +14,7 @@ TEST_CASE("NEG: neg.l D0", "[instruction][neg]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFFFFFF);
-    checkFlags(state, true, true, false, false, true);
+    check_flags(state, true, true, false, false, true);
 }
 
 TEST_CASE("NEG: neg.b D0 (overflow)", "[instruction][neg]") {
@@ -24,7 +24,7 @@ TEST_CASE("NEG: neg.b D0 (overflow)", "[instruction][neg]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000080);
-    checkFlags(state, true, true, false, true, true);
+    check_flags(state, true, true, false, true, true);
 }
 
 TEST_CASE("NEG: neg.w D0 (zero)", "[instruction][neg]") {
@@ -34,5 +34,5 @@ TEST_CASE("NEG: neg.w D0 (zero)", "[instruction][neg]") {
 
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000000);
-    checkFlags(state, false, false, true, false, false);
+    check_flags(state, false, false, true, false, false);
 }

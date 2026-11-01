@@ -10,8 +10,8 @@
 namespace M68K {
     namespace DISASSEMBLER {
         std::string_view reg(RegisterType reg);
-        std::string_view sizeSuffix(DataSize size);
-        std::string effectiveAddress(AddressingMode mode, RegisterType reg, DataSize size, CPUState& cpu_state);
-        std::string_view conditionSuffix(Condition cond);
+        std::string_view size_suffix(DataSize size);
+        std::string effective_address(AddressingMode mode, RegisterType reg, DataSize size, CPUState& cpu_state);
+        std::string_view condition_suffix(Condition cond);
     }
 }

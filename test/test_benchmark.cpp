@@ -8,7 +8,7 @@
 
 using namespace M68K;
 
-double timeInterval(void) {
+double time_interval(void) {
     static auto last_time = std::chrono::high_resolution_clock::now();
     auto time_now = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> dt = time_now - last_time;
@@ -23,19 +23,19 @@ TEST_CASE("Program: benchmark", "[.][program][benchmark]") {
     BENCHMARK_ADVANCED("benchmark")(Catch::Benchmark::Chronometer meter) {
         std::vector<CPU> cpus(meter.runs());
         for (auto& cpu : cpus) {
-            cpu.loadELF(M68K_TEST_BINARY_DIR "/benchmark.elf");
+            cpu.load_elf(M68K_TEST_BINARY_DIR "/benchmark.elf");
         }
 
         meter.measure([&](int i) {
             CPU& cpu = cpus[i];
 
             n = 0;
-            timeInterval();
+            time_interval();
             while (cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x101A4) {
                 cpu.step();
                 n++;
             }
-            dtime = timeInterval();
+            dtime = time_interval();
             return n;
         });
     };

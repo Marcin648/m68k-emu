@@ -21,9 +21,9 @@ namespace M68K {
             virtual void execute(CPUState&) const {};
             virtual std::string disassembly(CPUState&) const { return "unknown"; };
 
-            static AddressingMode getAddressingMode(uint16_t part_mode, uint16_t part_reg);
-            static RegisterType getRegisterType(uint16_t part_mode, uint16_t part_reg);
-            static Condition getCondition(uint16_t cond_part);
+            static AddressingMode get_addressing_mode(uint16_t part_mode, uint16_t part_reg);
+            static RegisterType get_register_type(uint16_t part_mode, uint16_t part_reg);
+            static Condition get_condition(uint16_t cond_part);
         };
     }
 }

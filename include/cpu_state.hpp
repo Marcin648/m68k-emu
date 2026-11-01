@@ -10,14 +10,14 @@ namespace M68K {
         Registers registers = Registers();
         Memory memory = Memory();
 
-        uint32_t stackPop(DataSize size);
-        void stackPush(DataSize size, uint32_t data);
-        uint32_t getControlAddress(AddressingMode mode, RegisterType reg, DataSize size);
-        uint32_t getData(AddressingMode mode, RegisterType reg, DataSize size);
-        uint32_t getDataSilent(AddressingMode mode, RegisterType reg, DataSize size);
-        void setData(AddressingMode mode, RegisterType reg, DataSize size, uint32_t data);
-        bool checkCondition(Condition cond);
+        uint32_t stack_pop(DataSize size);
+        void stack_push(DataSize size, uint32_t data);
+        uint32_t get_control_address(AddressingMode mode, RegisterType reg, DataSize size);
+        uint32_t get_data(AddressingMode mode, RegisterType reg, DataSize size);
+        uint32_t get_data_silent(AddressingMode mode, RegisterType reg, DataSize size);
+        void set_data(AddressingMode mode, RegisterType reg, DataSize size, uint32_t data);
+        bool check_condition(Condition cond);
 
-        void debugPrint();
+        void debug_print();
     };
 }
