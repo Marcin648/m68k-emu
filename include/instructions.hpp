@@ -40,3 +40,4 @@
 #include "instructions/cmp.hpp"
 #include "instructions/cmpa.hpp"
 #include "instructions/cmpi.hpp"
+#include "instructions/ccr_logic.hpp"
