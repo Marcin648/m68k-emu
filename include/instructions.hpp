@@ -45,3 +45,4 @@
 #include "instructions/move_from_sr.hpp"
 #include "instructions/swap.hpp"
 #include "instructions/exg.hpp"
+#include "instructions/not.hpp"
