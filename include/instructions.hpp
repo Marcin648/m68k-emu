@@ -40,6 +40,7 @@
 #include "instructions/cmp.hpp"
 #include "instructions/cmpa.hpp"
 #include "instructions/cmpi.hpp"
+#include "instructions/cmpm.hpp"
 #include "instructions/ccr_logic.hpp"
 #include "instructions/move_to_ccr.hpp"
 #include "instructions/move_from_sr.hpp"
