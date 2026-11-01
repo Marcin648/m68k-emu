@@ -52,3 +52,4 @@
 #include "instructions/dbcc.hpp"
 #include "instructions/abcd.hpp"
 #include "instructions/sbcd.hpp"
+#include "instructions/nbcd.hpp"
