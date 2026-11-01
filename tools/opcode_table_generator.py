@@ -6,6 +6,8 @@ opcode_table = [
     (0b1111111111111111, 0b0000000001111100, "OriToSR"),
     (0b1111111111111111, 0b0000001000111100, "AndiToCCR"),
     (0b1111111111111111, 0b0000001001111100, "AndiToSR"),
+    (0b1111111111111111, 0b0000101000111100, "EoriToCCR"),
+    (0b1111111111111111, 0b0000101001111100, "EoriToSR"),
     (0b1111111111111111, 0b0100101011111100, "Illegal"),
     (0b1111111111111111, 0b0100111001110000, "Reset"),
     (0b1111111111111111, 0b0100111001110001, "Nop"),
@@ -111,7 +113,7 @@ def gen_py_mask():
 
 def gen_mask():
     check_opcode_table()
-    print("std::vector<MaskTableElement> opcode_mask_table = {")
+    print("const MaskTableElement opcode_mask_table[] = {")
     for opcode in opcode_table:
         line = "{{0x{0:04X}, 0x{1:04X}, INSTRUCTION::{2}::create}},".format(*opcode)
         comment = "//(0b{0:016b}, 0b{1:016b}, \"{2}\")".format(*opcode)
@@ -125,10 +127,8 @@ def gen_opcode():
         op_name = "illegal"
         for opcode in opcode_table:
             if i & opcode[0] == opcode[1]:
-                if op_name is None:
-                    op_name = opcode[2]
-                    op_name = "illegal"
-                    break
+                op_name = opcode[2]
+                break
         print("    INSTRUCTION::%s," % op_name);
     print("};")
 
