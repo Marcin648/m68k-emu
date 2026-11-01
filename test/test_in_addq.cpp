@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -27,4 +28,24 @@ TEST_CASE("ADDQ: addq #7, D0", "[instruction][addq]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == false);
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("ADDQ: addq.l #1, D0 (carry)", "[instruction][addq]") {
+    auto instruction = INSTRUCTION::Addq::create(0x5280);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0xFFFFFFFF);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000000);
+    checkFlags(state, true, false, true, false, true);
+}
+
+TEST_CASE("ADDQ: addq.w #1, A0 (full 32-bit, no flags)", "[instruction][addq]") {
+    auto instruction = INSTRUCTION::Addq::create(0x5248);
+    CPUState state = CPUState();
+    state.registers.set(REG_A0, SIZE_LONG, 0x0000FFFF);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_A0, SIZE_LONG) == 0x00010000);
+    checkFlags(state, false, false, false, false, false);
 }

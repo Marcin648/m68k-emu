@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -28,6 +29,19 @@ TEST_CASE("SUBI: subi.w #$0001, D0", "[instruction][subi]") {
     CHECK(flag_extend == false);
     CHECK(flag_negative == false);
     CHECK(flag_zero == false);
-    CHECK(flag_overflow == false);
+    CHECK(flag_overflow == true); // -32768 - 1 overflows
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("SUBI: subi.l #1, D0 (borrow)", "[instruction][subi]") {
+    auto instruction = INSTRUCTION::Subi::create(0x0480);
+    CPUState state = CPUState();
+    state.memory.set(0, SIZE_WORD, 0x0480);
+    state.memory.set(2, SIZE_LONG, 0x00000001);
+    state.registers.set(REG_D0, SIZE_LONG, 0x00000000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFFFFFF);
+    CHECK(state.registers.get(REG_PC, SIZE_LONG) == 6);
+    checkFlags(state, true, true, false, false, true);
 }

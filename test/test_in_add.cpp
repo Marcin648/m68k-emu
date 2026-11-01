@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -79,4 +80,26 @@ TEST_CASE("ADD: add.w D0, (A1)", "[instruction][add]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == true);
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("ADD: add.l D0, D1 (carry)", "[instruction][add]") {
+    auto instruction = INSTRUCTION::Add::create(0xD280);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0xFFFFFFFF);
+    state.registers.set(REG_D1, SIZE_LONG, 0x00000001);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00000000);
+    checkFlags(state, true, false, true, false, true);
+}
+
+TEST_CASE("ADD: add.l D0, D1 (overflow)", "[instruction][add]") {
+    auto instruction = INSTRUCTION::Add::create(0xD280);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0x7FFFFFFF);
+    state.registers.set(REG_D1, SIZE_LONG, 0x00000001);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x80000000);
+    checkFlags(state, false, true, false, true, false);
 }

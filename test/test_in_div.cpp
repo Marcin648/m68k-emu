@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -63,4 +64,53 @@ TEST_CASE("DIV: muls #$FFFE, D0", "[instruction][div]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == false);
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("DIV: divu #2, D0 (32-bit dividend)", "[instruction][div]") {
+    auto instruction = INSTRUCTION::Div::create(0x80FC);
+    CPUState state = CPUState();
+    state.memory.set(0, SIZE_WORD, 0x80FC);
+    state.memory.set(2, SIZE_WORD, 0x0002);
+    state.registers.set(REG_D0, SIZE_LONG, 0x00010000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00008000);
+    CHECK(state.registers.get(REG_PC, SIZE_LONG) == 4);
+    checkFlags(state, false, true, false, false, false);
+}
+
+TEST_CASE("DIV: divu #2, D0 (overflow)", "[instruction][div]") {
+    auto instruction = INSTRUCTION::Div::create(0x80FC);
+    CPUState state = CPUState();
+    state.memory.set(0, SIZE_WORD, 0x80FC);
+    state.memory.set(2, SIZE_WORD, 0x0002);
+    state.registers.set(REG_D0, SIZE_LONG, 0x00100000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00100000);
+    checkFlags(state, false, false, false, true, false);
+}
+
+TEST_CASE("DIV: divs #4, D0 (negative dividend)", "[instruction][div]") {
+    auto instruction = INSTRUCTION::Div::create(0x81FC);
+    CPUState state = CPUState();
+    state.memory.set(0, SIZE_WORD, 0x81FC);
+    state.memory.set(2, SIZE_WORD, 0x0004);
+    state.registers.set(REG_D0, SIZE_LONG, 0xFFFE795F);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFF9E58);
+    checkFlags(state, false, true, false, false, false);
+}
+
+TEST_CASE("DIV: divs #1, D0 (overflow)", "[instruction][div]") {
+    auto instruction = INSTRUCTION::Div::create(0x81FC);
+    CPUState state = CPUState();
+    state.memory.set(0, SIZE_WORD, 0x81FC);
+    state.memory.set(2, SIZE_WORD, 0x0001);
+    state.registers.set(REG_D0, SIZE_LONG, 0x00100000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00100000);
+    checkFlags(state, false, false, false, true, false);
 }

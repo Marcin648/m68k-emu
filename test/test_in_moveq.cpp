@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -25,4 +26,14 @@ TEST_CASE("MOVEQ: moveq #100, D0", "[instruction][moveq]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == false);
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("MOVEQ: moveq #-1, D0 (sign-extended)", "[instruction][moveq]") {
+    auto instruction = INSTRUCTION::Moveq::create(0x70FF);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0x00000000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFFFFFF);
+    checkFlags(state, false, true, false, false, false);
 }

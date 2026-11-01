@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -70,4 +71,29 @@ TEST_CASE("ADDX: addx.w -(A0), -(A1)", "[instruction][addx]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == false);
     CHECK(flag_carry == true);
+}
+
+TEST_CASE("ADDX: addx.b D0, D1 (overflow with X)", "[instruction][addx]") {
+    auto instruction = INSTRUCTION::Addx::create(0xD300);
+    CPUState state = CPUState();
+    state.registers.set(SR_FLAG_EXTEND, true);
+    state.registers.set(REG_D0, SIZE_LONG, 0x00000000);
+    state.registers.set(REG_D1, SIZE_LONG, 0x0000007F);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00000080);
+    checkFlags(state, false, true, false, true, false);
+}
+
+TEST_CASE("ADDX: addx.l D0, D1 (carry, Z unchanged)", "[instruction][addx]") {
+    auto instruction = INSTRUCTION::Addx::create(0xD380);
+    CPUState state = CPUState();
+    state.registers.set(SR_FLAG_EXTEND, true);
+    state.registers.set(SR_FLAG_ZERO, true);
+    state.registers.set(REG_D0, SIZE_LONG, 0x00000000);
+    state.registers.set(REG_D1, SIZE_LONG, 0xFFFFFFFF);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00000000);
+    checkFlags(state, true, false, true, false, true);
 }

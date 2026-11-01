@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -54,4 +55,16 @@ TEST_CASE("MUL: muls #$FFFE, D0", "[instruction][mul]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == false);
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("MUL: mulu #$FFFF, D0", "[instruction][mul]") {
+    auto instruction = INSTRUCTION::Mul::create(0xC0FC);
+    CPUState state = CPUState();
+    state.memory.set(0, SIZE_WORD, 0xC0FC);
+    state.memory.set(2, SIZE_WORD, 0xFFFF);
+    state.registers.set(REG_D0, SIZE_LONG, 0x0000FFFF);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0xFFFE0001);
+    checkFlags(state, false, true, false, false, false);
 }

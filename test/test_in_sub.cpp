@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -79,4 +80,37 @@ TEST_CASE("SUB: sub.w D0, (A1)", "[instruction][sub]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == false);
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("SUB: sub.l D0, D1 (borrow)", "[instruction][sub]") {
+    auto instruction = INSTRUCTION::Sub::create(0x9280);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0x00000001);
+    state.registers.set(REG_D1, SIZE_LONG, 0x00000000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0xFFFFFFFF);
+    checkFlags(state, true, true, false, false, true);
+}
+
+TEST_CASE("SUB: sub.w D0, D1 (overflow)", "[instruction][sub]") {
+    auto instruction = INSTRUCTION::Sub::create(0x9240);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0x00000001);
+    state.registers.set(REG_D1, SIZE_LONG, 0x00008000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00007FFF);
+    checkFlags(state, false, false, false, true, false);
+}
+
+TEST_CASE("SUB: sub.b D0, D1 (no overflow)", "[instruction][sub]") {
+    auto instruction = INSTRUCTION::Sub::create(0x9200);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0x00000080);
+    state.registers.set(REG_D1, SIZE_LONG, 0x00000080);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D1, SIZE_LONG) == 0x00000000);
+    checkFlags(state, false, false, true, false, false);
 }
