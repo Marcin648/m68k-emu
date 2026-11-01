@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -30,4 +31,17 @@ TEST_CASE("ADDI: addi.w #$0001, D0", "[instruction][addi]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == true);
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("ADDI: addi.l #1, D0 (carry)", "[instruction][addi]") {
+    auto instruction = INSTRUCTION::Addi::create(0x0680);
+    CPUState state = CPUState();
+    state.memory.set(0, SIZE_WORD, 0x0680);
+    state.memory.set(2, SIZE_LONG, 0x00000001);
+    state.registers.set(REG_D0, SIZE_LONG, 0xFFFFFFFF);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00000000);
+    CHECK(state.registers.get(REG_PC, SIZE_LONG) == 6);
+    checkFlags(state, true, false, true, false, true);
 }

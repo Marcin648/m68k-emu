@@ -3,6 +3,7 @@
 #include "m68k.hpp"
 #include "memory.hpp"
 #include "helpers.hpp"
+#include "test_helpers.hpp"
 
 using namespace M68K;
 
@@ -28,4 +29,24 @@ TEST_CASE("ADDA: adda.w D0, A1", "[instruction][adda]") {
     CHECK(flag_zero == false);
     CHECK(flag_overflow == false);
     CHECK(flag_carry == false);
+}
+
+TEST_CASE("ADDA: adda.w D0, A1 (sign-extended source)", "[instruction][adda]") {
+    auto instruction = INSTRUCTION::Adda::create(0xD2C0);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0x0000FFFF);
+    state.registers.set(REG_A1, SIZE_LONG, 0x00010000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_A1, SIZE_LONG) == 0x0000FFFF);
+}
+
+TEST_CASE("ADDA: adda.w D0, A1 (32-bit result)", "[instruction][adda]") {
+    auto instruction = INSTRUCTION::Adda::create(0xD2C0);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0x00000001);
+    state.registers.set(REG_A1, SIZE_LONG, 0x0000FFFF);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_A1, SIZE_LONG) == 0x00010000);
 }
