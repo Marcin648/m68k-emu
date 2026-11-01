@@ -149,4 +149,28 @@ namespace M68K {
         }
         return false;
     }
+
+    inline uint32_t BCD_ADD(uint32_t src, uint32_t dest, uint32_t extend) {
+        uint32_t result = MASK_LOW_BYTE(src) + MASK_LOW_BYTE(dest) + extend;
+        if (result > 0x09) {
+            result += 0x06;
+        }
+        result += MASK_HIGH_BYTE(src) + MASK_HIGH_BYTE(dest);
+        if (result > 0x99) {
+            return MASK_8(result - 0xA0) | 0x100;
+        }
+        return result;
+    }
+
+    inline uint32_t BCD_SUB(uint32_t src, uint32_t dest, uint32_t extend) {
+        uint32_t result = MASK_LOW_BYTE(dest) - MASK_LOW_BYTE(src) - extend;
+        if (result > 0x09) {
+            result -= 0x06;
+        }
+        result += MASK_HIGH_BYTE(dest) - MASK_HIGH_BYTE(src);
+        if (result > 0x99) {
+            return MASK_8(result + 0xA0) | 0x100;
+        }
+        return result;
+    }
 }
