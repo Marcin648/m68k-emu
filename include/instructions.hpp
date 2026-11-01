@@ -53,3 +53,4 @@
 #include "instructions/abcd.hpp"
 #include "instructions/sbcd.hpp"
 #include "instructions/nbcd.hpp"
+#include "instructions/movem.hpp"
