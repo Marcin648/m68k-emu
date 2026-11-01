@@ -19,28 +19,29 @@
 
 ### Prerequisites
 
-Make sure you have [CMake](https://cmake.org/) installed and you have C++20 compatible compiler.
+Make sure you have [CMake](https://cmake.org/) 3.21+ installed and you have C++20 compatible compiler.
 
 ### Release
 ```
 git clone https://github.com/Marcin648/m68k-emu
 cd m68k-emu
-git submodule update --init --recursive
-mkdir Release
-cd Release
-cmake -DCMAKE_BUILD_TYPE=Release ..
-make -j$(nproc)
+cmake -B Release -DCMAKE_BUILD_TYPE=Release
+cmake --build Release -j $(nproc)
 ```
 
 ### Debug
 ```
 git clone https://github.com/Marcin648/m68k-emu
 cd m68k-emu
-git submodule update --init --recursive
-mkdir Debug
-cd Debug
-cmake -DCMAKE_BUILD_TYPE=Debug ..
-make -j$(nproc)
+cmake -B Debug -DCMAKE_BUILD_TYPE=Debug
+cmake --build Debug -j $(nproc)
+```
+
+### Running tests
+```
+./test/m68k_tests
+./test/m68k_tests "[instruction]"
+./test/m68k_tests "[benchmark]"
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -48,13 +49,17 @@ make -j$(nproc)
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-1. Clone this repository inside libs directory in yours project
-2. Add subdirectory and include directory to yours CMakeList.txt
+1. Add m68k-emu to your CMakeLists.txt with FetchContent
    ```
-   add_subdirectory(libs/m68k-emu)
-   include_directories(libs/m68k-emu/include)
+   include(FetchContent)
+   FetchContent_Declare(
+       m68k-emu
+       GIT_REPOSITORY https://github.com/Marcin648/m68k-emu.git
+       GIT_TAG        main
+   )
+   FetchContent_MakeAvailable(m68k-emu)
    ```
-3. Link m68k-emu library
+2. Link m68k-emu library
    ```
    target_link_libraries(myproject PRIVATE m68k-emu)
    ```

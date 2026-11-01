@@ -1,4 +1,4 @@
-#include "tests_functions.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include "m68k.hpp"
 #include "memory.hpp"
@@ -6,14 +6,11 @@
 
 using namespace M68K;
 
-int main(int, char**){
-    TEST_NAME("Instruction JSR/RTS");
+TEST_CASE("JSR/RTS: jsr (A0) then rts", "[instruction][jsr][rts]") {
+    uint32_t return_data;
+    CPUState state = CPUState();
 
-    {
-        uint32_t return_data;
-        CPUState state = CPUState();
-
-        TEST_LABEL("jsr (A0)");
+    SECTION("jsr (A0)") {
         auto instruction_jsr = INSTRUCTION::Jsr::create(0x4E90); // jsr (A0)
         
         state.registers.set(REG_USP, SIZE_LONG, MEMORY_SIZE);
@@ -22,13 +19,14 @@ int main(int, char**){
 
         instruction_jsr.get()->execute(state);
         return_data = state.registers.get(REG_PC, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0x2000);
+        CHECK(return_data == 0x2000);
 
-        TEST_LABEL("rts");
-        auto instruction_rts = INSTRUCTION::Rts::create(0x4E75); // rts
+        SECTION("rts") {
+            auto instruction_rts = INSTRUCTION::Rts::create(0x4E75); // rts
 
-        instruction_rts.get()->execute(state);
-        return_data = state.registers.get(REG_PC, DataSize::SIZE_LONG);
-        TEST_TRUE(return_data == 0xF002);
+            instruction_rts.get()->execute(state);
+            return_data = state.registers.get(REG_PC, DataSize::SIZE_LONG);
+            CHECK(return_data == 0xF002);
+        }
     }
 }

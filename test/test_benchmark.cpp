@@ -1,7 +1,10 @@
-#include "tests_functions.hpp"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark.hpp>
 #include "m68k.hpp"
 
 #include <chrono>
+#include <iostream>
+#include <vector>
 
 using namespace M68K;
 
@@ -13,23 +16,30 @@ double timeInterval(void){
     return dt.count() / 1000.0;
 }
 
-int main(int, char**){
-    TEST_NAME("Program benchmark");
-    
-    {
-        TEST_LABEL("benchmark");
-        CPU cpu = CPU();
-        cpu.loadELF("../../test/binary/benchmark.elf");
+TEST_CASE("Program: benchmark", "[.][program][benchmark]") {
+    size_t n = 0;
+    double dtime = 0.0;
 
-        size_t n = 0;
-        timeInterval();
-        while(cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x101A4){
-            cpu.step();
-            n++;
+    BENCHMARK_ADVANCED("benchmark")(Catch::Benchmark::Chronometer meter) {
+        std::vector<CPU> cpus(meter.runs());
+        for(auto& cpu : cpus){
+            cpu.loadELF(M68K_TEST_BINARY_DIR "/benchmark.elf");
         }
-        double dtime = timeInterval();
 
-        std::cout << "Execute " << n << " instructions in " << dtime << " sec." << std::endl;
-        std::cout << "Frequency: " << ((double)n/dtime)/1000.0 << " kHz" << std::endl;
-    }
+        meter.measure([&](int i){
+            CPU& cpu = cpus[i];
+
+            n = 0;
+            timeInterval();
+            while(cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x101A4){
+                cpu.step();
+                n++;
+            }
+            dtime = timeInterval();
+            return n;
+        });
+    };
+
+    std::cout << "\nExecute " << n << " instructions in " << dtime << " sec." << std::endl;
+    std::cout << "Frequency: " << ((double)n/dtime)/1000.0 << " kHz" << std::endl;
 }

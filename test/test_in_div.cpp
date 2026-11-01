@@ -1,4 +1,4 @@
-#include "tests_functions.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include "m68k.hpp"
 #include "memory.hpp"
@@ -6,67 +6,61 @@
 
 using namespace M68K;
 
-int main(int, char**){
-    TEST_NAME("Instruction DIV");
+TEST_CASE("DIV: divu #$0002, D0", "[instruction][div]") {
+    auto instruction = INSTRUCTION::Div::create(0x80FC); // divu #$0002, D0
+    CPUState state = CPUState();
+    uint32_t return_data;
 
-    {
-        TEST_LABEL("divu #$0002, D0");
-        auto instruction = INSTRUCTION::Div::create(0x80FC); // divu #$0002, D0
-        CPUState state = CPUState();
-        uint32_t return_data;
+    state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x000A);
+    state.memory.set(0, DataSize::SIZE_WORD, 0x80FC); // opcode
+    state.memory.set(2, DataSize::SIZE_WORD, 0x0003); // imm
 
-        state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x000A);
-        state.memory.set(0, DataSize::SIZE_WORD, 0x80FC); // opcode
-        state.memory.set(2, DataSize::SIZE_WORD, 0x0003); // imm
+    instruction.get()->execute(state);
+    return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
+    CHECK(return_data == 3);
 
-        instruction.get()->execute(state);
-        return_data = state.registers.get(REG_D0, DataSize::SIZE_WORD);
-        TEST_TRUE(return_data == 3);
+    return_data = state.registers.get(REG_D0, DataSize::SIZE_LONG) >> 16;
+    CHECK(return_data == 1);
 
-        return_data = state.registers.get(REG_D0, DataSize::SIZE_LONG) >> 16;
-        TEST_TRUE(return_data == 1);
+    bool flag_extend = state.registers.get(SR_FLAG_EXTEND);
+    bool flag_negative = state.registers.get(SR_FLAG_NEGATIVE);
+    bool flag_zero = state.registers.get(SR_FLAG_ZERO);
+    bool flag_overflow = state.registers.get(SR_FLAG_OVERFLOW);
+    bool flag_carry = state.registers.get(SR_FLAG_CARRY);
 
-        bool flag_extend = state.registers.get(SR_FLAG_EXTEND);
-        bool flag_negative = state.registers.get(SR_FLAG_NEGATIVE);
-        bool flag_zero = state.registers.get(SR_FLAG_ZERO);
-        bool flag_overflow = state.registers.get(SR_FLAG_OVERFLOW);
-        bool flag_carry = state.registers.get(SR_FLAG_CARRY);
+    CHECK(flag_extend == false);
+    CHECK(flag_negative == false);
+    CHECK(flag_zero == false);
+    CHECK(flag_overflow == false);
+    CHECK(flag_carry == false);
+}
 
-        TEST_TRUE(flag_extend == false);
-        TEST_TRUE(flag_negative == false);
-        TEST_TRUE(flag_zero == false);
-        TEST_TRUE(flag_overflow == false);
-        TEST_TRUE(flag_carry == false);
-    }
+TEST_CASE("DIV: muls #$FFFE, D0", "[instruction][div]") {
+    auto instruction = INSTRUCTION::Div::create(0x81FC); // muls #$FFFE, D0
+    CPUState state = CPUState();
+    int32_t return_data;
 
-    {
-        TEST_LABEL("muls #$FFFE, D0");
-        auto instruction = INSTRUCTION::Div::create(0x81FC); // muls #$FFFE, D0
-        CPUState state = CPUState();
-        int32_t return_data;
+    state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x000A);
+    state.memory.set(0, DataSize::SIZE_WORD, 0x81FC); // opcode
+    state.memory.set(2, DataSize::SIZE_WORD, 0xFFFD); // imm
 
-        state.registers.set(REG_D0, DataSize::SIZE_LONG, 0x000A);
-        state.memory.set(0, DataSize::SIZE_WORD, 0x81FC); // opcode
-        state.memory.set(2, DataSize::SIZE_WORD, 0xFFFD); // imm
+    instruction.get()->execute(state);
 
-        instruction.get()->execute(state);
+    return_data = static_cast<int16_t>(state.registers.get(REG_D0, DataSize::SIZE_WORD));
+    CHECK(return_data == -3);
 
-        return_data = static_cast<int16_t>(state.registers.get(REG_D0, DataSize::SIZE_WORD));
-        TEST_TRUE(return_data == -3);
+    return_data = state.registers.get(REG_D0, DataSize::SIZE_LONG) >> 16;
+    CHECK(return_data == 1);
 
-        return_data = state.registers.get(REG_D0, DataSize::SIZE_LONG) >> 16;
-        TEST_TRUE(return_data == 1);
+    bool flag_extend = state.registers.get(SR_FLAG_EXTEND);
+    bool flag_negative = state.registers.get(SR_FLAG_NEGATIVE);
+    bool flag_zero = state.registers.get(SR_FLAG_ZERO);
+    bool flag_overflow = state.registers.get(SR_FLAG_OVERFLOW);
+    bool flag_carry = state.registers.get(SR_FLAG_CARRY);
 
-        bool flag_extend = state.registers.get(SR_FLAG_EXTEND);
-        bool flag_negative = state.registers.get(SR_FLAG_NEGATIVE);
-        bool flag_zero = state.registers.get(SR_FLAG_ZERO);
-        bool flag_overflow = state.registers.get(SR_FLAG_OVERFLOW);
-        bool flag_carry = state.registers.get(SR_FLAG_CARRY);
-
-        TEST_TRUE(flag_extend == false);
-        TEST_TRUE(flag_negative == true);
-        TEST_TRUE(flag_zero == false);
-        TEST_TRUE(flag_overflow == false);
-        TEST_TRUE(flag_carry == false);
-    }
+    CHECK(flag_extend == false);
+    CHECK(flag_negative == true);
+    CHECK(flag_zero == false);
+    CHECK(flag_overflow == false);
+    CHECK(flag_carry == false);
 }

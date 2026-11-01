@@ -1,23 +1,18 @@
-#include "tests_functions.hpp"
+#include <catch2/catch_test_macros.hpp>
 #include "m68k.hpp"
 
 using namespace M68K;
 
-int main(int, char**){
-    TEST_NAME("Program fibonacci");
-    
-    {
-        TEST_LABEL("fibonacci");
-        CPU cpu = CPU();
-        cpu.loadELF("../../test/binary/fibonacci.elf");
+TEST_CASE("Program: fibonacci", "[program]") {
+    CPU cpu = CPU();
+    cpu.loadELF(M68K_TEST_BINARY_DIR "/fibonacci.elf");
 
-        while(cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x10058){
-            cpu.step();
-        }
-
-        uint32_t data_ptr = 0x4000;
-        uint32_t data = cpu.state.memory.get(data_ptr, SIZE_LONG);
-
-        TEST_TRUE(data == 6765);
+    while(cpu.state.registers.get(REG_PC, SIZE_LONG) != 0x10058){
+        cpu.step();
     }
+
+    uint32_t data_ptr = 0x4000;
+    uint32_t data = cpu.state.memory.get(data_ptr, SIZE_LONG);
+
+    CHECK(data == 6765);
 }
