@@ -16,3 +16,18 @@ void Registers::throw_invalid_size(DataSize size) {
         std::to_string(size)
     ); //TODO: Throw special exception
 }
+
+void Registers::write_sr(uint32_t value) {
+    value &= SR_MASK;
+    uint32_t old_value = this->reg_buffer[REG_SR];
+    if ((old_value ^ value) & SR_FLAG_SUPERVISOR) {
+        if (value & SR_FLAG_SUPERVISOR) {
+            this->usp = this->reg_buffer[REG_A7];
+            this->reg_buffer[REG_A7] = this->ssp;
+        } else {
+            this->ssp = this->reg_buffer[REG_A7];
+            this->reg_buffer[REG_A7] = this->usp;
+        }
+    }
+    this->reg_buffer[REG_SR] = value;
+}

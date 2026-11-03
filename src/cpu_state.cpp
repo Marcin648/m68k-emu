@@ -22,6 +22,61 @@ void CPUState::stack_push(DataSize size, uint32_t data) {
     this->memory.set(stack_ptr, size, data);
 }
 
+void CPUState::exception(uint8_t vector) {
+    uint32_t sr = this->registers.get(REG_SR, SIZE_WORD);
+    uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
+    this->registers.set(SR_FLAG_SUPERVISOR, true);
+    this->registers.set(SR_FLAG_TRACE, false);
+    this->stack_push(SIZE_LONG, pc);
+    this->stack_push(SIZE_WORD, sr);
+    this->registers.set(REG_PC, SIZE_LONG, this->memory.get(vector * 4, SIZE_LONG));
+    this->stopped = false;
+
+    switch (vector) {
+        case VECTOR_ILLEGAL:
+        case VECTOR_PRIVILEGE_VIOLATION:
+        case VECTOR_LINE_A:
+        case VECTOR_LINE_F: {
+            this->trace_pending = false;
+            break;
+        }
+    }
+}
+
+void CPUState::address_error(bool instruction, uint16_t opcode) {
+    AddressError error = this->memory.address_error;
+    this->memory.address_error = AddressError();
+
+    uint32_t sr = this->registers.get(REG_SR, SIZE_WORD);
+    uint32_t pc = this->registers.get(REG_PC, SIZE_LONG);
+    uint32_t function_code = ((sr & SR_FLAG_SUPERVISOR) ? 4 : 0) | (instruction ? 2 : 1);
+    uint32_t status = (error.read ? 0x10 : 0) | (instruction ? 0 : 0x08) | function_code;
+
+    this->registers.set(SR_FLAG_SUPERVISOR, true);
+    this->registers.set(SR_FLAG_TRACE, false);
+    this->stack_push(SIZE_LONG, pc);
+    this->stack_push(SIZE_WORD, sr);
+    this->stack_push(SIZE_WORD, opcode);
+    this->stack_push(SIZE_LONG, error.address);
+    this->stack_push(SIZE_WORD, status);
+    this->registers.set(REG_PC, SIZE_LONG, this->memory.get(VECTOR_ADDRESS_ERROR * 4, SIZE_LONG));
+    this->stopped = false;
+    this->trace_pending = false;
+
+    if (this->memory.address_error.pending) {
+        this->memory.address_error = AddressError();
+        this->halted = true;
+    }
+}
+
+bool CPUState::require_supervisor() {
+    if (this->registers.get(SR_FLAG_SUPERVISOR)) {
+        return true;
+    }
+    this->exception(VECTOR_PRIVILEGE_VIOLATION);
+    return false;
+}
+
 uint32_t CPUState::get_control_address(AddressingMode mode, RegisterType reg, DataSize size) {
     uint32_t addr = 0;
     switch (mode) {
@@ -432,8 +487,10 @@ void CPUState::debug_print() {
     for (size_t i = 0; i < 8; i++) {
         printf("A%zu: 0x%08X\n", i, this->registers.get(static_cast<RegisterType>(i + 8), SIZE_LONG));
     }
-    printf("USP: 0x%08X\n", this->registers.get(REG_USP, SIZE_LONG));
+    printf("USP: 0x%08X\n", this->registers.get_usp());
+    printf("SSP: 0x%08X\n", this->registers.get_ssp());
     printf("PC: 0x%08X\n", this->registers.get(REG_PC, SIZE_LONG));
+    printf("SR: 0x%04X\n", this->registers.get(REG_SR, SIZE_WORD));
 
     printf("E: %d\n", this->registers.get(SR_FLAG_EXTEND));
     printf("N: %d\n", this->registers.get(SR_FLAG_NEGATIVE));

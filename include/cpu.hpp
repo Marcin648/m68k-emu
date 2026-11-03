@@ -5,6 +5,8 @@
 namespace M68K {
     class CPU {
     private:
+        bool take_interrupt();
+
     public:
         CPU() = default;
 
@@ -12,6 +14,8 @@ namespace M68K {
         InstructionDecoder instruction_decoder = InstructionDecoder();
 
         void step();
+        void reset();
+        void interrupt(uint8_t level);
         bool load_elf(const std::string& filename);
     };
 }

@@ -25,6 +25,7 @@ namespace M68K {
         REG_A6 = 14,
         REG_A7 = 15,
         REG_USP = 15,
+        REG_SSP = 15,
         REG_PC = 16,
         REG_SR = 17
     };
@@ -39,17 +40,39 @@ namespace M68K {
         SR_FLAG_TRACE = (1 << 15)
     };
 
+    constexpr uint32_t SR_MASK = 0xA71F;
+    constexpr uint32_t SR_INTERRUPT_MASK = 0x0700;
+    constexpr uint32_t SR_INTERRUPT_SHIFT = 8;
+    constexpr uint32_t SR_RESET = 0x2700;
+
     class Registers {
     public:
         static constexpr std::size_t REG_BUFFER_SIZE = 18;
 
     private:
         std::array<uint32_t, REG_BUFFER_SIZE> reg_buffer{};
+        uint32_t usp = 0;
+        uint32_t ssp = 0;
 
         [[noreturn]] static void throw_invalid_register(RegisterType reg);
         [[noreturn]] static void throw_invalid_size(DataSize size);
 
+        void write_sr(uint32_t value);
+
     public:
+        Registers() {
+            this->reg_buffer[REG_SR] = SR_RESET;
+        }
+
+        bool is_supervisor() const {
+            return (this->reg_buffer[REG_SR] & SR_FLAG_SUPERVISOR) != 0;
+        }
+
+        uint32_t get_usp() const { return this->is_supervisor() ? this->usp : this->reg_buffer[REG_A7]; }
+        uint32_t get_ssp() const { return this->is_supervisor() ? this->reg_buffer[REG_A7] : this->ssp; }
+        void set_usp(uint32_t value) { (this->is_supervisor() ? this->usp : this->reg_buffer[REG_A7]) = value; }
+        void set_ssp(uint32_t value) { (this->is_supervisor() ? this->reg_buffer[REG_A7] : this->ssp) = value; }
+
         uint32_t get(RegisterType reg, DataSize size = DataSize::SIZE_LONG) const {
             if (static_cast<std::size_t>(reg) >= REG_BUFFER_SIZE) {
                 throw_invalid_register(reg);
@@ -78,7 +101,8 @@ namespace M68K {
             }
 
             if (reg == REG_SR) {
-                reg_value = MASK_16(reg_value);
+                this->write_sr(reg_value);
+                return;
             }
 
             this->reg_buffer[reg] = reg_value;
@@ -93,6 +117,10 @@ namespace M68K {
             uint32_t sr_value = this->reg_buffer[REG_SR] & ~flag_mask;
             if (value) {
                 sr_value |= flag_mask;
+            }
+            if (flag == SR_FLAG_SUPERVISOR) {
+                this->write_sr(sr_value);
+                return;
             }
             this->reg_buffer[REG_SR] = sr_value;
         }

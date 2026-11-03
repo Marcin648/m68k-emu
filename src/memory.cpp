@@ -4,10 +4,6 @@
 #include <string>
 using namespace M68K;
 
-void Memory::throw_unaligned() {
-    throw std::length_error("Memory address must be even."); //TODO: Throw special exception
-}
-
 void Memory::throw_out_of_range(std::size_t address) {
     throw std::out_of_range(
         "Memory address out of range. " +

@@ -44,5 +44,23 @@ namespace M68K {
         COND_LESS_EQUAL = 15,
     };
 
+    enum ExceptionVector {
+        VECTOR_RESET_SSP = 0,
+        VECTOR_RESET_PC = 1,
+        VECTOR_BUS_ERROR = 2,
+        VECTOR_ADDRESS_ERROR = 3,
+        VECTOR_ILLEGAL = 4,
+        VECTOR_ZERO_DIVIDE = 5,
+        VECTOR_CHK = 6,
+        VECTOR_TRAPV = 7,
+        VECTOR_PRIVILEGE_VIOLATION = 8,
+        VECTOR_TRACE = 9,
+        VECTOR_LINE_A = 10,
+        VECTOR_LINE_F = 11,
+        VECTOR_SPURIOUS_INTERRUPT = 24,
+        VECTOR_AUTOVECTOR = 24,
+        VECTOR_TRAP = 32,
+    };
+
     constexpr std::size_t MEMORY_SIZE = 0x01000000; // 16 MB
 }

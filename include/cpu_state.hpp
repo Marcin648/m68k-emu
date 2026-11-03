@@ -10,8 +10,16 @@ namespace M68K {
         Registers registers = Registers();
         Memory memory = Memory();
 
+        bool stopped = false;
+        bool halted = false;
+        bool trace_pending = false;
+        uint8_t interrupt_level = 0;
+
         uint32_t stack_pop(DataSize size);
         void stack_push(DataSize size, uint32_t data);
+        void exception(uint8_t vector);
+        void address_error(bool instruction, uint16_t opcode);
+        bool require_supervisor();
         uint32_t get_control_address(AddressingMode mode, RegisterType reg, DataSize size);
         uint32_t get_data(AddressingMode mode, RegisterType reg, DataSize size);
         uint32_t get_data_silent(AddressingMode mode, RegisterType reg, DataSize size);

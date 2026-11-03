@@ -26,17 +26,25 @@ TEST_CASE("Memory: set byte", "[memory]") {
 
 TEST_CASE("Memory: set long odd address", "[memory]") {
     Memory memory;
-    CHECK_THROWS_AS(memory.set(0x01, DataSize::SIZE_LONG, 0xAABBCCDD), std::length_error);
+    memory.set(0x01, DataSize::SIZE_LONG, 0xAABBCCDD);
+    CHECK(memory.address_error.pending == true);
+    CHECK(memory.address_error.read == false);
+    CHECK(memory.address_error.address == 0x01);
+    CHECK(memory.get(0x00, DataSize::SIZE_LONG) == 0);
 }
 
 TEST_CASE("Memory: set word odd address", "[memory]") {
     Memory memory;
-    CHECK_THROWS_AS(memory.set(0x01, DataSize::SIZE_WORD, 0xAABB), std::length_error);
+    memory.set(0x01, DataSize::SIZE_WORD, 0xAABB);
+    CHECK(memory.address_error.pending == true);
+    CHECK(memory.address_error.read == false);
+    CHECK(memory.address_error.address == 0x01);
 }
 
 TEST_CASE("Memory: set byte odd address", "[memory]") {
     Memory memory;
-    CHECK_NOTHROW(memory.set(0x01, DataSize::SIZE_BYTE, 0xAA));
+    memory.set(0x01, DataSize::SIZE_BYTE, 0xAA);
+    CHECK(memory.address_error.pending == false);
 }
 
 TEST_CASE("Memory: set out of range long", "[memory]") {
@@ -75,15 +83,21 @@ TEST_CASE_METHOD(LoadedMemory, "Memory: get byte", "[memory]") {
 }
 
 TEST_CASE_METHOD(LoadedMemory, "Memory: get long odd address", "[memory]") {
-    CHECK_THROWS_AS(memory.get(0x01, DataSize::SIZE_LONG), std::length_error);
+    CHECK(memory.get(0x01, DataSize::SIZE_LONG) == 0);
+    CHECK(memory.address_error.pending == true);
+    CHECK(memory.address_error.read == true);
+    CHECK(memory.address_error.address == 0x01);
 }
 
 TEST_CASE_METHOD(LoadedMemory, "Memory: get word odd address", "[memory]") {
-    CHECK_THROWS_AS(memory.get(0x01, DataSize::SIZE_WORD), std::length_error);
+    CHECK(memory.get(0x01, DataSize::SIZE_WORD) == 0);
+    CHECK(memory.address_error.pending == true);
+    CHECK(memory.address_error.read == true);
 }
 
 TEST_CASE_METHOD(LoadedMemory, "Memory: get byte odd address", "[memory]") {
-    CHECK_NOTHROW(memory.get(0x01, DataSize::SIZE_BYTE));
+    CHECK(memory.get(0x01, DataSize::SIZE_BYTE) == 0xBB);
+    CHECK(memory.address_error.pending == false);
 }
 
 TEST_CASE_METHOD(LoadedMemory, "Memory: get out of range long", "[memory]") {
