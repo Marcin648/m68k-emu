@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 
 #include "m68k.hpp"
 #include "memory.hpp"
@@ -113,4 +114,22 @@ TEST_CASE("DIV: divs #1, D0 (overflow)", "[instruction][div]") {
     instruction.get()->execute(state);
     CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x00100000);
     check_flags(state, false, false, false, true, false);
+}
+
+TEST_CASE("DIV: divu/divs #0, D0 (zero divide)", "[instruction][div]") {
+    uint16_t opcode = GENERATE(0x80FC, 0x81FC);
+    auto instruction = INSTRUCTION::Div::create(opcode);
+    CPUState state = CPUState();
+    state.memory.set(0, SIZE_WORD, opcode);
+    state.memory.set(2, SIZE_WORD, 0x0000);
+    state.memory.set(VECTOR_ZERO_DIVIDE * 4, SIZE_LONG, 0x3000);
+    state.registers.set(REG_A7, SIZE_LONG, 0x1000);
+    state.registers.set(REG_D0, SIZE_LONG, 0x12345678);
+    state.registers.set(SR_FLAG_CARRY, true);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_D0, SIZE_LONG) == 0x12345678);
+    CHECK(state.registers.get(REG_PC, SIZE_LONG) == 0x3000);
+    CHECK(state.registers.get(SR_FLAG_CARRY) == false);
+    CHECK(state.memory.get(0x0FFC, SIZE_LONG) == 4);
 }

@@ -34,6 +34,12 @@ void Div::execute(CPUState& cpu_state) const {
     uint32_t dest_data = cpu_state.registers.get(this->dest_reg, SIZE_LONG);
     uint32_t result;
 
+    if (src_data == 0) {
+        cpu_state.registers.set(SR_FLAG_CARRY, false);
+        cpu_state.exception(VECTOR_ZERO_DIVIDE);
+        return;
+    }
+
     if (this->is_signed) {
         int64_t quotient = static_cast<int64_t>(static_cast<int32_t>(dest_data)) / static_cast<int16_t>(src_data);
         int64_t remainder = static_cast<int64_t>(static_cast<int32_t>(dest_data)) % static_cast<int16_t>(src_data);
