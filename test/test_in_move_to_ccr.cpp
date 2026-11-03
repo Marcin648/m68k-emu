@@ -36,3 +36,36 @@ TEST_CASE("MOVE to CCR: validity and disassembly", "[instruction][move_to_ccr]")
     CPUState state = CPUState();
     CHECK(INSTRUCTION::MoveToCCR::create(0x44C0).get()->disassembly(state) == "move.w d0, ccr");
 }
+
+TEST_CASE("MOVE to SR: move.w D0, sr", "[instruction][move_to_sr]") {
+    auto instruction = INSTRUCTION::MoveToCCR::create(0x46C0);
+    CPUState state = CPUState();
+    state.registers.set(REG_D0, SIZE_LONG, 0xFFFFFFFF);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_SR, SIZE_WORD) == 0xA71F);
+    CHECK(state.registers.get(REG_PC, SIZE_LONG) == 2);
+}
+
+TEST_CASE("MOVE to SR: move.w #$0004, sr (switch to user mode)", "[instruction][move_to_sr]") {
+    auto instruction = INSTRUCTION::MoveToCCR::create(0x46FC);
+    CPUState state = CPUState();
+    state.memory.set(2, SIZE_WORD, 0x0004);
+    state.registers.set(REG_A7, SIZE_LONG, 0x1000);
+    state.registers.set_usp(0x3000);
+
+    instruction.get()->execute(state);
+    CHECK(state.registers.get(REG_SR, SIZE_WORD) == 0x0004);
+    CHECK(state.registers.get(REG_A7, SIZE_LONG) == 0x3000);
+    CHECK(state.registers.get_ssp() == 0x1000);
+    CHECK(state.registers.get(REG_PC, SIZE_LONG) == 4);
+}
+
+TEST_CASE("MOVE to SR: privilege violation", "[instruction][move_to_sr]") {
+    check_privilege_violation(0x46FC);
+}
+
+TEST_CASE("MOVE to SR: disassembly", "[instruction][move_to_sr]") {
+    CPUState state = CPUState();
+    CHECK(INSTRUCTION::MoveToCCR::create(0x46C1).get()->disassembly(state) == "move.w d1, sr");
+}

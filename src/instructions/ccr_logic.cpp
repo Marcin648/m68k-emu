@@ -7,6 +7,7 @@ using namespace INSTRUCTION;
 
 CcrLogic::CcrLogic(uint16_t opcode) : Instruction(opcode) {
     uint16_t instruction_type_part = (opcode >> 9) & 0x7;
+    this->is_sr = (opcode >> 6) & 0x1;
 
     switch (instruction_type_part) {
         case InstructionType::ORI: {
@@ -31,19 +32,29 @@ CcrLogic::CcrLogic(uint16_t opcode) : Instruction(opcode) {
 }
 
 void CcrLogic::execute(CPUState& cpu_state) const {
+    if (this->is_sr && !cpu_state.require_supervisor()) {
+        return;
+    }
+
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
-    uint32_t src_data = cpu_state.get_data(ADDR_MODE_IMMEDIATE, REG_D0, SIZE_BYTE);
-    uint32_t result = cpu_state.registers.get(REG_SR, SIZE_BYTE);
+    DataSize size = this->is_sr ? SIZE_WORD : SIZE_BYTE;
+    uint32_t src_data = cpu_state.get_data(ADDR_MODE_IMMEDIATE, REG_D0, size);
+    uint32_t result = cpu_state.registers.get(REG_SR, size);
 
     switch (this->instruction_type) {
         case InstructionType::ORI: result |= src_data; break;
         case InstructionType::ANDI: result &= src_data; break;
         case InstructionType::EORI: result ^= src_data; break;
     }
-    cpu_state.registers.set(REG_SR, SIZE_BYTE, MASK_CCR(result));
+
+    if (this->is_sr) {
+        cpu_state.registers.set(REG_SR, SIZE_WORD, result);
+    } else {
+        cpu_state.registers.set(REG_SR, SIZE_BYTE, MASK_CCR(result));
+    }
 }
 
 std::string CcrLogic::disassembly(CPUState& cpu_state) const {
@@ -53,8 +64,8 @@ std::string CcrLogic::disassembly(CPUState& cpu_state) const {
 
     std::ostringstream output;
     output << this->instruction_str
-           << " " << DISASSEMBLER::effective_address(ADDR_MODE_IMMEDIATE, REG_D0, SIZE_BYTE, cpu_state)
-           << ", ccr";
+           << " " << DISASSEMBLER::effective_address(ADDR_MODE_IMMEDIATE, REG_D0, this->is_sr ? SIZE_WORD : SIZE_BYTE, cpu_state)
+           << (this->is_sr ? ", sr" : ", ccr");
 
     return output.str();
 }

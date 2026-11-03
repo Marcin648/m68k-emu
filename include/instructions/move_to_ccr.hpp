@@ -8,6 +8,7 @@ namespace M68K {
         private:
             AddressingMode src_mode = ADDR_MODE_UNKNOWN;
             RegisterType src_reg = REG_D0;
+            bool is_sr = false;
 
         public:
             MoveToCCR(uint16_t opcode);

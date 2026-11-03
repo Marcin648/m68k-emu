@@ -14,6 +14,7 @@ namespace M68K {
 
             InstructionType instruction_type = InstructionType::ORI;
             std::string instruction_str;
+            bool is_sr = false;
 
         public:
             CcrLogic(uint16_t opcode);

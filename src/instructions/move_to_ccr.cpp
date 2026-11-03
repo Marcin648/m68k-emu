@@ -11,6 +11,7 @@ MoveToCCR::MoveToCCR(uint16_t opcode) : Instruction(opcode) {
 
     this->src_mode = get_addressing_mode(ea_mode_part, ea_reg_part);
     this->src_reg = get_register_type(ea_mode_part, ea_reg_part);
+    this->is_sr = (opcode >> 9) & 0x1;
 
     if ((this->src_mode == ADDR_MODE_UNKNOWN) || (this->src_mode == ADDR_MODE_DIRECT_ADDR)) {
         this->is_valid = false;
@@ -18,12 +19,20 @@ MoveToCCR::MoveToCCR(uint16_t opcode) : Instruction(opcode) {
 }
 
 void MoveToCCR::execute(CPUState& cpu_state) const {
+    if (this->is_sr && !cpu_state.require_supervisor()) {
+        return;
+    }
+
     uint32_t pc = cpu_state.registers.get(REG_PC, SIZE_LONG);
     pc += SIZE_WORD;
     cpu_state.registers.set(REG_PC, SIZE_LONG, pc);
 
     uint32_t src_data = cpu_state.get_data(this->src_mode, this->src_reg, SIZE_WORD);
-    cpu_state.registers.set(REG_SR, SIZE_BYTE, MASK_CCR(src_data));
+    if (this->is_sr) {
+        cpu_state.registers.set(REG_SR, SIZE_WORD, src_data);
+    } else {
+        cpu_state.registers.set(REG_SR, SIZE_BYTE, MASK_CCR(src_data));
+    }
 }
 
 std::string MoveToCCR::disassembly(CPUState& cpu_state) const {
@@ -34,7 +43,7 @@ std::string MoveToCCR::disassembly(CPUState& cpu_state) const {
     std::ostringstream output;
     output << "move" << DISASSEMBLER::size_suffix(SIZE_WORD)
            << " " << DISASSEMBLER::effective_address(this->src_mode, this->src_reg, SIZE_WORD, cpu_state)
-           << ", ccr";
+           << (this->is_sr ? ", sr" : ", ccr");
 
     return output.str();
 }
